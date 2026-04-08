@@ -4,19 +4,16 @@ import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { STAGES } from '@/lib/constants'
-import type { Lead } from '@/types/database'
 
-const FLAGS: Record<string, string> = {
-  UK: '🇬🇧', Ireland: '🇮🇪', Netherlands: '🇳🇱', Belgium: '🇧🇪', Romania: '🇷🇴',
+interface Lead {
+  id: string; full_name: string; email: string; whatsapp: string
+  country: string; treatment: string; stage: string; source: string
+  notes: string | null; created_at: string
 }
 
-function followBadge(date: string | null) {
-  if (!date) return null
-  const today = new Date().toISOString().slice(0,10)
-  const diff = Math.ceil((new Date(date).getTime() - new Date(today).getTime()) / 86400000)
-  if (diff < 0)  return <span className="font-mono text-[10px] bg-[#e05252]/15 text-[#e05252] px-1.5 py-0.5 rounded">Overdue</span>
-  if (diff === 0) return <span className="font-mono text-[10px] bg-[#f0a844]/15 text-[#f0a844] px-1.5 py-0.5 rounded">Today</span>
-  return <span className="font-mono text-[10px] text-[#6b8f6b]">{new Date(date).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</span>
+const FLAGS: Record<string, string> = {
+  UK: '🇬🇧', 'United Kingdom': '🇬🇧', Ireland: '🇮🇪', Netherlands: '🇳🇱',
+  Belgium: '🇧🇪', Romania: '🇷🇴',
 }
 
 export function LeadsTable({ leads }: { leads: Lead[] }) {
@@ -27,15 +24,16 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
 
   const filtered = useMemo(() => {
     let r = leads
-    if (search) r = r.filter(l => `${l.full_name} ${l.email} ${l.whatsapp} ${l.treatment_interest} ${l.notes ?? ''}`.toLowerCase().includes(search.toLowerCase()))
+    if (search) r = r.filter(l =>
+      `${l.full_name} ${l.email} ${l.whatsapp} ${l.treatment} ${l.notes ?? ''}`.toLowerCase().includes(search.toLowerCase()))
     if (stageFilter)   r = r.filter(l => l.stage === stageFilter)
     if (countryFilter) r = r.filter(l => l.country === countryFilter)
     return r
   }, [leads, search, stageFilter, countryFilter])
 
   function exportCSV() {
-    const headers = ['Name','Email','WhatsApp','Country','Treatment','Stage','Value','Follow-up','Source','Added']
-    const rows = filtered.map(l => [l.full_name, l.email, l.whatsapp, l.country, l.treatment_interest, l.stage, l.estimated_value ?? '', l.follow_up_date ?? '', l.source, l.created_at.slice(0,10)])
+    const headers = ['Name','Email','WhatsApp','Country','Treatment','Stage','Source','Added']
+    const rows = filtered.map(l => [l.full_name, l.email, l.whatsapp, l.country, l.treatment, l.stage, l.source, l.created_at.slice(0,10)])
     const csv = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n')
     const a = document.createElement('a')
     a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }))
@@ -70,7 +68,7 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
         <table className="w-full">
           <thead>
             <tr className="border-b border-white/[0.06]">
-              {['Name','Country','Treatment','Stage','Value','Follow-up','Added'].map(h => (
+              {['Name','Country','Treatment','Stage','Source','Added'].map(h => (
                 <th key={h} className="px-4 py-2.5 text-left font-mono text-[10px] tracking-widest uppercase text-[#6b8f6b] font-normal">{h}</th>
               ))}
             </tr>
@@ -85,22 +83,20 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
                     <div className="text-sm text-[#d4e4d4] font-medium">{l.full_name}</div>
                     <div className="text-xs text-[#6b8f6b] font-mono">{l.email}</div>
                   </td>
-                  <td className="px-4 py-3 text-sm text-[#6b8f6b]">{FLAGS[l.country] ?? ''} {l.country}</td>
-                  <td className="px-4 py-3 text-xs text-[#6b8f6b] max-w-[160px] truncate">{l.treatment_interest}</td>
+                  <td className="px-4 py-3 text-sm text-[#6b8f6b]">{FLAGS[l.country] ?? '🌍'} {l.country}</td>
+                  <td className="px-4 py-3 text-xs text-[#6b8f6b] max-w-[160px] truncate">{l.treatment}</td>
                   <td className="px-4 py-3">
-                    <span className="text-xs px-2 py-0.5 rounded font-medium whitespace-nowrap" style={{ background: `${stage?.color}22`, color: stage?.color }}>
-                      {stage?.label}
+                    <span className="text-xs px-2 py-0.5 rounded font-medium whitespace-nowrap"
+                      style={{ background: `${stage?.color}22`, color: stage?.color }}>
+                      {stage?.label ?? l.stage}
                     </span>
                   </td>
-                  <td className="px-4 py-3 font-mono text-xs text-[#d4a84b]">
-                    {l.estimated_value ? `£${l.estimated_value.toLocaleString()}` : '—'}
-                  </td>
-                  <td className="px-4 py-3">{followBadge(l.follow_up_date)}</td>
+                  <td className="px-4 py-3 text-xs text-[#6b8f6b]">{l.source}</td>
                   <td className="px-4 py-3 font-mono text-xs text-[#6b8f6b]">{l.created_at.slice(0,10)}</td>
                 </tr>
               )
             }) : (
-              <tr><td colSpan={7} className="px-4 py-12 text-center text-sm text-[#6b8f6b] italic">No leads found</td></tr>
+              <tr><td colSpan={6} className="px-4 py-12 text-center text-sm text-[#6b8f6b] italic">No leads found</td></tr>
             )}
           </tbody>
         </table>
