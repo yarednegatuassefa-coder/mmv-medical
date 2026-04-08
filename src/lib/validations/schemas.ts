@@ -7,11 +7,9 @@ export const leadFormSchema = z.object({
     .regex(/^\+?[0-9\s\-()]+$/, 'Invalid phone number'),
   country: z.enum(['UK', 'Ireland', 'Netherlands', 'Belgium', 'Romania', 'Other'],
     { errorMap: () => ({ message: 'Please select your country' }) }),
-  treatment_interest: z.string().min(1, 'Please select a treatment'),
-  budget_range: z.string().optional(),
-  preferred_travel_month: z.string().optional(),
+  treatment: z.string().min(1, 'Please select a treatment').optional(),
+  treatment_interest: z.string().min(1, 'Please select a treatment').optional(),
   notes: z.string().max(1000).optional(),
-  // Honeypot — must be empty
   website: z.string().max(0, 'Bot detected').optional(),
 })
 
@@ -20,15 +18,6 @@ export type LeadFormData = z.infer<typeof leadFormSchema>
 export const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
-})
-
-export const leadUpdateSchema = z.object({
-  id: z.string().uuid(),
-  stage: z.enum(['new','contacted','plan_sent','deposit_paid','confirmed','completed','lost']).optional(),
-  estimated_value: z.number().min(0).optional(),
-  follow_up_date: z.string().optional().nullable(),
-  notes: z.string().max(2000).optional(),
-  assigned_to: z.string().uuid().optional().nullable(),
 })
 
 export const noteSchema = z.object({
