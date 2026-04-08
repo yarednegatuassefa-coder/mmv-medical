@@ -1,33 +1,22 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import { STAGES, WA_NUMBER } from '@/lib/constants'
-import type { Lead } from '@/types/database'
+import { STAGES } from '@/lib/constants'
 
 export const metadata: Metadata = { title: 'Dashboard | MMV Medical' }
-
-function fmtCurrency(n: number) {
-  return '£' + n.toLocaleString('en-GB', { maximumFractionDigits: 0 })
-}
 
 export default async function DashboardPage() {
   const supabase = await createClient() as any
 
   const { data } = await supabase
     .from('leads')
-    .select('id,full_name,country,stage,estimated_value,follow_up_date,treatment_interest,created_at,source,whatsapp')
-    .is('deleted_at', null)
+    .select('id,full_name,country,stage,treatment,created_at,source,whatsapp')
     .order('created_at', { ascending: false })
 
-  const all = (data ?? []) as Lead[]
+  const all = (data ?? []) as any[]
   const total = all.length
-  const pipelineValue = all.reduce((s, l) => s + (l.estimated_value ?? 0), 0)
   const converted = all.filter(l => ['deposit_paid','confirmed','completed'].includes(l.stage)).length
   const convRate = total ? Math.round((converted / total) * 100) : 0
-  const today = new Date().toISOString().slice(0, 10)
-  const overdue = all.filter(l =>
-    l.follow_up_date && l.follow_up_date < today && !['completed','lost'].includes(l.stage)
-  ).length
 
   const byCountry: Record<string, number> = {}
   all.forEach(l => { byCountry[l.country] = (byCountry[l.country] ?? 0) + 1 })
@@ -39,17 +28,18 @@ export default async function DashboardPage() {
   const recentLeads = all.slice(0, 8)
 
   const flags: Record<string, string> = {
-    UK: '🇬🇧', Ireland: '🇮🇪', Netherlands: '🇳🇱', Belgium: '🇧🇪', Romania: '🇷🇴',
+    'United Kingdom': '🇬🇧', '🇬🇧 United Kingdom': '🇬🇧',
+    'Ireland': '🇮🇪', 'Netherlands': '🇳🇱', 'Belgium': '🇧🇪', 'Romania': '🇷🇴',
   }
 
   return (
     <div className="p-6 space-y-6">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { label: 'Total Leads',     value: total,                      color: 'text-white' },
-          { label: 'Pipeline Value',  value: fmtCurrency(pipelineValue), color: 'text-[#d4a84b]' },
-          { label: 'Conversion Rate', value: `${convRate}%`,             color: 'text-[#3dd68c]' },
-          { label: 'Follow-ups Due',  value: overdue,                    color: overdue > 0 ? 'text-[#e05252]' : 'text-[#3dd68c]' },
+          { label: 'Total Leads',     value: total,       color: 'text-white' },
+          { label: 'New',             value: byStage['new'] ?? 0, color: 'text-[#d4a84b]' },
+          { label: 'Conversion Rate', value: `${convRate}%`, color: 'text-[#3dd68c]' },
+          { label: 'Converted',       value: converted,   color: 'text-[#3dd68c]' },
         ].map(k => (
           <div key={k.label} className="bg-[#111a14] border border-white/[0.06] rounded-lg p-4">
             <div className="font-mono text-[10px] tracking-widest uppercase text-[#6b8f6b] mb-2">{k.label}</div>
@@ -111,18 +101,12 @@ export default async function DashboardPage() {
                 className="flex items-center gap-4 px-4 py-3 hover:bg-[#182118] transition-colors">
                 <div className="flex-1 min-w-0">
                   <div className="text-sm text-[#d4e4d4] font-medium truncate">{l.full_name}</div>
-                  <div className="text-xs text-[#6b8f6b]">{flags[l.country] ?? ''} {l.country} · {l.treatment_interest}</div>
+                  <div className="text-xs text-[#6b8f6b]">{flags[l.country] ?? '🌍'} {l.country} · {l.treatment}</div>
                 </div>
                 <span className="text-xs px-2 py-0.5 rounded font-medium whitespace-nowrap"
                   style={{ background: `${stage?.color}22`, color: stage?.color }}>
-                  {stage?.label}
+                  {stage?.label ?? l.stage}
                 </span>
-                {l.estimated_value ? (
-                  <span className="font-mono text-xs text-[#d4a84b]">£{l.estimated_value.toLocaleString()}</span>
-                ) : null}
-                {l.follow_up_date && l.follow_up_date < today ? (
-                  <span className="font-mono text-xs text-[#e05252]">Overdue</span>
-                ) : null}
                 {l.whatsapp ? (
                   <a href={`https://wa.me/${l.whatsapp.replace(/\D/g, '')}`} target="_blank"
                     rel="noopener noreferrer" onClick={e => e.stopPropagation()}
