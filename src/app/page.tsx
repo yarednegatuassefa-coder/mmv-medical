@@ -516,20 +516,37 @@ export default function HomePage() {
             document.getElementById('calc-pct').textContent=Math.max(0,pct)+'%';
             document.getElementById('calc-saving-display').textContent=fmt(Math.max(0,save),d.currency);
           }
-          function submitForm(){
-            var name=document.getElementById('f-name').value;
-            var email=document.getElementById('f-email').value;
-            var country=document.getElementById('f-country').value;
-            var treatment=document.getElementById('f-treatment').value;
-            var wa=document.getElementById('f-wa').value;
-            var budget=document.getElementById('f-budget').value;
-            var notes=document.getElementById('f-notes').value;
-            if(!name||!email){alert('Please enter your name and email.');return;}
-            var msg=encodeURIComponent('New MMV Medical Enquiry\\n\\nName: '+name+'\\nCountry: '+country+'\\nEmail: '+email+'\\nWhatsApp: '+wa+'\\nTreatment: '+treatment+'\\nBudget: '+budget+'\\nNotes: '+notes);
-            window.open('https://wa.me/905527827698?text='+msg,'_blank');
-            document.getElementById('form-fields').style.display='none';
-            document.getElementById('form-success').classList.add('show');
-          }
+          async function submitForm(){
+  var name=document.getElementById('f-name').value;
+  var email=document.getElementById('f-email').value;
+  var country=document.getElementById('f-country').value;
+  var treatment=document.getElementById('f-treatment').value;
+  var wa=document.getElementById('f-wa').value;
+  var budget=document.getElementById('f-budget').value;
+  var notes=document.getElementById('f-notes').value;
+  if(!name||!email){alert('Please enter your name and email.');return;}
+  try {
+    await fetch('/api/leads',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        full_name:name,
+        email:email,
+        whatsapp:wa,
+        country:country,
+        treatment_interest:treatment||'Not specified',
+        budget_range:budget,
+        notes:notes,
+        source:'website',
+        stage:'new'
+      })
+    });
+  } catch(e){ console.log('Lead save error',e); }
+  var msg=encodeURIComponent('New MMV Medical Enquiry\\n\\nName: '+name+'\\nCountry: '+country+'\\nEmail: '+email+'\\nWhatsApp: '+wa+'\\nTreatment: '+treatment+'\\nBudget: '+budget+'\\nNotes: '+notes);
+  window.open('https://wa.me/905527827698?text='+msg,'_blank');
+  document.getElementById('form-fields').style.display='none';
+  document.getElementById('form-success').classList.add('show');
+}
           window.updateCalc=updateCalc;
           window.submitForm=submitForm;
           window.selectedTreatment=selectedTreatment;
