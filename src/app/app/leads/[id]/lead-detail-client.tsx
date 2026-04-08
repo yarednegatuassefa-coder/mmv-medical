@@ -61,8 +61,17 @@ export function LeadDetailClient({ lead, activities, notes }: Props) {
       })
       const { plan } = await res.json()
 
-      // Dynamically import jspdf to keep bundle small
-      const { jsPDF } = await import('jspdf')
+      // Load jsPDF from CDN
+      await new Promise<void>((resolve, reject) => {
+        if ((window as any).jspdf) return resolve()
+        const script = document.createElement('script')
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'
+        script.onload = () => resolve()
+        script.onerror = () => reject(new Error('Failed to load jsPDF'))
+        document.head.appendChild(script)
+      })
+
+      const { jsPDF } = (window as any).jspdf
       const doc = new jsPDF({ unit: 'mm', format: 'a4' })
 
       const pageW = doc.internal.pageSize.getWidth()
