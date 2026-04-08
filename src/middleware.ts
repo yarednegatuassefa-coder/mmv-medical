@@ -1,42 +1,25 @@
-import { createServerClient, type CookieOptions } from '@supabase/ssr'
-import { NextResponse, type NextRequest } from 'next/server'
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
-export async function middleware(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({ request })
+export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() { return request.cookies.getAll() },
-        setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
-          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
-          supabaseResponse = NextResponse.next({ request })
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          )
-        },
-      },
+  if (pathname.startsWith('/app')) {
+    const hasSession = Array.from(request.cookies.getAll()).some(
+      (cookie) =>
+        cookie.name.startsWith('sb-') &&
+        cookie.name.includes('-auth-token')
+    );
+
+    if (!hasSession) {
+      const loginUrl = new URL('/login', request.url);
+      return NextResponse.redirect(loginUrl);
     }
-  )
-
-  const { data: { user } } = await supabase.auth.getUser()
-
-  const isAppRoute   = request.nextUrl.pathname.startsWith('/app')
-  const isLoginRoute = request.nextUrl.pathname === '/login'
-
-  if (isAppRoute && !user) {
-    return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  if (isLoginRoute && user) {
-    return NextResponse.redirect(new URL('/app/dashboard', request.url))
-  }
-
-  return supabaseResponse
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'],
-}
+  matcher: ['/app/:path*'],
+};
