@@ -5,11 +5,11 @@ import { PipelineBoard } from './pipeline-board'
 export const metadata: Metadata = { title: 'Pipeline | MMV Medical' }
 
 export default async function PipelinePage() {
-  const supabase = await createClient()
+  const supabase = await createClient() as any
+
   const { data: leads } = await supabase
     .from('leads')
-    .select('id,full_name,country,treatment_interest,stage,estimated_value,follow_up_date,whatsapp')
-    .is('deleted_at', null)
+    .select('id,full_name,country,treatment,stage,whatsapp')
     .order('created_at', { ascending: false })
 
   return (
