@@ -1,9 +1,8 @@
 'use server'
 
 import { createServiceClient } from '@/lib/supabase/server'
-import { leadFormSchema, leadUpdateSchema, noteSchema } from '@/lib/validations/schemas'
+import { leadFormSchema, noteSchema } from '@/lib/validations/schemas'
 import type { LeadFormData } from '@/lib/validations/schemas'
-import type { Lead, Profile } from '@/types/database'
 
 // ── PUBLIC LEAD CAPTURE ──────────────────────────────────────
 export async function capturePublicLead(
@@ -28,7 +27,6 @@ export async function capturePublicLead(
     .select('id')
     .or(`email.eq.${parsed.data.email},whatsapp.eq.${parsed.data.whatsapp}`)
     .gte('created_at', new Date(Date.now() - 86400000).toISOString())
-    .is('deleted_at', null)
     .limit(1)
     .maybeSingle()
 
@@ -37,16 +35,14 @@ export async function capturePublicLead(
   const { data: lead, error } = await supabase
     .from('leads')
     .insert({
-      full_name:              parsed.data.full_name,
-      email:                  parsed.data.email,
-      whatsapp:               parsed.data.whatsapp,
-      country:                parsed.data.country,
-      treatment_interest:     parsed.data.treatment_interest,
-      budget_range:           parsed.data.budget_range ?? null,
-      preferred_travel_month: parsed.data.preferred_travel_month ?? null,
-      notes:                  parsed.data.notes ?? null,
-      source:                 'website',
-      stage:                  'new',
+      full_name: parsed.data.full_name,
+      email:     parsed.data.email,
+      whatsapp:  parsed.data.whatsapp,
+      country:   parsed.data.country,
+      treatment: parsed.data.treatment_interest ?? parsed.data.treatment ?? 'Not specified',
+      notes:     parsed.data.notes ?? null,
+      source:    'website',
+      stage:     'new',
     })
     .select('id')
     .single()
@@ -57,17 +53,17 @@ export async function capturePublicLead(
   }
 
   await supabase.from('lead_activities').insert({
-    lead_id:  (lead as Pick<Lead,'id'>).id,
+    lead_id:  lead.id,
     type:     'lead_created',
     title:    'Lead captured from MMV website',
     metadata: {
       source:    'website',
       country:   parsed.data.country,
-      treatment: parsed.data.treatment_interest,
+      treatment: parsed.data.treatment_interest ?? parsed.data.treatment,
     },
   })
 
-  return { success: true, leadId: (lead as Pick<Lead,'id'>).id }
+  return { success: true, leadId: lead.id }
 }
 
 // ── UPDATE STAGE ─────────────────────────────────────────────
@@ -89,40 +85,13 @@ export async function updateLeadStage(leadId: string, newStage: string, oldStage
   return { success: true }
 }
 
-// ── UPDATE LEAD DETAILS ───────────────────────────────────────
-export async function updateLead(input: unknown) {
-  const parsed = leadUpdateSchema.safeParse(input)
-  if (!parsed.success) return { success: false, error: 'Invalid data' }
-
-  const supabase = await createServiceClient() as any
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { success: false, error: 'Unauthorized' }
-
-  const { id, ...updates } = parsed.data
-  const { error } = await supabase.from('leads').update(updates).eq('id', id)
-  if (error) return { success: false, error: error.message }
-
-  await supabase.from('lead_activities').insert({
-    lead_id: id, type: 'lead_updated', title: 'Lead details updated', created_by: user.id,
-  })
-
-  return { success: true }
-}
-
-// ── SOFT DELETE ───────────────────────────────────────────────
+// ── HARD DELETE ───────────────────────────────────────────────
 export async function deleteLead(leadId: string) {
   const supabase = await createServiceClient() as any
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { success: false, error: 'Unauthorized' }
 
-  const { data: profileData } = await supabase
-    .from('profiles').select('role').eq('id', user.id).single()
-  const profile = profileData as Pick<Profile,'role'> | null
-  if (profile?.role !== 'admin') return { success: false, error: 'Admin only' }
-
-  const { error } = await supabase
-    .from('leads').update({ deleted_at: new Date().toISOString() }).eq('id', leadId)
-
+  const { error } = await supabase.from('leads').delete().eq('id', leadId)
   return error ? { success: false, error: error.message } : { success: true }
 }
 
