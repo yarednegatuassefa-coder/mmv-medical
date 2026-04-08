@@ -19,15 +19,18 @@ export default function LoginPage() {
     setLoading(true);
     setError('');
 
-    const { error } = await supabase.auth.signInWithPassword({
+    console.log("🔄 Attempting login with:", email);
+
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
     if (error) {
+      console.error("❌ Login error:", error.message);
       setError(error.message);
     } else {
-      // Force redirect to dashboard
+      console.log("✅ Login successful!", data);
       window.location.href = '/app/dashboard';
     }
     setLoading(false);
