@@ -15,7 +15,7 @@ export default function HomePage() {
         .mmv-nav-cta{background:transparent;border:1px solid var(--gold);color:var(--gold);padding:10px 24px;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;transition:all 0.3s}
         .mmv-nav-cta:hover{background:var(--gold);color:var(--navy)}
         .mmv-hero{position:relative;height:100vh;min-height:700px;display:flex;align-items:center;overflow:hidden}
-        .mmv-hero-bg{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=1800&q=80') center/cover no-repeat;opacity:0.18}
+        .mmv-hero-bg{position:absolute;inset:0;background:url('https://tkywpdpduoucwmpgtkrd.supabase.co/storage/v1/object/public/images/WhatsApp%20Image%202026-04-08%20at%2014.27.40.jpeg') center/cover no-repeat;opacity:0.25}
         .mmv-hero-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(10,14,26,0.97) 40%,rgba(10,14,26,0.7) 100%)}
         .mmv-hero-content{position:relative;z-index:2;max-width:1200px;margin:0 auto;padding:0 48px;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
         .mmv-eyebrow{font-size:11px;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);margin-bottom:24px;display:flex;align-items:center;gap:12px}
@@ -78,13 +78,17 @@ export default function HomePage() {
         .mmv-step-desc{font-size:13px;line-height:1.8;color:var(--muted)}
         .mmv-about{background:var(--navy-mid)}
         .mmv-about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;margin-top:64px}
-        .mmv-about-img{width:100%;aspect-ratio:3/4;object-fit:cover;filter:brightness(0.8)}
+        .mmv-about-img{width:100%;aspect-ratio:3/4;object-fit:cover;filter:brightness(0.85)}
         .mmv-about-text{font-size:15px;line-height:1.9;color:var(--muted);margin-bottom:20px}
         .mmv-creds{display:flex;flex-direction:column;gap:16px;margin-top:40px}
         .mmv-cred{display:flex;align-items:flex-start;gap:16px}
         .mmv-cred-icon{width:32px;height:32px;border:1px solid rgba(201,169,110,0.3);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:12px;flex-shrink:0;margin-top:2px}
         .mmv-cred-text{font-size:13px;color:var(--muted);line-height:1.6}
         .mmv-cred-text strong{color:var(--white);font-weight:400;display:block;margin-bottom:2px}
+        .mmv-gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:48px}
+        .mmv-gallery-item{aspect-ratio:1;overflow:hidden}
+        .mmv-gallery-item img{width:100%;height:100%;object-fit:cover;transition:transform 0.4s;filter:brightness(0.9)}
+        .mmv-gallery-item img:hover{transform:scale(1.05)}
         .mmv-testi{background:var(--navy)}
         .mmv-testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:64px}
         .mmv-testi-card{background:var(--navy-light);padding:40px;border:1px solid rgba(201,169,110,0.08);transition:border-color 0.3s}
@@ -136,6 +140,7 @@ export default function HomePage() {
           .mmv-hero-content{padding:0 24px}
           .mmv-section{padding:64px 24px}
           .mmv-treatments-grid,.mmv-testi-grid{grid-template-columns:1fr}
+          .mmv-gallery{grid-template-columns:repeat(2,1fr)}
           .mmv-steps{grid-template-columns:1fr 1fr;gap:40px}
           .mmv-trust{padding:20px 24px;gap:24px}
           .mmv-form-row{grid-template-columns:1fr}
@@ -150,6 +155,7 @@ export default function HomePage() {
           <ul className="mmv-nav-links">
             <li><a href="#treatments">Treatments</a></li>
             <li><a href="#calculator">Savings</a></li>
+            <li><a href="#results">Results</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="#contact">Contact</a></li>
           </ul>
@@ -197,12 +203,12 @@ export default function HomePage() {
             <h2 className="mmv-section-title">Specialist Care Across<br/><em>All Dental Disciplines</em></h2>
             <div className="mmv-treatments-grid">
               {[
-                {tag:'Most Popular',title:'Single Dental Implant',img:'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=600&q=80',home:'£2,800 UK',ist:'£420',save:'Save up to £2,380'},
-                {tag:'Smile Transformation',title:'Porcelain Veneers',img:'https://images.unsplash.com/photo-1606811971618-4486d14f3f99?w=600&q=80',home:'£900 each UK',ist:'£180',save:'Full smile from £1,800'},
-                {tag:'Full Arch Restoration',title:'All-on-4 / All-on-6',img:'https://images.unsplash.com/photo-1609840114035-3c981b782dfe?w=600&q=80',home:'£20,000 UK',ist:'£6,500',save:'Save over £13,500'},
-                {tag:'Restoration',title:'Zirconia Crowns',img:'https://images.unsplash.com/photo-1598256989800-fe5f95da9787?w=600&q=80',home:'£1,200 UK',ist:'£220',save:'Save up to £980'},
-                {tag:'Full Makeover',title:'Complete Smile Design',img:'https://images.unsplash.com/photo-1571772996211-2f02c9727629?w=600&q=80',home:'£18,000 UK',ist:'£4,500',save:'Comprehensive redesign'},
-                {tag:'Preventive',title:'Deep Clean & Whitening',img:'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&q=80',home:'£600 UK',ist:'£120',save:'Whitening included'},
+                {tag:'Most Popular',title:'Single Dental Implant',img:'https://tkywpdpduoucwmpgtkrd.supabase.co/storage/v1/object/public/images/WhatsApp%20Image%202026-04-08%20at%2014.27.44%20(3).jpeg',home:'£2,800 UK',ist:'£420',save:'Save up to £2,380'},
+                {tag:'Smile Transformation',title:'Porcelain Veneers',img:'https://tkywpdpduoucwmpgtkrd.supabase.co/storage/v1/object/public/images/WhatsApp%20Image%202026-04-08%20at%2014.27.39.jpeg',home:'£900 each UK',ist:'£180',save:'Full smile from £1,800'},
+                {tag:'Full Arch Restoration',title:'All-on-4 / All-on-6',img:'https://tkywpdpduoucwmpgtkrd.supabase.co/storage/v1/object/public/images/WhatsApp%20Image%202026-04-08%20at%2014.27.44%20(8).jpeg',home:'£20,000 UK',ist:'£6,500',save:'Save over £13,500'},
+                {tag:'Restoration',title:'Zirconia Crowns',img:'https://tkywpdpduoucwmpgtkrd.supabase.co/storage/v1/object/public/images/WhatsApp%20Image%202026-04-08%20at%2014.27.42%20(3).jpeg',home:'£1,200 UK',ist:'£220',save:'Save up to £980'},
+                {tag:'Full Makeover',title:'Complete Smile Design',img:'https://tkywpdpduoucwmpgtkrd.supabase.co/storage/v1/object/public/images/WhatsApp%20Image%202026-04-08%20at%2014.27.40.jpeg',home:'£18,000 UK',ist:'£4,500',save:'Comprehensive redesign'},
+                {tag:'Real Results',title:'Before & After',img:'https://tkywpdpduoucwmpgtkrd.supabase.co/storage/v1/object/public/images/WhatsApp%20Image%202026-04-08%20at%2014.27.41%20(3).jpeg',home:'£9,000 UK',ist:'£1,800',save:'Full veneers from £1,800'},
               ].map(t=>(
                 <div key={t.title} className="mmv-card">
                   <img src={t.img} alt={t.title}/>
@@ -312,11 +318,39 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* BEFORE AFTER GALLERY */}
+        <section className="mmv-section" id="results" style={{background:'var(--navy-mid)'}}>
+          <div className="mmv-max">
+            <div className="mmv-eyebrow">Real Results</div>
+            <h2 className="mmv-section-title">Before & After<br/><em>Dr. Mat Dental Clinic</em></h2>
+            <p style={{fontSize:'14px',color:'var(--muted)',marginBottom:'48px',maxWidth:'560px',lineHeight:'1.8'}}>Every result shown is a real patient treated at Dr. Mat Dental Clinic in Istanbul. No filters, no stock photos — just real transformations.</p>
+            <div className="mmv-gallery">
+              {[
+                'https://tkywpdpduoucwmpgtkrd.supabase.co/storage/v1/object/public/images/WhatsApp%20Image%202026-04-08%20at%2014.27.39.jpeg',
+                'https://tkywpdpduoucwmpgtkrd.supabase.co/storage/v1/object/public/images/WhatsApp%20Image%202026-04-08%20at%2014.27.40.jpeg',
+                'https://tkywpdpduoucwmpgtkrd.supabase.co/storage/v1/object/public/images/WhatsApp%20Image%202026-04-08%20at%2014.27.41%20(3).jpeg',
+                'https://tkywpdpduoucwmpgtkrd.supabase.co/storage/v1/object/public/images/WhatsApp%20Image%202026-04-08%20at%2014.27.42%20(3).jpeg',
+                'https://tkywpdpduoucwmpgtkrd.supabase.co/storage/v1/object/public/images/WhatsApp%20Image%202026-04-08%20at%2014.27.44%20(3).jpeg',
+                'https://tkywpdpduoucwmpgtkrd.supabase.co/storage/v1/object/public/images/WhatsApp%20Image%202026-04-08%20at%2014.27.44%20(6).jpeg',
+                'https://tkywpdpduoucwmpgtkrd.supabase.co/storage/v1/object/public/images/WhatsApp%20Image%202026-04-08%20at%2014.27.44%20(8).jpeg',
+                'https://tkywpdpduoucwmpgtkrd.supabase.co/storage/v1/object/public/images/WhatsApp%20Image%202026-04-08%20at%2014.27.45%20(5).jpeg',
+              ].map((url,i)=>(
+                <div key={i} className="mmv-gallery-item">
+                  <img src={url} alt={`Patient result ${i+1}`}/>
+                </div>
+              ))}
+            </div>
+            <div style={{textAlign:'center',marginTop:'48px'}}>
+              <a href="#contact" className="mmv-btn">Book Your Free Consultation →</a>
+            </div>
+          </div>
+        </section>
+
         {/* ABOUT */}
         <section className="mmv-section mmv-about" id="about">
           <div className="mmv-max">
             <div className="mmv-about-grid">
-              <div><img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=600&q=80" alt="Dr. Mat Dental Clinic Istanbul" className="mmv-about-img"/></div>
+              <div><img src="https://tkywpdpduoucwmpgtkrd.supabase.co/storage/v1/object/public/images/WhatsApp%20Image%202026-04-08%20at%2014.27.44%20(6).jpeg" alt="Dr. Mat Dental Clinic Istanbul" className="mmv-about-img"/></div>
               <div>
                 <div className="mmv-eyebrow">About MMV Medical</div>
                 <h2 className="mmv-section-title">Specialist Care,<br/><em>Personal Service</em></h2>
