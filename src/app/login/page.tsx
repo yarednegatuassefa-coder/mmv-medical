@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
@@ -13,13 +13,22 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [checking, setChecking] = useState(true);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        window.location.href = '/app/dashboard';
+      } else {
+        setChecking(false);
+      }
+    });
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
-
-    console.log("🔄 Attempting login with:", email);
 
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
@@ -27,58 +36,112 @@ export default function LoginPage() {
     });
 
     if (error) {
-      console.error("❌ Login error:", error.message);
       setError(error.message);
+      setLoading(false);
+    } else if (data.session) {
+      window.location.replace('/app/dashboard');
     } else {
-      console.log("✅ Login successful!", data);
-      window.location.href = '/app/dashboard';
+      setError('Sign in failed. Please try again.');
+      setLoading(false);
     }
-    setLoading(false);
   };
 
-  return (
-    <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-      <div className="bg-zinc-900 p-10 rounded-2xl w-full max-w-md">
-        <h1 className="text-3xl font-bold text-white mb-8 text-center">MMV Medical</h1>
-        <p className="text-zinc-400 text-center mb-8">Sign in to access your CRM</p>
+  if (checking) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#09090b' }}>
+        <div style={{ color: '#71717a', fontSize: 14 }}>Checking session...</div>
+      </div>
+    );
+  }
 
-        <form onSubmit={handleLogin} className="space-y-6">
+  return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#09090b' }}>
+      <div style={{ background: '#18181b', padding: '40px', borderRadius: '16px', width: '100%', maxWidth: '400px', border: '1px solid #27272a' }}>
+        <h1 style={{ color: '#fff', fontSize: '24px', fontWeight: '600', textAlign: 'center', marginBottom: '8px' }}>
+          MMV Medical
+        </h1>
+        <p style={{ color: '#71717a', textAlign: 'center', marginBottom: '32px', fontSize: '14px' }}>
+          Sign in to access your CRM
+        </p>
+
+        <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div>
-            <label className="block text-sm text-zinc-400 mb-2">Email</label>
+            <label style={{ display: 'block', color: '#a1a1aa', fontSize: '13px', marginBottom: '6px' }}>
+              Email
+            </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500"
               placeholder="your@email.com"
               required
+              autoComplete="email"
+              style={{
+                width: '100%',
+                background: '#27272a',
+                border: '1px solid #3f3f46',
+                borderRadius: '8px',
+                padding: '10px 14px',
+                color: '#fff',
+                fontSize: '14px',
+                outline: 'none',
+                boxSizing: 'border-box',
+              }}
             />
           </div>
 
           <div>
-            <label className="block text-sm text-zinc-400 mb-2">Password</label>
+            <label style={{ display: 'block', color: '#a1a1aa', fontSize: '13px', marginBottom: '6px' }}>
+              Password
+            </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500"
               placeholder="••••••••"
               required
+              autoComplete="current-password"
+              style={{
+                width: '100%',
+                background: '#27272a',
+                border: '1px solid #3f3f46',
+                borderRadius: '8px',
+                padding: '10px 14px',
+                color: '#fff',
+                fontSize: '14px',
+                outline: 'none',
+                boxSizing: 'border-box',
+              }}
             />
           </div>
 
-          {error && <p className="text-red-500 text-sm">{error}</p>}
+          {error && (
+            <div style={{ background: '#450a0a', border: '1px solid #7f1d1d', borderRadius: '8px', padding: '10px 14px', color: '#fca5a5', fontSize: '13px' }}>
+              {error}
+            </div>
+          )}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3.5 rounded-lg transition disabled:opacity-50"
+            style={{
+              width: '100%',
+              background: loading ? '#4b5563' : '#059669',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '8px',
+              padding: '12px',
+              fontSize: '14px',
+              fontWeight: '500',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              marginTop: '8px',
+            }}
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
 
-        <p className="text-center text-xs text-zinc-500 mt-8">
+        <p style={{ textAlign: 'center', color: '#52525b', fontSize: '12px', marginTop: '24px' }}>
           MMV Medical V3 • Internal CRM
         </p>
       </div>
