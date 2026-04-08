@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { updateLeadStage, addNote, deleteLead } from '@/actions/leads'
 import { STAGES } from '@/lib/constants'
-import { ArrowLeft, MessageCircle } from 'lucide-react'
+import { ArrowLeft, MessageCircle, FileText } from 'lucide-react'
 
 interface Lead {
   id: string; full_name: string; email: string; whatsapp: string
@@ -23,6 +23,7 @@ export function LeadDetailClient({ lead, activities, notes }: Props) {
   const [stage, setStage] = useState(lead.stage)
   const [noteText, setNoteText] = useState('')
   const [saving, setSaving] = useState(false)
+  const [generating, setGenerating] = useState(false)
 
   const waUrl = `https://wa.me/${lead.whatsapp.replace(/\D/g,'')}?text=${encodeURIComponent(
     `Hi ${lead.full_name.split(' ')[0]}, this is Yared from MMV Medical. Following up on your dental enquiry — are you still looking to proceed?`
@@ -50,6 +51,117 @@ export function LeadDetailClient({ lead, activities, notes }: Props) {
     router.push('/app/leads')
   }
 
+  async function handleGeneratePDF() {
+    setGenerating(true)
+    try {
+      const res = await fetch('/api/generate-plan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ lead }),
+      })
+      const { plan } = await res.json()
+
+      // Dynamically import jspdf to keep bundle small
+      const { jsPDF } = await import('jspdf')
+      const doc = new jsPDF({ unit: 'mm', format: 'a4' })
+
+      const pageW = doc.internal.pageSize.getWidth()
+      const margin = 20
+      const contentW = pageW - margin * 2
+
+      // ── Header bar ──
+      doc.setFillColor(13, 17, 23)
+      doc.rect(0, 0, pageW, 28, 'F')
+
+      doc.setTextColor(61, 214, 140)
+      doc.setFontSize(16)
+      doc.setFont('helvetica', 'bold')
+      doc.text('MMV MEDICAL', margin, 17)
+
+      doc.setTextColor(107, 143, 107)
+      doc.setFontSize(8)
+      doc.setFont('helvetica', 'normal')
+      doc.text('Istanbul · Premium Dental Tourism', margin, 23)
+
+      // ── Title ──
+      doc.setTextColor(30, 30, 30)
+      doc.setFontSize(18)
+      doc.setFont('helvetica', 'bold')
+      doc.text('Treatment Plan', margin, 42)
+
+      doc.setFontSize(11)
+      doc.setFont('helvetica', 'normal')
+      doc.setTextColor(80, 80, 80)
+      doc.text(`Prepared for: ${lead.full_name}`, margin, 50)
+      doc.text(`Date: ${new Date().toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' })}`, margin, 56)
+
+      // ── Divider ──
+      doc.setDrawColor(61, 214, 140)
+      doc.setLineWidth(0.5)
+      doc.line(margin, 61, pageW - margin, 61)
+
+      // ── Patient info box ──
+      doc.setFillColor(245, 250, 245)
+      doc.roundedRect(margin, 65, contentW, 22, 2, 2, 'F')
+      doc.setFontSize(8)
+      doc.setTextColor(107, 143, 107)
+      doc.setFont('helvetica', 'bold')
+      doc.text('PATIENT DETAILS', margin + 4, 72)
+      doc.setFont('helvetica', 'normal')
+      doc.setTextColor(40, 40, 40)
+      doc.text(`Country: ${lead.country}`, margin + 4, 79)
+      doc.text(`Treatment: ${lead.treatment}`, margin + 60, 79)
+      doc.text(`WhatsApp: ${lead.whatsapp}`, margin + 4, 84)
+      doc.text(`Email: ${lead.email}`, margin + 60, 84)
+
+      // ── Plan body ──
+      let y = 96
+      const lines = plan.split('\n').filter((l: string) => l.trim() !== '')
+
+      for (const line of lines) {
+        const isHeading = /^\d+\./.test(line.trim())
+
+        if (isHeading) {
+          y += 4
+          doc.setFontSize(10)
+          doc.setFont('helvetica', 'bold')
+          doc.setTextColor(13, 17, 23)
+        } else {
+          doc.setFontSize(9.5)
+          doc.setFont('helvetica', 'normal')
+          doc.setTextColor(50, 50, 50)
+        }
+
+        const wrapped = doc.splitTextToSize(line, contentW)
+        for (const wl of wrapped) {
+          if (y > 270) {
+            doc.addPage()
+            y = 20
+          }
+          doc.text(wl, margin, y)
+          y += isHeading ? 6 : 5.5
+        }
+      }
+
+      // ── Footer ──
+      const footerY = doc.internal.pageSize.getHeight() - 14
+      doc.setFillColor(13, 17, 23)
+      doc.rect(0, footerY - 4, pageW, 20, 'F')
+      doc.setFontSize(7.5)
+      doc.setTextColor(107, 143, 107)
+      doc.setFont('helvetica', 'normal')
+      doc.text('MMV Medical · Istanbul, Turkey · mmvmedical.com', margin, footerY + 4)
+      doc.text(`Ref: ${lead.id.slice(0,8).toUpperCase()}`, pageW - margin, footerY + 4, { align: 'right' })
+
+      doc.save(`MMV-TreatmentPlan-${lead.full_name.replace(/\s+/g,'-')}.pdf`)
+    } catch (e) {
+      console.error(e)
+      alert('Failed to generate PDF. Check that ANTHROPIC_API_KEY is set in Vercel.')
+    } finally {
+      setGenerating(false)
+    }
+  }
+
   const inp = 'bg-[#1e2b1e] border border-white/[0.08] rounded px-3 py-2 text-sm text-[#d4e4d4] outline-none focus:border-[#3dd68c]/40 w-full'
 
   return (
@@ -65,6 +177,10 @@ export function LeadDetailClient({ lead, activities, notes }: Props) {
           </div>
         </div>
         <div className="flex gap-2">
+          <button onClick={handleGeneratePDF} disabled={generating}
+            className="flex items-center gap-1.5 text-xs bg-[#3dd68c]/10 border border-[#3dd68c]/25 text-[#3dd68c] px-3 py-1.5 rounded hover:bg-[#3dd68c]/18 transition-colors disabled:opacity-40">
+            <FileText size={13} /> {generating ? 'Generating…' : 'Treatment Plan PDF'}
+          </button>
           <a href={waUrl} target="_blank" rel="noopener noreferrer"
             className="flex items-center gap-1.5 text-xs bg-[#25d366]/10 border border-[#25d366]/25 text-[#25d366] px-3 py-1.5 rounded hover:bg-[#25d366]/18 transition-colors">
             <MessageCircle size={13} /> WhatsApp
