@@ -1,31 +1,23 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { createBrowserClient } from '@supabase/ssr';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [debug, setDebug] = useState('');
-  const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setDebug('Signing in...');
 
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-    if (!url || !key) {
-      setDebug('ERROR: env vars missing');
-      setLoading(false);
-      return;
-    }
-
-    const { createClient } = await import('@supabase/supabase-js');
-    const supabase = createClient(url, key);
+    const supabase = createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
 
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
@@ -33,8 +25,8 @@ export default function LoginPage() {
       setDebug('ERROR: ' + error.message);
       setLoading(false);
     } else if (data.session) {
-      setDebug('SUCCESS - pushing to dashboard...');
-      router.push('/app/dashboard');
+      setDebug('SUCCESS - redirecting...');
+      window.location.href = '/app/dashboard';
     } else {
       setDebug('No session returned');
       setLoading(false);
