@@ -1,25 +1,25 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [debug, setDebug] = useState('');
+  const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setDebug('Calling Supabase...');
+    setDebug('Signing in...');
 
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-    setDebug(`URL: ${url ? url.slice(0, 30) + '...' : 'MISSING'} | KEY: ${key ? 'present' : 'MISSING'}`);
-
     if (!url || !key) {
-      setDebug('ERROR: Supabase env vars are missing on client side');
+      setDebug('ERROR: env vars missing');
       setLoading(false);
       return;
     }
@@ -31,14 +31,14 @@ export default function LoginPage() {
 
     if (error) {
       setDebug('ERROR: ' + error.message);
+      setLoading(false);
     } else if (data.session) {
-      setDebug('SUCCESS - redirecting...');
-      window.location.replace('/app/dashboard');
+      setDebug('SUCCESS - pushing to dashboard...');
+      router.push('/app/dashboard');
     } else {
-      setDebug('WEIRD: no error but no session. data = ' + JSON.stringify(data));
+      setDebug('No session returned');
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
@@ -73,7 +73,7 @@ export default function LoginPage() {
           />
 
           {debug && (
-            <div style={{ background: '#1c1c1e', border: '1px solid #3f3f46', borderRadius: '8px', padding: '10px 14px', color: '#a3e635', fontSize: '12px', wordBreak: 'break-all' }}>
+            <div style={{ background: '#1c1c1e', border: '1px solid #3f3f46', borderRadius: '8px', padding: '10px 14px', color: '#a3e635', fontSize: '12px' }}>
               {debug}
             </div>
           )}
