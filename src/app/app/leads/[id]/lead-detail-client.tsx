@@ -2,33 +2,35 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { updateLeadStage, updateLead, addNote, deleteLead } from '@/actions/leads'
-import { STAGES, WA_NUMBER } from '@/lib/constants'
-import type { Lead, LeadActivity, LeadNote } from '@/types/database'
+import { updateLeadStage, addNote, deleteLead } from '@/actions/leads'
+import { STAGES } from '@/lib/constants'
 import { ArrowLeft, MessageCircle } from 'lucide-react'
 
-interface Props {
-  lead: Lead
-  activities: LeadActivity[]
-  notes: (LeadNote & { profiles: { full_name: string } | null })[]
+interface Lead {
+  id: string; full_name: string; email: string; whatsapp: string
+  country: string; treatment: string; stage: string; source: string
+  notes: string | null; created_at: string
 }
+interface Activity { id: string; title: string; created_at: string }
+interface Note {
+  id: string; content: string; created_at: string
+  profiles: { full_name: string } | null
+}
+interface Props { lead: Lead; activities: Activity[]; notes: Note[] }
 
 export function LeadDetailClient({ lead, activities, notes }: Props) {
   const router = useRouter()
   const [stage, setStage] = useState(lead.stage)
   const [noteText, setNoteText] = useState('')
   const [saving, setSaving] = useState(false)
-  const [followUp, setFollowUp] = useState(lead.follow_up_date ?? '')
-  const [value, setValue] = useState(lead.estimated_value?.toString() ?? '')
 
-  const currentStage = STAGES.find(s => s.value === stage)
   const waUrl = `https://wa.me/${lead.whatsapp.replace(/\D/g,'')}?text=${encodeURIComponent(
-    `Hi ${lead.full_name.split(' ')[0]}, this is Jared from MMV Medical. Following up on your dental enquiry — are you still looking to proceed?`
+    `Hi ${lead.full_name.split(' ')[0]}, this is Yared from MMV Medical. Following up on your dental enquiry — are you still looking to proceed?`
   )}`
 
   async function handleStageChange(newStage: string) {
     const old = stage
-    setStage(newStage as any)
+    setStage(newStage)
     await updateLeadStage(lead.id, newStage, old)
     router.refresh()
   }
@@ -42,15 +44,6 @@ export function LeadDetailClient({ lead, activities, notes }: Props) {
     router.refresh()
   }
 
-  async function handleUpdateDetails() {
-    await updateLead({
-      id: lead.id,
-      estimated_value: value ? parseFloat(value) : undefined,
-      follow_up_date: followUp || null,
-    })
-    router.refresh()
-  }
-
   async function handleDelete() {
     if (!confirm(`Delete lead for ${lead.full_name}? This cannot be undone.`)) return
     await deleteLead(lead.id)
@@ -61,7 +54,6 @@ export function LeadDetailClient({ lead, activities, notes }: Props) {
 
   return (
     <>
-      {/* Header */}
       <div className="flex items-start justify-between mb-6">
         <div className="flex items-center gap-3">
           <button onClick={() => router.back()} className="text-[#6b8f6b] hover:text-[#d4e4d4] transition-colors">
@@ -69,7 +61,7 @@ export function LeadDetailClient({ lead, activities, notes }: Props) {
           </button>
           <div>
             <h1 className="text-xl font-bold text-white">{lead.full_name}</h1>
-            <p className="text-sm text-[#6b8f6b]">{lead.country} · {lead.treatment_interest}</p>
+            <p className="text-sm text-[#6b8f6b]">{lead.country} · {lead.treatment}</p>
           </div>
         </div>
         <div className="flex gap-2">
@@ -84,7 +76,6 @@ export function LeadDetailClient({ lead, activities, notes }: Props) {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        {/* Left: details */}
         <div className="lg:col-span-2 space-y-4">
           {/* Stage */}
           <div className="bg-[#111a14] border border-white/[0.06] rounded-lg p-4">
@@ -111,9 +102,9 @@ export function LeadDetailClient({ lead, activities, notes }: Props) {
                 { label: 'Email',     value: lead.email },
                 { label: 'WhatsApp',  value: lead.whatsapp },
                 { label: 'Country',   value: lead.country },
+                { label: 'Treatment', value: lead.treatment },
                 { label: 'Source',    value: lead.source },
-                { label: 'Budget',    value: lead.budget_range ?? '—' },
-                { label: 'Travel',    value: lead.preferred_travel_month ?? '—' },
+                { label: 'Added',     value: lead.created_at.slice(0,10) },
               ].map(d => (
                 <div key={d.label}>
                   <div className="text-[10px] font-mono uppercase tracking-wider text-[#6b8f6b] mb-0.5">{d.label}</div>
@@ -127,24 +118,6 @@ export function LeadDetailClient({ lead, activities, notes }: Props) {
                 <p className="text-sm text-[#d4e4d4]/70 leading-relaxed">{lead.notes}</p>
               </div>
             )}
-          </div>
-
-          {/* Quick update */}
-          <div className="bg-[#111a14] border border-white/[0.06] rounded-lg p-4">
-            <div className="font-mono text-[10px] tracking-widest uppercase text-[#6b8f6b] mb-3">Quick Update</div>
-            <div className="grid grid-cols-2 gap-3 mb-3">
-              <div>
-                <label className="text-[10px] font-mono uppercase tracking-wider text-[#6b8f6b] block mb-1">Est. Value (£)</label>
-                <input className={inp} type="number" value={value} onChange={e => setValue(e.target.value)} placeholder="e.g. 4200" />
-              </div>
-              <div>
-                <label className="text-[10px] font-mono uppercase tracking-wider text-[#6b8f6b] block mb-1">Follow-up Date</label>
-                <input className={inp} type="date" value={followUp} onChange={e => setFollowUp(e.target.value)} />
-              </div>
-            </div>
-            <button onClick={handleUpdateDetails} className="text-xs bg-[#3dd68c]/10 border border-[#3dd68c]/25 text-[#3dd68c] px-4 py-1.5 rounded hover:bg-[#3dd68c]/18 transition-colors">
-              Save Changes
-            </button>
           </div>
 
           {/* Add note */}
@@ -176,7 +149,7 @@ export function LeadDetailClient({ lead, activities, notes }: Props) {
           )}
         </div>
 
-        {/* Right: activity timeline */}
+        {/* Activity log */}
         <div className="bg-[#111a14] border border-white/[0.06] rounded-lg p-4 h-fit">
           <div className="font-mono text-[10px] tracking-widest uppercase text-[#6b8f6b] mb-3">Activity Log</div>
           <div className="space-y-3">
