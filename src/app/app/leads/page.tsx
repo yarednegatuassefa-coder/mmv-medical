@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { LeadsTable } from './leads-table'
-import type { Lead } from '@/types/database'
 
 export const metadata: Metadata = { title: 'All Leads | MMV Medical' }
 
@@ -14,19 +13,18 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
   let query = supabase
     .from('leads')
     .select('*')
-    .is('deleted_at', null)
     .order('created_at', { ascending: false })
 
   if (sp.stage)   query = query.eq('stage', sp.stage)
   if (sp.country) query = query.eq('country', sp.country)
 
   const { data } = await query
-  let leads = (data ?? []) as Lead[]
+  let leads = (data ?? []) as any[]
 
   if (sp.q) {
     const q = sp.q.toLowerCase()
     leads = leads.filter(l =>
-      `${l.full_name} ${l.email} ${l.whatsapp} ${l.treatment_interest} ${l.notes ?? ''}`.toLowerCase().includes(q)
+      `${l.full_name} ${l.email} ${l.whatsapp} ${l.treatment ?? ''} ${l.notes ?? ''}`.toLowerCase().includes(q)
     )
   }
 
