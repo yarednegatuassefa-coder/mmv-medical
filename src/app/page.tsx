@@ -1,12 +1,4 @@
-import type { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: 'MMV Medical — Premium Dental Care in Istanbul',
-  description: 'World-class dental implants, veneers and smile restoration in Istanbul. Serving patients from UK, Ireland, Netherlands, Germany, France and across Europe.',
-  alternates: { canonical: '/' },
-}
-
-export const dynamic = 'force-dynamic'
+'use client'
 
 export default function HomePage() {
   return (
