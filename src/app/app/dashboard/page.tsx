@@ -108,12 +108,12 @@ export default async function DashboardPage() {
                   {stage?.label ?? l.stage}
                 </span>
                 {l.whatsapp ? (
-                  <a href={`https://wa.me/${l.whatsapp.replace(/\D/g, '')}`} target="_blank"
-                    rel="noopener noreferrer" onClick={e => e.stopPropagation()}
-                    className="text-[#25d366] hover:text-[#4de87e] transition-colors">
-                    💬
-                  </a>
-                ) : null}
+  <a href={`https://wa.me/${l.whatsapp.replace(/\D/g, '')}`} target="_blank"
+    rel="noopener noreferrer"
+    className="text-[#25d366] hover:text-[#4de87e] transition-colors">
+    💬
+  </a>
+) : null}
               </Link>
             )
           }) : (
