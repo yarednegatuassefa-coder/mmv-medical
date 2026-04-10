@@ -62,7 +62,7 @@ export default function TreatmentPlanBuilder({ patientId }) {
       setLoading(true);
       try {
         const [{ data: pt }, { data: tx }] = await Promise.all([
-          supabase.from('contacts').select('*').eq('id', patientId).single(),
+          supabase.from('leads').select('*').eq('id', patientId).single(),
           supabase.from('treatments').select('*').eq('active', true).order('category').order('name'),
         ]);
         setPatient(pt || {});
