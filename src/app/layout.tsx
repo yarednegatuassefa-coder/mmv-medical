@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Toaster } from '@/components/ui/toaster'
 import './globals.css'
+import FloatingWhatsApp from '@/components/FloatingWhatsApp'   // ← Add this import
 
 export const viewport: Viewport = {
   themeColor: '#12243a',
@@ -46,6 +47,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="font-sans antialiased">
         {children}
         <Toaster />
+        
+        {/* Floating WhatsApp Button - appears on every page */}
+        <FloatingWhatsApp />
       </body>
     </html>
   )
