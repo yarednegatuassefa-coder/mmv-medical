@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Toaster } from '@/components/ui/toaster'
 import './globals.css'
-import FloatingWhatsApp from '@/components/FloatingWhatsApp'   // ← Add this import
+import FloatingWhatsApp from '@/components/FloatingWhatsApp'
 
 export const viewport: Viewport = {
   themeColor: '#12243a',
@@ -42,6 +42,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link
           href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&family=DM+Mono:wght@300;400;500&display=swap"
           rel="stylesheet"
+        />
+
+        {/* === GOOGLE TAG (gtag.js) - Added for conversion tracking === */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18093103815"></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'AW-18093103815');
+            `,
+          }}
         />
       </head>
       <body className="font-sans antialiased">
