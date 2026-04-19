@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { Toaster } from '@/components/ui/toaster'
+import Script from 'next/script'
 import './globals.css'
 import FloatingWhatsApp from '@/components/FloatingWhatsApp'
 
@@ -58,6 +59,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {children}
         <Toaster />
         <FloatingWhatsApp />
+
+        {/* HubSpot Tracking — EU1 */}
+        <Script
+          id="hubspot-tracking"
+          src="//js-eu1.hs-scripts.com/147400010.js"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   )
