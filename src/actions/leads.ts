@@ -5,6 +5,49 @@ import { leadFormSchema, leadUpdateSchema, noteSchema } from '@/lib/validations/
 import type { LeadFormData } from '@/lib/validations/schemas'
 import type { Lead, Profile } from '@/types/database'
 
+// ── HUBSPOT SYNC ─────────────────────────────────────────────
+async function syncToHubSpot(data: {
+  full_name: string
+  email: string
+  whatsapp: string
+  country: string
+  treatment_interest: string
+  budget_range?: string | null
+  preferred_travel_month?: string | null
+}) {
+  try {
+    const [firstname, ...rest] = data.full_name.trim().split(' ')
+    const lastname = rest.join(' ') || ''
+
+    await fetch('https://api.hubapi.com/crm/v3/objects/contacts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.HUBSPOT_PRIVATE_APP_TOKEN}`,
+      },
+      body: JSON.stringify({
+        properties: {
+          firstname,
+          lastname,
+          email: data.email,
+          phone: data.whatsapp,
+          country: data.country,
+          hs_lead_status: 'NEW',
+          // Map to HubSpot default "message" field for treatment info
+          message: [
+            `Treatment: ${data.treatment_interest}`,
+            data.budget_range ? `Budget: ${data.budget_range}` : null,
+            data.preferred_travel_month ? `Travel: ${data.preferred_travel_month}` : null,
+          ].filter(Boolean).join(' | '),
+        },
+      }),
+    })
+  } catch (e) {
+    // Never block the main flow if HubSpot fails
+    console.error('[syncToHubSpot]', e)
+  }
+}
+
 // ── PUBLIC LEAD CAPTURE ──────────────────────────────────────
 export async function capturePublicLead(
   data: LeadFormData & { website?: string; _ts?: number }
@@ -66,6 +109,9 @@ export async function capturePublicLead(
       treatment: parsed.data.treatment_interest,
     },
   })
+
+  // Sync to HubSpot (non-blocking)
+  await syncToHubSpot(parsed.data)
 
   return { success: true, leadId: (lead as Pick<Lead,'id'>).id }
 }
