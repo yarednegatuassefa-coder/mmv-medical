@@ -43,6 +43,29 @@ export async function POST(req: Request) {
       )
     }
 
+    // Sync to HubSpot
+    try {
+      const [firstname, ...rest] = name.trim().split(' ')
+      await fetch('https://api.hubapi.com/crm/v3/objects/contacts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.HUBSPOT_PRIVATE_APP_TOKEN}`,
+        },
+        body: JSON.stringify({
+          properties: {
+            firstname,
+            lastname: rest.join(' ') || '',
+            phone,
+            hs_lead_status: 'NEW',
+            message: `WhatsApp button click — language: ${language ?? 'en'}`,
+          },
+        }),
+      })
+    } catch (e) {
+      console.error('HubSpot sync error:', e)
+    }
+
     return NextResponse.json({ ok: true, lead: data }, { status: 201 })
 
   } catch (e: any) {
