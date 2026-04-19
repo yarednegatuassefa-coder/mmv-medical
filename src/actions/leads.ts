@@ -77,13 +77,14 @@ export async function capturePublicLead(
 
   if (existing) return { success: true, duplicate: true }
 
-  const { data: lead, error } = await supabase
+ const { data: lead, error } = await supabase
     .from('leads')
     .insert({
       full_name:              parsed.data.full_name,
       email:                  parsed.data.email,
       whatsapp:               parsed.data.whatsapp,
       country:                parsed.data.country,
+      treatment:              parsed.data.treatment_interest,
       treatment_interest:     parsed.data.treatment_interest,
       budget_range:           parsed.data.budget_range ?? null,
       preferred_travel_month: parsed.data.preferred_travel_month ?? null,
