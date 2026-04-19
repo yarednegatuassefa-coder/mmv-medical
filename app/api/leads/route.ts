@@ -9,7 +9,6 @@ export async function POST(req: Request) {
     const body = await req.json()
     const { name, phone, source, language, message } = body
 
-    // Basic validation
     if (!name || !phone) {
       return NextResponse.json(
         { error: 'Name and phone are required' },
@@ -23,13 +22,15 @@ export async function POST(req: Request) {
       .from('leads')
       .insert([
         {
-          name,
-          phone,
-          source: source ?? 'unknown',
-          language: language ?? 'en',
-          message: message ?? null,
-          status: 'new',
+          full_name: name,
+          whatsapp: phone,
+          source: source ?? 'whatsapp_button',
+          country: language === 'fr' ? 'France' : 
+                   language === 'ar' ? 'Arabic' : 'UK',
+          stage: 'new',
+          notes: message ?? null,
           created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
         },
       ])
       .select()
