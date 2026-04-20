@@ -1,82 +1,65 @@
-import type { Metadata } from 'next'
-import { PublicNav } from '@/components/layout/public-nav'
-import { PublicFooter } from '@/components/layout/public-footer'
-import { LeadFormSection } from '@/components/public/lead-form-section'
-import { WA_NUMBER } from '@/lib/constants'
+'use client';
 
-export const metadata: Metadata = {
-  title: 'Contact MMV Medical',
-  description: 'Get in touch with MMV Medical for a free dental consultation. WhatsApp, email, or consultation form — we respond within 24 hours.',
-  alternates: { canonical: '/contact' },
-}
+const ContactPageWhatsApp = () => {
+  const phone = '905526340919';
 
-export default function ContactPage() {
+  const messages = {
+    en: "Hi, I saw your Google ad and I'm interested in dental treatment in Istanbul (implants, veneers or smile makeover). Can you send me more information?",
+    fr: "Bonjour, j'ai vu votre annonce Google et je suis intéressé par un traitement dentaire à Istanbul (implants, facettes ou sourire complet). Pouvez-vous m'envoyer plus d'informations ?",
+    ar: "مرحبا، رأيت إعلانكم على جوجل وأنا مهتم بعلاج أسنان في إسطنبول (زراعة أسنان، فينير أو ابتسامة كاملة). هل يمكنكم إرسال المزيد من المعلومات؟"
+  };
+
   return (
-    <>
-      <PublicNav />
-      <main className="min-h-screen bg-cream pt-24 pb-20">
+    <div className="my-12 bg-green-50 border border-green-200 rounded-3xl p-8 md:p-10 text-center">
+      <div className="max-w-2xl mx-auto">
+        <div className="inline-flex items-center gap-3 bg-white px-5 py-2 rounded-full shadow-sm mb-6">
+          <span className="text-3xl">💬</span>
+          <span className="font-semibold text-green-700">Instant Response on WhatsApp</span>
+        </div>
 
-        {/* Hero */}
-        <section className="bg-navy py-14 px-6 md:px-[5%] mb-14">
-          <div className="max-w-3xl mx-auto">
-            <div className="text-gold text-xs font-mono tracking-widest uppercase mb-3">Contact</div>
-            <h1 className="font-display text-4xl md:text-5xl font-semibold text-cream leading-tight mb-4">
-              Get in touch
-            </h1>
-            <p className="text-cream/55 text-lg font-light max-w-lg">
-              We respond within 24 hours — usually much faster. WhatsApp is the quickest way to reach us.
-            </p>
-          </div>
-        </section>
+        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          Message us directly on WhatsApp
+        </h2>
+        
+        <p className="text-lg text-gray-600 mb-8">
+          Get fast answers about dental implants, veneers, full arch, or smile makeovers in Istanbul.
+        </p>
 
-        <section className="px-6 md:px-[5%]">
-          <div className="max-w-5xl mx-auto">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <a
+            href={`https://wa.me/${phone}?text=${encodeURIComponent(messages.en)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-[#25D366] hover:bg-[#128C7E] text-white font-medium px-8 py-4 rounded-2xl flex items-center justify-center gap-3 transition-all text-lg shadow-lg hover:shadow-xl"
+          >
+            🇬🇧 English
+          </a>
 
-            {/* Direct contact options */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-14">
-              <a
-                href={`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent('Hi MMV Medical — I\'d like a free dental consultation.')}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-[#25d366]/10 border border-[#25d366]/25 rounded-lg p-5 hover:bg-[#25d366]/15 transition-colors group"
-              >
-                <div className="text-2xl mb-3">💬</div>
-                <div className="font-semibold text-navy mb-1">WhatsApp</div>
-                <div className="text-sm text-navy/55">+{WA_NUMBER}</div>
-                <div className="text-xs text-[#25d366] mt-2 font-medium group-hover:underline">Chat now →</div>
-              </a>
+          <a
+            href={`https://wa.me/${phone}?text=${encodeURIComponent(messages.fr)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-[#25D366] hover:bg-[#128C7E] text-white font-medium px-8 py-4 rounded-2xl flex items-center justify-center gap-3 transition-all text-lg shadow-lg hover:shadow-xl"
+          >
+            🇫🇷 Français
+          </a>
 
-              <div className="bg-white border border-cream-dark rounded-lg p-5">
-                <div className="text-2xl mb-3">📍</div>
-                <div className="font-semibold text-navy mb-1">Clinic Address</div>
-                <div className="text-sm text-navy/55 leading-relaxed">
-                  Merkez Mah. Halaskargazi Cad.<br />
-                  No:145 D:2, Şişli<br />
-                  Istanbul, Turkey
-                </div>
-              </div>
+          <a
+            href={`https://wa.me/${phone}?text=${encodeURIComponent(messages.ar)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-[#25D366] hover:bg-[#128C7E] text-white font-medium px-8 py-4 rounded-2xl flex items-center justify-center gap-3 transition-all text-lg shadow-lg hover:shadow-xl"
+          >
+            🇸🇦 العربية
+          </a>
+        </div>
 
-              <div className="bg-white border border-cream-dark rounded-lg p-5">
-                <div className="text-2xl mb-3">⏱</div>
-                <div className="font-semibold text-navy mb-1">Response Time</div>
-                <div className="text-sm text-navy/55 leading-relaxed">
-                  WhatsApp: usually within 1 hour<br />
-                  Form / Email: within 24 hours<br />
-                  Available 7 days a week
-                </div>
-              </div>
-            </div>
+        <p className="text-sm text-gray-500 mt-6">
+          💬 Average reply time: within a few hours
+        </p>
+      </div>
+    </div>
+  );
+};
 
-            {/* Consultation form */}
-            <div className="mb-4">
-              <div className="text-teal text-xs font-mono tracking-widest uppercase mb-2">Or Fill the Form</div>
-              <h2 className="font-display text-3xl font-semibold text-navy mb-8">Request a free consultation</h2>
-            </div>
-            <LeadFormSection />
-          </div>
-        </section>
-      </main>
-      <PublicFooter />
-    </>
-  )
-}
+export default ContactPageWhatsApp;
