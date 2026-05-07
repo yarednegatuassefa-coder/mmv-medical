@@ -12,30 +12,6 @@ const FloatingWhatsApp = () => {
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
 
-  const clinicPhone = '905526340919';
-
-  const messages: Record<Language, string> = {
-    en: "Hi, I saw your Google ad and I'm interested in dental treatment in Istanbul (implants, veneers or smile makeover). Can you send me more information?",
-    fr: "Bonjour, j'ai vu votre annonce Google et je suis intéressé par un traitement dentaire à Istanbul (implants, facettes ou sourire complet). Pouvez-vous m'envoyer plus d'informations ?",
-    ar: "مرحبا، رأيت إعلانكم على جوجل وأنا مهتم بعلاج أسنان في إسطنبول (زراعة أسنان، فينير أو ابتسامة كاملة). هل يمكنكم إرسال المزيد من المعلومات؟"
-  };
-
-  const trackWhatsAppClick = () => {
-    if (typeof window !== 'undefined') {
-      const gtag = (window as any).gtag;
-      if (typeof gtag === 'function') {
-        gtag('event', 'conversion', {
-          send_to: 'AW-18093103815/eXJgCOT3yJwcEMe1u7ND',
-          value: 1.0,
-          currency: 'TRY',
-        });
-      }
-      if ((window as any)._hsq) {
-        (window as any)._hsq.push(['trackEvent', { id: 'whatsapp_click' }]);
-      }
-    }
-  };
-
   const handleLanguageClick = (lang: Language) => {
     setSelectedLang(lang);
     setIsOpen(false);
@@ -55,28 +31,22 @@ const FloatingWhatsApp = () => {
           phone,
           source: 'whatsapp_button',
           language: selectedLang,
-          message: messages[selectedLang!],
         }),
       });
     } catch (e) {
       console.error('Lead capture failed:', e);
     }
 
-    trackWhatsAppClick();
     setDone(true);
     setLoading(false);
 
     setTimeout(() => {
-      window.open(
-        `https://wa.me/${clinicPhone}?text=${encodeURIComponent(messages[selectedLang!])}`,
-        '_blank'
-      );
       setShowModal(false);
       setDone(false);
       setName('');
       setPhone('');
       setSelectedLang(null);
-    }, 800);
+    }, 2000);
   };
 
   return (
@@ -119,7 +89,7 @@ const FloatingWhatsApp = () => {
               ))}
             </div>
             <p className="text-xs text-gray-500 text-center mt-5">
-              Tap to open WhatsApp with a ready message
+              Leave your details and we'll reach out to you
             </p>
           </div>
         )}
@@ -164,7 +134,7 @@ const FloatingWhatsApp = () => {
               disabled={loading || done || !name.trim() || !phone.trim()}
               className="w-full bg-[#25D366] hover:bg-[#128C7E] disabled:opacity-60 text-white font-medium py-2.5 rounded-lg transition-all"
             >
-              {done ? '✅ Opening WhatsApp...' : loading ? 'Saving...' : 'Continue to WhatsApp →'}
+              {done ? '✅ Received! We\'ll be in touch soon.' : loading ? 'Saving...' : 'Send Request →'}
             </button>
 
             <p className="text-xs text-gray-400 text-center mt-3">
