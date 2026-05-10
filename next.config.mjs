@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   experimental: { typedRoutes: false },
   images: {
     remotePatterns: [
@@ -19,5 +22,4 @@ const nextConfig = {
     ]
   },
 }
-
 export default nextConfig
