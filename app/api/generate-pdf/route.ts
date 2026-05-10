@@ -286,7 +286,7 @@ export async function POST(req: NextRequest) {
     const pdfBuffer = await buildPDF(patient);
     const filename  = `MMV_TreatmentPlan_${patient.name.replace(/\s+/g, "_")}.pdf`;
 
-    return new NextResponse(pdfBuffer, {
+    return new Response(new Uint8Array(pdfBuffer), {
       status: 200,
       headers: {
         "Content-Type": "application/pdf",
