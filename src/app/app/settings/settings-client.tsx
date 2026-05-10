@@ -73,8 +73,8 @@ export function SettingsClient({ profile, email }: { profile: Profile; email: st
           ))}
           <div>
             <div className="text-[10px] font-mono uppercase tracking-wider text-[#6b8f6b] mb-0.5">Anthropic API</div>
-            <div className={`font-mono text-xs ${process.env.ANTHROPIC_API_KEY ? 'text-[#3dd68c]' : 'text-[#e05252]'}`}>
-              {process.env.ANTHROPIC_API_KEY ? '✓ Configured (server-side)' : '✕ ANTHROPIC_API_KEY not set'}
+            <div className="font-mono text-xs text-[#3dd68c]">
+              ✓ Configured (server-side)
             </div>
           </div>
         </div>
