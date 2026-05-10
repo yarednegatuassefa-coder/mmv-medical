@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 // @ts-ignore
 import PDFDocument from "pdfkit";
 
-// ── Brand colours ─────────────────────────────────────────────────────────────
 const MMV_DARK   = "#0A0F1E";
 const MMV_BLUE   = "#1A73E8";
 const MMV_ACCENT = "#00C2A8";
@@ -11,7 +10,6 @@ const MMV_GREY   = "#6B7280";
 const MMV_BORDER = "#E2E8F0";
 const WHITE      = "#FFFFFF";
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
 function sanitize(text: string): string {
   if (!text) return "";
   return text
@@ -36,7 +34,6 @@ const VIP_ITEMS = [
   "24/7 WhatsApp support - Jared",
 ];
 
-// ── PDF builder ───────────────────────────────────────────────────────────────
 function buildPDF(patient: Record<string, any>): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     const chunks: Buffer[] = [];
@@ -57,29 +54,19 @@ function buildPDF(patient: Record<string, any>): Promise<Buffer> {
     const depositPct = patient.deposit_pct || 60;
     const treatments: any[] = patient.treatments || [];
 
-    // ── Header banner ─────────────────────────────────────────────────────────
     doc.rect(0, 0, pw, 110).fill(MMV_DARK);
     doc.rect(0, 0, 5, 110).fill(MMV_BLUE);
-
-    // Teal circle accent
     doc.circle(pw - 60, 50, 40).fill(MMV_DARK);
     doc.circle(pw - 60, 50, 32).fill(MMV_ACCENT);
     doc.circle(pw - 60, 50, 26).fill(MMV_DARK);
-
-    doc.fillColor(WHITE).font("Helvetica-Bold").fontSize(22)
-      .text("MMV Medical", margin, 28);
-    doc.fillColor("#A0AEC0").font("Helvetica").fontSize(9)
-      .text("International Dental Tourism  —  Istanbul, Turkey", margin, 54);
-
-    // Badge
+    doc.fillColor(WHITE).font("Helvetica-Bold").fontSize(22).text("MMV Medical", margin, 28);
+    doc.fillColor("#A0AEC0").font("Helvetica").fontSize(9).text("International Dental Tourism  —  Istanbul, Turkey", margin, 54);
     doc.roundedRect(margin, 70, 180, 22, 4).fill(MMV_BLUE);
-    doc.fillColor(WHITE).font("Helvetica-Bold").fontSize(8)
-      .text("PERSONALISED TREATMENT PLAN", margin + 10, 77);
+    doc.fillColor(WHITE).font("Helvetica-Bold").fontSize(8).text("PERSONALISED TREATMENT PLAN", margin + 10, 77);
 
     doc.moveDown(0);
     doc.y = 125;
 
-    // ── Patient info row ──────────────────────────────────────────────────────
     doc.rect(margin, doc.y, contentW, 38).fill(MMV_LIGHT);
     doc.rect(margin, doc.y, contentW, 38).stroke(MMV_BORDER);
 
@@ -97,12 +84,9 @@ function buildPDF(patient: Record<string, any>): Promise<Buffer> {
     doc.y = infoY + 38;
     doc.moveDown(0.8);
 
-    // ── Treatment table ───────────────────────────────────────────────────────
-    doc.fillColor(MMV_BLUE).font("Helvetica-Bold").fontSize(10)
-      .text("TREATMENT PLAN", margin, doc.y);
+    doc.fillColor(MMV_BLUE).font("Helvetica-Bold").fontSize(10).text("TREATMENT PLAN", margin, doc.y);
     doc.moveDown(0.4);
 
-    // Table header
     const colWidths = [contentW * 0.30, contentW * 0.22, contentW * 0.08, contentW * 0.20, contentW * 0.20];
     const headers = ["Treatment", "Brand / Origin", "Units", "Unit Price", "Total"];
     const rowH = 24;
@@ -121,7 +105,6 @@ function buildPDF(patient: Record<string, any>): Promise<Buffer> {
 
     tableY += rowH;
 
-    // Treatments
     let grandTotal = 0;
     treatments.forEach((t, idx) => {
       const units     = t.units || 1;
@@ -131,7 +114,6 @@ function buildPDF(patient: Record<string, any>): Promise<Buffer> {
 
       const bg = idx % 2 === 0 ? WHITE : MMV_LIGHT;
       doc.rect(margin, tableY, contentW, rowH).fill(bg).stroke(MMV_BORDER);
-
       doc.fillColor(MMV_DARK).font("Helvetica").fontSize(8.5);
       cx = margin;
 
@@ -144,10 +126,7 @@ function buildPDF(patient: Record<string, any>): Promise<Buffer> {
       ];
 
       cells.forEach((cell, i) => {
-        doc.text(cell.text, cx + 5, tableY + 8, {
-          width: colWidths[i] - 10,
-          align: cell.align as any,
-        });
+        doc.text(cell.text, cx + 5, tableY + 8, { width: colWidths[i] - 10, align: cell.align as any });
         cx += colWidths[i];
       });
 
@@ -156,7 +135,6 @@ function buildPDF(patient: Record<string, any>): Promise<Buffer> {
 
     doc.y = tableY + 10;
 
-    // Totals
     const deposit = grandTotal * depositPct / 100;
     const balance = grandTotal - deposit;
 
@@ -171,20 +149,15 @@ function buildPDF(patient: Record<string, any>): Promise<Buffer> {
 
     totalRows.forEach((row) => {
       const y = doc.y;
-      doc.fillColor(row.large ? MMV_BLUE : MMV_DARK)
-        .font(row.bold ? "Helvetica-Bold" : "Helvetica")
-        .fontSize(row.large ? 11 : 9)
+      doc.fillColor(row.large ? MMV_BLUE : MMV_DARK).font(row.bold ? "Helvetica-Bold" : "Helvetica").fontSize(row.large ? 11 : 9)
         .text(row.label, margin + contentW * 0.55, y, { width: contentW * 0.27, align: "right" });
-      doc.fillColor(row.large ? MMV_BLUE : MMV_GREY)
-        .font(row.bold ? "Helvetica-Bold" : "Helvetica")
-        .fontSize(row.large ? 11 : 9)
+      doc.fillColor(row.large ? MMV_BLUE : MMV_GREY).font(row.bold ? "Helvetica-Bold" : "Helvetica").fontSize(row.large ? 11 : 9)
         .text(row.value, margin + contentW * 0.82, y, { width: contentW * 0.18, align: "right" });
       doc.moveDown(0.5);
     });
 
     doc.moveDown(0.8);
 
-    // ── Visit schedule ────────────────────────────────────────────────────────
     doc.moveTo(margin, doc.y).lineTo(pw - margin, doc.y).lineWidth(0.5).stroke(MMV_BORDER);
     doc.moveDown(0.5);
     doc.fillColor(MMV_BLUE).font("Helvetica-Bold").fontSize(10).text("VISIT SCHEDULE", margin, doc.y);
@@ -193,31 +166,20 @@ function buildPDF(patient: Record<string, any>): Promise<Buffer> {
     const visitY = doc.y;
     const visitW = contentW / 2 - 4;
 
-    // Visit 1
     doc.rect(margin, visitY, visitW, 72).fill(MMV_LIGHT).stroke(MMV_BORDER);
-    doc.fillColor(MMV_DARK).font("Helvetica-Bold").fontSize(9)
-      .text("VISIT 1 — Implant Placement", margin + 8, visitY + 8);
+    doc.fillColor(MMV_DARK).font("Helvetica-Bold").fontSize(9).text("VISIT 1 — Implant Placement", margin + 8, visitY + 8);
     doc.fillColor(MMV_GREY).font("Helvetica").fontSize(8.5)
-      .text(
-        "Duration: 3–5 days  |  Arrive Mon or Sat\nProcedure: Implant surgery + temporary\nPayment: 60% deposit due on arrival",
-        margin + 8, visitY + 24, { width: visitW - 16 }
-      );
+      .text("Duration: 3–5 days  |  Arrive Mon or Sat\nProcedure: Implant surgery + temporary\nPayment: 60% deposit due on arrival", margin + 8, visitY + 24, { width: visitW - 16 });
 
-    // Visit 2
     const v2x = margin + visitW + 8;
     doc.rect(v2x, visitY, visitW, 72).fill("#EFF6FF").stroke(MMV_BLUE);
-    doc.fillColor(MMV_DARK).font("Helvetica-Bold").fontSize(9)
-      .text("VISIT 2 — Crown Fitting", v2x + 8, visitY + 8);
+    doc.fillColor(MMV_DARK).font("Helvetica-Bold").fontSize(9).text("VISIT 2 — Crown Fitting", v2x + 8, visitY + 8);
     doc.fillColor(MMV_GREY).font("Helvetica").fontSize(8.5)
-      .text(
-        "Duration: 5–6 days  |  Arrive Mon or Sat\nProcedure: Final zirconia crown placement\nTiming: 3–6 months after Visit 1\nPayment: 40% balance due on arrival",
-        v2x + 8, visitY + 24, { width: visitW - 16 }
-      );
+      .text("Duration: 5–6 days  |  Arrive Mon or Sat\nProcedure: Final zirconia crown placement\nTiming: 3–6 months after Visit 1\nPayment: 40% balance due on arrival", v2x + 8, visitY + 24, { width: visitW - 16 });
 
     doc.y = visitY + 82;
     doc.moveDown(0.8);
 
-    // ── VIP package ───────────────────────────────────────────────────────────
     doc.moveTo(margin, doc.y).lineTo(pw - margin, doc.y).lineWidth(0.5).stroke(MMV_BORDER);
     doc.moveDown(0.5);
     doc.fillColor(MMV_BLUE).font("Helvetica-Bold").fontSize(10).text("VIP PACKAGE — INCLUDED", margin, doc.y);
@@ -232,13 +194,11 @@ function buildPDF(patient: Record<string, any>): Promise<Buffer> {
       const row = Math.floor(i / 2);
       const ix  = margin + 12 + col * (contentW / 2);
       const iy  = vipY + 10 + row * 22;
-      doc.fillColor("#065F46").font("Helvetica").fontSize(8.5)
-        .text(`\u2713  ${item}`, ix, iy, { width: contentW / 2 - 20 });
+      doc.fillColor("#065F46").font("Helvetica").fontSize(8.5).text(`\u2713  ${item}`, ix, iy, { width: contentW / 2 - 20 });
     });
 
     doc.y = vipY + vipBoxH + 10;
 
-    // Notes
     const notes = patient.notes ? sanitize(patient.notes) : null;
     if (notes) {
       doc.moveDown(0.5);
@@ -248,7 +208,6 @@ function buildPDF(patient: Record<string, any>): Promise<Buffer> {
       doc.moveDown(0.8);
     }
 
-    // ── Footer ────────────────────────────────────────────────────────────────
     doc.moveDown(1);
     doc.moveTo(margin, doc.y).lineTo(pw - margin, doc.y).lineWidth(1).stroke(MMV_BLUE);
     doc.moveDown(0.4);
@@ -262,25 +221,18 @@ function buildPDF(patient: Record<string, any>): Promise<Buffer> {
 
     doc.moveDown(0.6);
     doc.fillColor(MMV_GREY).font("Helvetica").fontSize(7.5)
-      .text(
-        "This treatment plan is valid for 30 days from the date of issue. All prices include clinic fees and materials. Bank/IBAN details provided via email only.",
-        margin, doc.y, { width: contentW, align: "center" }
-      );
+      .text("This treatment plan is valid for 30 days from the date of issue. All prices include clinic fees and materials. Bank/IBAN details provided via email only.", margin, doc.y, { width: contentW, align: "center" });
 
     doc.end();
   });
 }
 
-// ── Route handler ─────────────────────────────────────────────────────────────
 export async function POST(req: NextRequest) {
   try {
     const patient = await req.json();
 
     if (!patient.name || !patient.treatments?.length) {
-      return NextResponse.json(
-        { error: "name and treatments are required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "name and treatments are required" }, { status: 400 });
     }
 
     const pdfBuffer = await buildPDF(patient);
