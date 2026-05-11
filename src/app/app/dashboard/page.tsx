@@ -44,6 +44,23 @@ export default async function DashboardPage() {
 
   return (
     <div className="p-6 space-y-6">
+
+      {/* Quick Actions */}
+      <div className="grid grid-cols-2 gap-4">
+        <Link href="/comms"
+          className="bg-[#111a14] border border-white/[0.06] rounded-lg p-4 hover:border-[#3dd68c]/30 transition-colors">
+          <div className="font-mono text-[10px] tracking-widest uppercase text-[#6b8f6b] mb-2">AI Comms</div>
+          <div className="text-sm text-white font-medium">WhatsApp Generator →</div>
+          <div className="text-xs text-[#6b8f6b] mt-1">Draft multilingual patient messages</div>
+        </Link>
+        <Link href="/app/pdf"
+          className="bg-[#111a14] border border-white/[0.06] rounded-lg p-4 hover:border-[#d4a84b]/30 transition-colors">
+          <div className="font-mono text-[10px] tracking-widest uppercase text-[#6b8f6b] mb-2">Treatment Plans</div>
+          <div className="text-sm text-white font-medium">PDF Generator →</div>
+          <div className="text-xs text-[#6b8f6b] mt-1">Generate branded treatment plan PDFs</div>
+        </Link>
+      </div>
+
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
           { label: 'Total Leads',     value: total,                      color: 'text-white' },
