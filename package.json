@@ -28,7 +28,7 @@
     "iconv-lite": "^0.6.3",
     "lucide-react": "^0.383.0",
     "next": "^14.2.35",
-    "pdf-lib": "^1.17.1"
+    "pdf-lib": "^1.17.1",
     "posthog-js": "^1.367.0",
     "react": "^18",
     "react-dom": "^18",
