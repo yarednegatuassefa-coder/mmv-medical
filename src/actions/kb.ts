@@ -10,14 +10,18 @@ const getClient = () => new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 const KB_TOPIC = 'Turkish dental and medical tourism for European patients (UK, Ireland, Netherlands, Belgium, Romania)'
 
 function safeParseJSON(text: string) {
-  const cleaned = text
-    .replace(/```json\n?|\n?```/g, '')
-    .replace(/[\u0000-\u001F\u007F]/g, (c) => {
-      if (c === '\n') return '\\n'
-      if (c === '\r') return '\\r'
-      if (c === '\t') return '\\t'
-      return ''
-    })
+  const stripped = text.replace(/```json\n?|\n?```/g, '').trim()
+  try {
+    return JSON.parse(stripped)
+  } catch {
+    // Fix unescaped newlines inside string values only
+    const fixed = stripped.replace(
+      /"(?:[^"\\]|\\.)*"/g,
+      (match) => match.replace(/\n/g, '\\n').replace(/\r/g, '\\r')
+    )
+    return JSON.parse(fixed)
+  }
+}
     .trim()
   return JSON.parse(cleaned)
 }
