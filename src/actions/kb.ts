@@ -58,7 +58,7 @@ export async function compileKbSource(sourceId: string) {
     const client = getClient()
     const response = await client.messages.create({
       model: 'claude-sonnet-4-6',
-      max_tokens: 1000,
+      max_tokens: 2000,
       system: `You compile research sources into structured wiki articles about: ${KB_TOPIC}. Always respond with valid JSON only — no markdown fences, no preamble. All string values must use escaped newlines (\\n) not literal newlines.`,
       messages: [{
         role: 'user',
