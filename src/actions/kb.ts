@@ -93,7 +93,7 @@ export async function compileKbSource(sourceId: string) {
   }
 }
 
-// ── ASK ───────────────────────────────────────────────────────
+// ── ASK (with autonomous web search) ─────────────────────────
 export async function askKnowledgeBase(question: string) {
   if (!question.trim()) return { success: false, error: 'Empty question' }
 
@@ -101,6 +101,7 @@ export async function askKnowledgeBase(question: string) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { success: false, error: 'Unauthorized' }
 
+  // Load existing compiled articles as base context
   const { data: articles } = await supabase
     .from('kb_articles')
     .select('id,title,summary,content,tags')
@@ -109,30 +110,51 @@ export async function askKnowledgeBase(question: string) {
 
   const typedArticles = (articles ?? []) as Pick<KbArticle, 'id' | 'title' | 'summary' | 'content' | 'tags'>[]
 
-  if (!typedArticles.length) {
-    return { success: false, error: 'No articles in knowledge base yet. Add and compile some sources first.' }
-  }
-
-  const context = typedArticles.map((a, i) =>
-    `[${i + 1}] ARTICLE: ${a.title}\nSUMMARY: ${a.summary ?? ''}\n${a.content.slice(0, 1800)}`
-  ).join('\n\n---\n\n')
+  const context = typedArticles.length
+    ? typedArticles.map((a, i) =>
+        `[${i + 1}] ARTICLE: ${a.title}\nSUMMARY: ${a.summary ?? ''}\n${a.content.slice(0, 1800)}`
+      ).join('\n\n---\n\n')
+    : ''
 
   const citations: { index: number; title: string }[] = []
 
   try {
     const client = getClient()
+
+    // Call with web search tool enabled
     const response = await client.messages.create({
       model: 'claude-sonnet-4-6',
-      max_tokens: 1000,
-      system: `You answer questions using ONLY the provided knowledge base articles about: ${KB_TOPIC}. Always cite sources using [N] notation. Be specific, factual, and concise. If information isn't in the knowledge base, say so clearly.`,
+      max_tokens: 2000,
+      system: `You are an expert research assistant specialising in: ${KB_TOPIC}.
+
+You have access to a web search tool. Use it to find current, accurate information to answer the question.
+
+${context ? `You also have access to pre-compiled knowledge base articles below — use them alongside your web search results.\n\nKNOWLEDGE BASE:\n${context.slice(0, 8000)}` : 'No pre-compiled articles yet — rely entirely on web search.'}
+
+Always provide a thorough, factual answer. Cite knowledge base articles as [N] and web sources as [Web].`,
+      tools: [
+        {
+          type: 'web_search_20250305',
+          name: 'web_search',
+        } as any
+      ],
       messages: [{
         role: 'user',
-        content: `KNOWLEDGE BASE:\n${context.slice(0, 14000)}\n\nQUESTION: ${question}\n\nAnswer using only the knowledge base. Cite relevant articles with [N] notation.`
+        content: question,
       }]
     })
 
-    const answer = response.content[0].type === 'text' ? response.content[0].text : ''
+    // Extract final text answer from response (may include tool_use blocks)
+    let answer = ''
+    for (const block of response.content) {
+      if (block.type === 'text') {
+        answer += block.text
+      }
+    }
 
+    if (!answer) return { success: false, error: 'No answer generated' }
+
+    // Extract [N] citations from compiled articles
     const refs = Array.from(answer.matchAll(/\[(\d+)\]/g)).map(m => parseInt(m[1]) - 1)
     refs.forEach(i => {
       if (typedArticles[i] && !citations.find(c => c.index === i)) {
