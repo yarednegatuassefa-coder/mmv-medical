@@ -57,7 +57,7 @@ export async function compileKbSource(sourceId: string) {
   try {
     const client = getClient()
     const response = await client.messages.create({
-      model: 'claude-sonnet-4-5-20251022',
+      model: 'claude-sonnet-4-6',
       max_tokens: 1000,
       system: `You compile research sources into structured wiki articles about: ${KB_TOPIC}. Always respond with valid JSON only — no markdown fences, no preamble. All string values must use escaped newlines (\\n) not literal newlines.`,
       messages: [{
@@ -122,7 +122,7 @@ export async function askKnowledgeBase(question: string) {
   try {
     const client = getClient()
     const response = await client.messages.create({
-      model: 'claude-sonnet-4-5-20251022',
+      model: 'claude-sonnet-4-6',
       max_tokens: 1000,
       system: `You answer questions using ONLY the provided knowledge base articles about: ${KB_TOPIC}. Always cite sources using [N] notation. Be specific, factual, and concise. If information isn't in the knowledge base, say so clearly.`,
       messages: [{
@@ -176,7 +176,7 @@ export async function runKbHealthCheck() {
   try {
     const client = getClient()
     const response = await client.messages.create({
-      model: 'claude-sonnet-4-5-20251022',
+     model: 'claude-sonnet-4-6',
       max_tokens: 1000,
       system: `You analyse knowledge bases about: ${KB_TOPIC}. Respond with valid JSON only. All string values must use escaped newlines (\\n) not literal newlines.`,
       messages: [{
