@@ -14,16 +14,12 @@ function safeParseJSON(text: string) {
   try {
     return JSON.parse(stripped)
   } catch {
-    // Fix unescaped newlines inside string values only
     const fixed = stripped.replace(
       /"(?:[^"\\]|\\.)*"/g,
       (match) => match.replace(/\n/g, '\\n').replace(/\r/g, '\\r')
     )
     return JSON.parse(fixed)
   }
-}
-    .trim()
-  return JSON.parse(cleaned)
 }
 
 // ── ADD SOURCE ────────────────────────────────────────────────
@@ -180,7 +176,7 @@ export async function runKbHealthCheck() {
   try {
     const client = getClient()
     const response = await client.messages.create({
-     model: 'claude-sonnet-4-6',
+      model: 'claude-sonnet-4-6',
       max_tokens: 1000,
       system: `You analyse knowledge bases about: ${KB_TOPIC}. Respond with valid JSON only. All string values must use escaped newlines (\\n) not literal newlines.`,
       messages: [{
