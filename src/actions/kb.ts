@@ -9,6 +9,19 @@ const getClient = () => new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
 const KB_TOPIC = 'Turkish dental and medical tourism for European patients (UK, Ireland, Netherlands, Belgium, Romania)'
 
+function safeParseJSON(text: string) {
+  const cleaned = text
+    .replace(/```json\n?|\n?```/g, '')
+    .replace(/[\u0000-\u001F\u007F]/g, (c) => {
+      if (c === '\n') return '\\n'
+      if (c === '\r') return '\\r'
+      if (c === '\t') return '\\t'
+      return ''
+    })
+    .trim()
+  return JSON.parse(cleaned)
+}
+
 // ── ADD SOURCE ────────────────────────────────────────────────
 export async function addKbSource(data: unknown) {
   const parsed = kbSourceSchema.safeParse(data)
@@ -44,9 +57,9 @@ export async function compileKbSource(sourceId: string) {
   try {
     const client = getClient()
     const response = await client.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-5-20251022',
       max_tokens: 1000,
-      system: `You compile research sources into structured wiki articles about: ${KB_TOPIC}. Always respond with valid JSON only — no markdown fences, no preamble.`,
+      system: `You compile research sources into structured wiki articles about: ${KB_TOPIC}. Always respond with valid JSON only — no markdown fences, no preamble. All string values must use escaped newlines (\\n) not literal newlines.`,
       messages: [{
         role: 'user',
         content: `Source Title: ${source.title}\nURL: ${source.url ?? 'N/A'}\nType: ${source.source_type}\n\nContent:\n${source.raw_content.slice(0, 6000)}\n\nCompile into a wiki article. Return JSON:\n{"title":"...","content":"Full markdown article with ## sections, min 150 words","summary":"2 sentence summary","tags":["tag1","tag2"],"key_facts":["fact1","fact2","fact3"],"sentiment":"positive|neutral|negative|mixed","risks":["risk1"],"opportunities":["opp1"]}`
@@ -54,7 +67,7 @@ export async function compileKbSource(sourceId: string) {
     })
 
     const text = response.content[0].type === 'text' ? response.content[0].text : ''
-    const compiled = JSON.parse(text.replace(/```json\n?|\n?```/g, '').trim())
+    const compiled = safeParseJSON(text)
 
     const { error: artError } = await supabase.from('kb_articles').insert({
       source_id:     sourceId,
@@ -109,7 +122,7 @@ export async function askKnowledgeBase(question: string) {
   try {
     const client = getClient()
     const response = await client.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-5-20251022',
       max_tokens: 1000,
       system: `You answer questions using ONLY the provided knowledge base articles about: ${KB_TOPIC}. Always cite sources using [N] notation. Be specific, factual, and concise. If information isn't in the knowledge base, say so clearly.`,
       messages: [{
@@ -120,7 +133,6 @@ export async function askKnowledgeBase(question: string) {
 
     const answer = response.content[0].type === 'text' ? response.content[0].text : ''
 
-    // Extract [N] citation references
     const refs = Array.from(answer.matchAll(/\[(\d+)\]/g)).map(m => parseInt(m[1]) - 1)
     refs.forEach(i => {
       if (typedArticles[i] && !citations.find(c => c.index === i)) {
@@ -164,9 +176,9 @@ export async function runKbHealthCheck() {
   try {
     const client = getClient()
     const response = await client.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-5-20251022',
       max_tokens: 1000,
-      system: `You analyse knowledge bases about: ${KB_TOPIC}. Respond with valid JSON only.`,
+      system: `You analyse knowledge bases about: ${KB_TOPIC}. Respond with valid JSON only. All string values must use escaped newlines (\\n) not literal newlines.`,
       messages: [{
         role: 'user',
         content: `Articles in knowledge base:\n${summary}\n\nReturn JSON:\n{"gaps":["missing topic 1","missing topic 2","missing topic 3","missing topic 4"],"strengths":["covered well 1","covered well 2"],"opportunities":["new article idea 1","new article idea 2","new article idea 3"],"next_sources":["specific source to add 1","specific source to add 2","specific source to add 3"]}`
@@ -174,7 +186,7 @@ export async function runKbHealthCheck() {
     })
 
     const text = response.content[0].type === 'text' ? response.content[0].text : ''
-    const result = JSON.parse(text.replace(/```json\n?|\n?```/g, '').trim())
+    const result = safeParseJSON(text)
     return { success: true, result }
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : 'Health check failed'
