@@ -149,13 +149,18 @@ export default function HomePage() {
       </section>
 
       {/* RESULTS */}
+      {/* RESULTS — replace this entire section in page.tsx */}
       <section id="results" className="bg-navy py-20 px-6 md:px-[5%]">
         <div className="max-w-6xl mx-auto">
           <div className="text-gold/70 text-xs font-mono tracking-widest uppercase mb-3">Real Results</div>
           <h2 className="font-display text-4xl font-semibold text-cream mb-4">
             Before & After <em className="not-italic text-gold">Dr. Mat Dental Clinic</em>
           </h2>
-          <p className="text-cream/50 mb-10">Every result shown is a real patient treated at Dr. Mat Dental Clinic in Istanbul. No filters, no stock photos — just real transformations.</p>
+          {/* ✅ PHOTO CONSENT NOTE — added for GDPR/ASA compliance */}
+          <p className="text-cream/40 text-xs mb-8">
+            Every result shown is a real patient treated at Dr. Mat Dental Clinic in Istanbul.
+            All images are published with the patient's written consent. No filters applied.
+          </p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {RESULTS.map((src, i) => (
               <div key={i} className="rounded overflow-hidden aspect-square bg-navy/30">
@@ -170,7 +175,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
       {/* ABOUT */}
       <section id="about" className="bg-white py-20 px-6 md:px-[5%]">
         <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
