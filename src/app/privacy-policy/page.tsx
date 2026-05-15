@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import ManageCookiesButton from '@/components/ManageCookiesButton'
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
@@ -159,15 +160,7 @@ export default function PrivacyPolicyPage() {
           <p>
             Our website uses cookies to understand how visitors use the site. You can manage your
             cookie preferences at any time using the cookie banner or by clicking{' '}
-            <button
-              onClick={() => {
-                // @ts-ignore
-                if (typeof window !== 'undefined' && window.Cookiebot) window.Cookiebot.renew()
-              }}
-              className="text-[#12243a] underline hover:no-underline"
-            >
-              Manage Cookies
-            </button>.
+            <ManageCookiesButton />.
           </p>
           <ul className="mt-3 space-y-2 list-disc list-inside text-sm">
             <li><strong>Essential cookies</strong> — required for the site to function. No consent needed.</li>
