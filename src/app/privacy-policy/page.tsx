@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import ManageCookiesButton from '@/components/ManageCookiesButton'
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
@@ -11,7 +10,6 @@ export const metadata: Metadata = {
 export default function PrivacyPolicyPage() {
   return (
     <main className="min-h-screen bg-white">
-      {/* Header */}
       <div className="bg-[#12243a] py-16 px-6">
         <div className="max-w-3xl mx-auto">
           <Link href="/" className="text-gray-400 text-sm hover:text-white mb-6 block">
@@ -22,15 +20,11 @@ export default function PrivacyPolicyPage() {
         </div>
       </div>
 
-      {/* Content */}
       <div className="max-w-3xl mx-auto px-6 py-16 space-y-12 text-gray-700 leading-relaxed">
 
         <section>
           <h2 className="text-xl font-semibold text-gray-900 mb-4">1. Who We Are</h2>
-          <p>
-            MMV Medical is a dental tourism facilitation service connecting European patients
-            with specialist dental clinics in Istanbul, Turkey.
-          </p>
+          <p>MMV Medical is a dental tourism facilitation service connecting European patients with specialist dental clinics in Istanbul, Turkey.</p>
           <div className="mt-4 p-4 bg-gray-50 rounded-lg text-sm space-y-1">
             <p><strong>Data Controller:</strong> MMV Medical</p>
             <p><strong>Legal entity:</strong> [To be updated upon company registration]</p>
@@ -50,10 +44,7 @@ export default function PrivacyPolicyPage() {
             <li><strong>Travel data:</strong> Preferred travel month and country of residence</li>
             <li><strong>Usage data:</strong> Pages visited, time on site (via analytics — see Section 7)</li>
           </ul>
-          <p className="mt-3">
-            We do <strong>not</strong> collect payment card details. All treatment payments are made
-            directly to the clinic.
-          </p>
+          <p className="mt-3">We do <strong>not</strong> collect payment card details. All treatment payments are made directly to the clinic.</p>
         </section>
 
         <section>
@@ -67,38 +58,22 @@ export default function PrivacyPolicyPage() {
                 </tr>
               </thead>
               <tbody>
-                {[
-                  ['Preparing and sending your personalised treatment plan', 'Contract (pre-contractual steps)'],
-                  ['Coordinating your trip, flights, and clinic appointments', 'Contract'],
-                  ['Sending your treatment plan to Dr. Mat Dental Clinic for clinical review', 'Contract / Legitimate Interest'],
-                  ['Responding to enquiries and follow-up communication', 'Legitimate Interest'],
-                  ['Improving our website and services', 'Legitimate Interest'],
-                  ['Complying with legal obligations', 'Legal Obligation'],
-                ].map(([purpose, basis], i) => (
-                  <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                    <td className="p-3 border border-gray-200">{purpose}</td>
-                    <td className="p-3 border border-gray-200">{basis}</td>
-                  </tr>
-                ))}
+                <tr className="bg-white"><td className="p-3 border border-gray-200">Preparing and sending your personalised treatment plan</td><td className="p-3 border border-gray-200">Contract (pre-contractual steps)</td></tr>
+                <tr className="bg-gray-50"><td className="p-3 border border-gray-200">Coordinating your trip, flights, and clinic appointments</td><td className="p-3 border border-gray-200">Contract</td></tr>
+                <tr className="bg-white"><td className="p-3 border border-gray-200">Sending your treatment plan to Dr. Mat Dental Clinic for clinical review</td><td className="p-3 border border-gray-200">Contract / Legitimate Interest</td></tr>
+                <tr className="bg-gray-50"><td className="p-3 border border-gray-200">Responding to enquiries and follow-up communication</td><td className="p-3 border border-gray-200">Legitimate Interest</td></tr>
+                <tr className="bg-white"><td className="p-3 border border-gray-200">Improving our website and services</td><td className="p-3 border border-gray-200">Legitimate Interest</td></tr>
+                <tr className="bg-gray-50"><td className="p-3 border border-gray-200">Complying with legal obligations</td><td className="p-3 border border-gray-200">Legal Obligation</td></tr>
               </tbody>
             </table>
           </div>
-          <p className="mt-3 text-sm text-gray-500">
-            We will <strong>never</strong> use your health data for marketing purposes.
-          </p>
+          <p className="mt-3 text-sm text-gray-500">We will <strong>never</strong> use your health data for marketing purposes.</p>
         </section>
 
         <section>
           <h2 className="text-xl font-semibold text-gray-900 mb-4">4. Health Data</h2>
-          <p>
-            Dental records, X-rays, and treatment history constitute <strong>special category data</strong> under
-            GDPR. We process this data only to facilitate your requested treatment consultation, to share
-            with Dr. Mat Dental Clinic for clinical assessment, and with your explicit consent where required.
-          </p>
-          <p className="mt-3">
-            By submitting health information through our consultation form, you consent to us processing
-            it for the above purposes.
-          </p>
+          <p>Dental records, X-rays, and treatment history constitute <strong>special category data</strong> under GDPR. We process this data only to facilitate your requested treatment consultation, to share with Dr. Mat Dental Clinic for clinical assessment, and with your explicit consent where required.</p>
+          <p className="mt-3">By submitting health information through our consultation form, you consent to us processing it for the above purposes.</p>
         </section>
 
         <section>
@@ -107,11 +82,7 @@ export default function PrivacyPolicyPage() {
           <div className="mt-4 space-y-4">
             <div className="p-4 border border-gray-200 rounded-lg">
               <p className="font-semibold text-gray-900">Dr. Mat Dental Clinic (Istanbul, Turkey)</p>
-              <p className="text-sm mt-1">
-                Your consultation details and health information are shared with the treating clinic to
-                prepare your treatment plan. Turkey is not an EU/EEA country; data transfers are made
-                under appropriate safeguards (Standard Contractual Clauses or equivalent).
-              </p>
+              <p className="text-sm mt-1">Your consultation details and health information are shared with the treating clinic to prepare your treatment plan. Turkey is not an EU/EEA country; data transfers are made under appropriate safeguards (Standard Contractual Clauses or equivalent).</p>
             </div>
             <div className="p-4 border border-gray-200 rounded-lg">
               <p className="font-semibold text-gray-900">Service Providers</p>
@@ -123,9 +94,7 @@ export default function PrivacyPolicyPage() {
               </ul>
             </div>
           </div>
-          <p className="mt-4 text-sm text-gray-500">
-            We do <strong>not</strong> sell, rent, or share your personal data with third parties for marketing.
-          </p>
+          <p className="mt-4 text-sm text-gray-500">We do <strong>not</strong> sell, rent, or share your personal data with third parties for marketing.</p>
         </section>
 
         <section>
@@ -139,17 +108,10 @@ export default function PrivacyPolicyPage() {
                 </tr>
               </thead>
               <tbody>
-                {[
-                  ['Consultation requests (no treatment)', '12 months'],
-                  ['Patient coordination records', '5 years'],
-                  ['Financial records', '7 years (legal requirement)'],
-                  ['Website analytics', '26 months (anonymised)'],
-                ].map(([type, period], i) => (
-                  <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                    <td className="p-3 border border-gray-200">{type}</td>
-                    <td className="p-3 border border-gray-200">{period}</td>
-                  </tr>
-                ))}
+                <tr className="bg-white"><td className="p-3 border border-gray-200">Consultation requests (no treatment)</td><td className="p-3 border border-gray-200">12 months</td></tr>
+                <tr className="bg-gray-50"><td className="p-3 border border-gray-200">Patient coordination records</td><td className="p-3 border border-gray-200">5 years</td></tr>
+                <tr className="bg-white"><td className="p-3 border border-gray-200">Financial records</td><td className="p-3 border border-gray-200">7 years (legal requirement)</td></tr>
+                <tr className="bg-gray-50"><td className="p-3 border border-gray-200">Website analytics</td><td className="p-3 border border-gray-200">26 months (anonymised)</td></tr>
               </tbody>
             </table>
           </div>
@@ -157,11 +119,7 @@ export default function PrivacyPolicyPage() {
 
         <section>
           <h2 className="text-xl font-semibold text-gray-900 mb-4">7. Cookies and Analytics</h2>
-          <p>
-            Our website uses cookies to understand how visitors use the site. You can manage your
-            cookie preferences at any time using the cookie banner or by clicking{' '}
-            <ManageCookiesButton />.
-          </p>
+          <p>Our website uses cookies to understand how visitors use the site. You can manage your cookie preferences at any time using the consent banner that appears when you first visit the site.</p>
           <ul className="mt-3 space-y-2 list-disc list-inside text-sm">
             <li><strong>Essential cookies</strong> — required for the site to function. No consent needed.</li>
             <li><strong>Analytics cookies</strong> — Google Analytics (anonymised IP). Requires your consent.</li>
@@ -181,12 +139,7 @@ export default function PrivacyPolicyPage() {
             <li><strong>Objection</strong> — object to processing based on legitimate interest</li>
             <li><strong>Withdraw consent</strong> — where processing is based on consent, you may withdraw at any time</li>
           </ul>
-          <p className="mt-4">
-            To exercise any of these rights, contact us at:{' '}
-            <a href="mailto:hello@mmvmedical.org" className="text-[#12243a] underline">
-              hello@mmvmedical.org
-            </a>. We will respond within <strong>30 days</strong>.
-          </p>
+          <p className="mt-4">To exercise any of these rights, contact us at: <a href="mailto:hello@mmvmedical.org" className="text-[#12243a] underline">hello@mmvmedical.org</a>. We will respond within <strong>30 days</strong>.</p>
           <div className="mt-4 text-sm space-y-1 text-gray-500">
             <p><strong>UK:</strong> Information Commissioner's Office — <a href="https://ico.org.uk" target="_blank" rel="noopener noreferrer" className="underline">ico.org.uk</a></p>
             <p><strong>Netherlands:</strong> Autoriteit Persoonsgegevens — <a href="https://autoriteitpersoonsgegevens.nl" target="_blank" rel="noopener noreferrer" className="underline">autoriteitpersoonsgegevens.nl</a></p>
@@ -198,28 +151,17 @@ export default function PrivacyPolicyPage() {
 
         <section>
           <h2 className="text-xl font-semibold text-gray-900 mb-4">9. Data Security</h2>
-          <p>
-            We implement appropriate technical and organisational measures to protect your data,
-            including encrypted data transmission (HTTPS), access controls limiting who can view
-            patient data, and secure cloud storage with row-level security.
-          </p>
+          <p>We implement appropriate technical and organisational measures to protect your data, including encrypted data transmission (HTTPS), access controls limiting who can view patient data, and secure cloud storage with row-level security.</p>
         </section>
 
         <section>
           <h2 className="text-xl font-semibold text-gray-900 mb-4">10. Children</h2>
-          <p>
-            Our services are intended for adults aged 18 and over. We do not knowingly collect data
-            from children under 16. If you believe we have inadvertently collected data from a minor,
-            please contact us immediately.
-          </p>
+          <p>Our services are intended for adults aged 18 and over. We do not knowingly collect data from children under 16. If you believe we have inadvertently collected data from a minor, please contact us immediately.</p>
         </section>
 
         <section>
           <h2 className="text-xl font-semibold text-gray-900 mb-4">11. Changes to This Policy</h2>
-          <p>
-            We may update this Privacy Policy from time to time. We will notify you of material
-            changes by updating the "Last updated" date at the top of this page.
-          </p>
+          <p>We may update this Privacy Policy from time to time. We will notify you of material changes by updating the "Last updated" date at the top of this page.</p>
         </section>
 
         <section>
@@ -233,7 +175,6 @@ export default function PrivacyPolicyPage() {
 
       </div>
 
-      {/* Footer link */}
       <div className="border-t border-gray-100 py-8 px-6 text-center">
         <Link href="/" className="text-sm text-gray-400 hover:text-gray-700">
           ← Back to MMV Medical
