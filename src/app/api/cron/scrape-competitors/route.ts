@@ -8,10 +8,12 @@ const supabase = createClient(
 
 export async function GET(request: Request) {
   try {
-    // 1. Verify Vercel Cron Security Signature Header to block anonymous requests
-    const authHeader = request.headers.get('authorization');
-    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-      return NextResponse.json({ error: 'Unauthorized cron verification' }, { status: 401 });
+    // 1. A simple, bulletproof URL password check
+    const { searchParams } = new URL(request.url);
+    const secretParam = searchParams.get('secret');
+    
+    if (secretParam !== process.env.CRON_SECRET) {
+      return NextResponse.json({ error: 'Unauthorized route access' }, { status: 401 });
     }
 
     // 2. Grab the clinic queues needing updates
@@ -30,12 +32,10 @@ export async function GET(request: Request) {
     for (const clinic of clinics) {
       console.log(`📡 Extracting layout from competitor: ${clinic.clinic_name}`);
 
-      // Fetch the public page markup/text data safely
       const siteResponse = await fetch(clinic.website_url, { next: { revalidate: 3600 } });
       if (!siteResponse.ok) continue;
       
       const rawHtmlText = await siteResponse.text();
-      // Keep string size lean for the context window boundary
       const cleanSnippetText = rawHtmlText.replace(/<script[^>]*>([\s\S]*?)<\/script>/gi, '').substring(0, 15000);
 
       // 3. Pipe raw content extraction through Gemini Flash backend-agent proxy
@@ -46,7 +46,7 @@ export async function GET(request: Request) {
           'Authorization': `Bearer ${proxyKey}`
         },
         body: JSON.stringify({
-          model: 'backend-agent', // Cost-efficient, high-volume model
+          model: 'backend-agent',
           response_format: { type: "json_object" },
           messages: [
             {
@@ -74,7 +74,6 @@ export async function GET(request: Request) {
       const extractedPayload = JSON.parse(aiData.choices[0].message.content);
 
       if (extractedPayload.prices && Array.isArray(extractedPayload.prices)) {
-        // 4. Batch record newly structured logs to the database row collection
         const rowsToInsert = extractedPayload.prices.map((item: any) => ({
           clinic_id: clinic.id,
           treatment_key: item.treatment_key,
@@ -85,7 +84,6 @@ export async function GET(request: Request) {
 
         await supabase.from('competitor_prices').insert(rowsToInsert);
 
-        // Update tracking ledger sync timestamp
         await supabase
           .from('competitor_clinics')
           .update({ last_scraped_at: new Date().toISOString() })
