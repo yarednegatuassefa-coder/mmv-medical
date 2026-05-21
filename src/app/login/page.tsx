@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createBrowserClient } from '@supabase/ssr';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -11,7 +11,12 @@ export default function LoginPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   
   const router = useRouter();
-  const supabase = createClientComponentClient();
+
+  // Initialize the native client browser using the existing verified packages
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
 
   const handleStaffLogin = async (e: React.FormEvent) => {
     e.preventDefault();
