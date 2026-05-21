@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { createBrowserClient } from '@supabase/ssr';
 
 interface PatientRow {
   id: string;
@@ -109,21 +110,38 @@ export default function DashboardContainer() {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans p-6">
       
+      {/* Top Global Status Metrics Panel Bar with Security Killswitch */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-800 pb-6 mb-6 gap-4">
         <div>
           <h1 className="text-2xl font-black tracking-tight text-white">MMV Intake Coordinator Center</h1>
           <p className="text-sm text-slate-400 mt-1">Cross-border lead triage analytics and automatic drafting engines.</p>
         </div>
-        <div className="flex gap-3 bg-slate-900 border border-slate-800 p-2 rounded-xl">
-          <div className="px-4 py-2 text-center">
-            <p className="text-xs text-slate-500 font-bold uppercase tracking-wider">Active Queue</p>
-            <p className="text-lg font-extrabold text-blue-400">{patients.length} Leads</p>
+        <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end">
+          <div className="flex gap-3 bg-slate-900 border border-slate-800 p-2 rounded-xl">
+            <div className="px-4 py-2 text-center">
+              <p className="text-xs text-slate-500 font-bold uppercase tracking-wider">Active Queue</p>
+              <p className="text-lg font-extrabold text-blue-400">{patients.length} Leads</p>
+            </div>
+            <div className="border-l border-slate-800 my-1"></div>
+            <div className="px-4 py-2 text-center">
+              <p className="text-xs text-slate-500 font-bold uppercase tracking-wider">Triage Level</p>
+              <p className="text-lg font-extrabold text-amber-400">Phase 2 Live</p>
+            </div>
           </div>
-          <div className="border-l border-slate-800 my-1"></div>
-          <div className="px-4 py-2 text-center">
-            <p className="text-xs text-slate-500 font-bold uppercase tracking-wider">Triage Level</p>
-            <p className="text-lg font-extrabold text-amber-400">Phase 2 Live</p>
-          </div>
+          
+          <button
+            onClick={async () => {
+              const supabase = createBrowserClient(
+                process.env.NEXT_PUBLIC_SUPABASE_URL!,
+                process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+              );
+              await supabase.auth.signOut();
+              window.location.href = '/login';
+            }}
+            className="px-4 py-3 bg-slate-900 hover:bg-red-950/40 border border-slate-800 hover:border-red-900/60 text-slate-400 hover:text-red-400 text-xs font-bold rounded-xl transition-all duration-200 uppercase tracking-wider shadow-md"
+          >
+            Log Out
+          </button>
         </div>
       </div>
 
