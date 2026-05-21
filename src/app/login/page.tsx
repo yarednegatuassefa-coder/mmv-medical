@@ -34,7 +34,7 @@ export default function LoginPage() {
         setErrorMessage(error.message);
       } else {
         // Validation check approved. Advance straight into the coordinator command center.
-        router.push('/dashboard');
+        router.push('/app/dashboard');
         router.refresh();
       }
     } catch (err) {
