@@ -25,3 +25,26 @@ To prevent architectural drift, token waste, and silent logic failures during au
 
 8. **Deterministic State over Pure LLM Generation**
    For algorithmic tasks, string formatting (such as Turkish character sanitation), or structural transformations, use strict deterministic code logic rather than relying on an LLM prompt to guess the output. Use the AI for judgment and text generation; use structural logic for pipeline orchestration.
+
+## Navigation Map
+Read this section to find context for specific tasks.
+
+## If you are doing patient coordination
+Read .hermes/skills/qualification.md
+
+## If you are writing a follow-up message
+Read .hermes/skills/followup.md
+
+## If you are generating a treatment plan PDF
+Read .hermes/skills/treatment-plan.md
+
+## If you are doing competitive research
+Read .hermes/skills/competitor-intel.md
+
+## If something went wrong
+Read failures.md before starting the task again.
+
+## Context rules
+- 0-60% context: work freely
+- 70%: run /compact
+- 80%: mandatory /clear — start fresh session
