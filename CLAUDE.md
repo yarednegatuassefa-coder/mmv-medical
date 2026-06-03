@@ -30,21 +30,16 @@ To prevent architectural drift, token waste, and silent logic failures during au
 Read this section to find context for specific tasks.
 
 ## If you are doing patient coordination
-Read .hermes/skills/qualification.md
+Read .hermes/skills/patient-qualification/SKILL.md
 
 ## If you are writing a follow-up message
-Read .hermes/skills/followup.md
+Read .hermes/skills/patient-followup/SKILL.md
 
 ## If you are generating a treatment plan PDF
-Read .hermes/skills/treatment-plan.md
+Read .hermes/skills/treatment-plan/SKILL.md
 
 ## If you are doing competitive research
-Read .hermes/skills/competitor-intel.md
+Read .hermes/skills/competitor-intel/SKILL.md
 
 ## If something went wrong
 Read failures.md before starting the task again.
-
-## Context rules
-- 0-60% context: work freely
-- 70%: run /compact
-- 80%: mandatory /clear — start fresh session
