@@ -46,7 +46,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="text/javascript"
           async
         />
-
+<link rel="manifest" href="/manifest.json" />
+<link rel="apple-touch-icon" href="/icons/icon-192.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
