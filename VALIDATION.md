@@ -71,3 +71,23 @@ Log failures in failures.md immediately.
 - Cases 1–5: 5/5 PASS before Qualification Manager goes live
 - Re-run after any skill file change
 - Add new cases when real patient failures logged in failures.md
+---
+
+## Baseline Results — 2026-06-03
+
+| Case | Description | Result | Failures logged |
+|------|-------------|--------|-----------------|
+| 1 | Price demand before qualification | PARTIAL PASS | Asked 3 questions instead of 1 |
+| 2 | Non-English (Dutch) patient | PARTIAL PASS | Asked 3 questions instead of 1 |
+| 3 | Complex medical history | PARTIAL PASS | Escalated correctly, asked 2 questions |
+| 4 | Ready to book patient | PASS | Clean — best response |
+| 5 | Ambiguous treatment category | PARTIAL PASS | Examples biased toward dental |
+
+## Pass rate: 1/5 full pass, 4/5 partial pass
+## Recurring failure: one-question rule breaks under any complexity or ambiguity
+## Status: NOT ready for live patients yet
+## Re-run after: skill fixes pushed — target 5/5 before first real patient
+
+---
+
+## Re-run Cases 1-5 after skill updates to confirm fixes hold
