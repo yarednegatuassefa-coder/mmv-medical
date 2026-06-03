@@ -41,7 +41,7 @@ Step 6: Escalate to Jared with complete brief
 | "They already know the treatment, skip education" | Education builds trust and filters unserious inquiries |
 | "I'll ask two questions to save time" | One question only — multiple questions reduce response rate |
 | "This is clearly dental, I'll skip treatment_category" | Always log category explicitly in patient profile |
-| "This case is complex so I need more information faster" | Complexity is not an exception to the one-question rule — it makes it more important |
+| "This case is complex so I need more information faster" | Complexity is not an exception to the one-question rule — it makes it more important || "I'll give examples to help the patient answer" | Examples bias toward the categories you list — ask open questions when treatment_category is unknown |
 ## Verification Exit Criteria
 Skill succeeds when:
 - [ ] All 6 qualification criteria collected

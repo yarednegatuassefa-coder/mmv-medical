@@ -16,3 +16,4 @@ Format: Date | Skill | What broke | Rule added
 - Using company PLC account instead of personal for transfers
 - Context anxiety causing shortcuts after long sessions
 | 2026-06-03 | patient-qualification | Two questions asked in medical history case despite one-question rule | Rule applies even when agent feels urgency — pick one question, stop |
+| 2026-06-03 | patient-qualification | Ambiguous inquiry prompted with dental examples only — steers patient toward dental assumption | When treatment_category unknown, ask open question only — no examples that bias toward one category |
