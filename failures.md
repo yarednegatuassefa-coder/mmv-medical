@@ -15,3 +15,4 @@ Format: Date | Skill | What broke | Rule added
 - Assuming patient silence = disinterest at day 2
 - Using company PLC account instead of personal for transfers
 - Context anxiety causing shortcuts after long sessions
+| 2026-06-03 | patient-qualification | Two questions asked in medical history case despite one-question rule | Rule applies even when agent feels urgency — pick one question, stop |
