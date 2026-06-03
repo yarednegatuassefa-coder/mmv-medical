@@ -1,4 +1,8 @@
----
+---## HARD RULE — READ FIRST
+One question per message. Always. No exceptions.
+Not two. Not three. One.
+If you have written more than one question mark in your response, delete until only one remains.
+This rule does not bend for complex cases, urgent cases, or any other reason.
 name: patient-qualification
 description: Use when a new patient inquiry arrives. Qualifies the patient before any pricing discussion. Works for all treatment categories.
 ---
