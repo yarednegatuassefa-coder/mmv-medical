@@ -41,8 +41,7 @@ export function PublicFooter() {
       <div className="max-w-6xl mx-auto mt-8 pt-6 border-t border-gold/10 space-y-3">
         <p className="text-cream/20 text-xs leading-relaxed max-w-3xl">
           MMV Medical is a dental tourism facilitation service. We are not a healthcare provider.
-          Clinical treatment is provided by Dr. Mat Dental Clinic (Dt. Mehmet Akif Türkan Muayenehanesi),
-          a Ministry of Health licensed specialist dental facility in Istanbul, Turkey.
+          Clinical treatment is provided by licensed specialist dental facilities in Istanbul, Turkey.
         </p>
         <p className="text-cream/20 text-xs">
           [Company legal name] · Registered in [Country] · Company No. [Registration number] · [Registered address]
@@ -51,7 +50,6 @@ export function PublicFooter() {
           <Link href="/privacy-policy" className="text-cream/30 text-xs hover:text-gold transition-colors">
             Privacy Policy
           </Link>
-          {/* Cookiebot trigger — works without onClick in server component */}
           <a
             href="javascript: Cookiebot.renew()"
             className="text-cream/30 text-xs hover:text-gold transition-colors"
