@@ -10,8 +10,6 @@ export const metadata: Metadata = {
 }
 
 const CREDENTIALS = [
-  { label: 'MOH Operating License', value: '20250340032100010003164 44' },
-  { label: 'Health Tourism Authorization', value: '2026034015610080000435518' },
   { label: 'Issued by', value: 'Turkish Ministry of Health' },
   { label: 'Verifiable at', value: 'turkiye.gov.tr' },
 ]
@@ -45,8 +43,8 @@ export default function AboutPage() {
         {/* Values */}
         <section className="px-6 md:px-[5%] mb-16">
           <div className="max-w-4xl mx-auto">
-            <div className="text-teal text-xs font-mono tracking-widest uppercase mb-3">What We Stand For</div>
-            <h2 className="font-display text-3xl font-semibold text-navy mb-10">How we're different</h2>
+            <div className="text-teal text-xs font-mono tracking-widest uppercase mb-3">Our Approach</div>
+            <h2 className="font-display text-3xl font-semibold text-navy mb-8">What sets us apart</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {VALUES.map(v => (
                 <div key={v.title} className="bg-white border border-cream-dark rounded-lg p-6">
@@ -59,7 +57,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Credentials */}
+        {/* Credentials — license numbers removed */}
         <section className="bg-navy-mid/5 border-y border-navy/10 py-12 px-6 md:px-[5%] mb-16">
           <div className="max-w-4xl mx-auto">
             <div className="text-teal text-xs font-mono tracking-widest uppercase mb-3">Credentials</div>
@@ -73,7 +71,7 @@ export default function AboutPage() {
               ))}
             </div>
             <p className="text-navy/40 text-xs mt-4">
-              International Health Tourism Authorization Certificate issued 24 February 2026, verifiable at turkiye.gov.tr
+              International Health Tourism Authorization Certificate, verifiable at turkiye.gov.tr
             </p>
           </div>
         </section>
