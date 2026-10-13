@@ -11,7 +11,7 @@ const ContactPageWhatsApp = () => {
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
 
-  const clinicPhone = '905526340919';
+  const clinicPhone = '905527827698';
 
   const messages: Record<Language, string> = {
     en: "Hi, I saw your Google ad and I'm interested in dental treatment in Istanbul (implants, veneers or smile makeover). Can you send me more information?",
