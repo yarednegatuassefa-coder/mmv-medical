@@ -60,7 +60,7 @@ export default function PrivacyPolicyPage() {
               <tbody>
                 <tr className="bg-white"><td className="p-3 border border-gray-200">Preparing and sending your personalised treatment plan</td><td className="p-3 border border-gray-200">Contract (pre-contractual steps)</td></tr>
                 <tr className="bg-gray-50"><td className="p-3 border border-gray-200">Coordinating your trip, flights, and clinic appointments</td><td className="p-3 border border-gray-200">Contract</td></tr>
-                <tr className="bg-white"><td className="p-3 border border-gray-200">Sending your treatment plan to Dr. Mat Dental Clinic for clinical review</td><td className="p-3 border border-gray-200">Contract / Legitimate Interest</td></tr>
+                <tr className="bg-white"><td className="p-3 border border-gray-200">Sending your treatment plan to the treating clinic for clinical review</td><td className="p-3 border border-gray-200">Contract / Legitimate Interest</td></tr>
                 <tr className="bg-gray-50"><td className="p-3 border border-gray-200">Responding to enquiries and follow-up communication</td><td className="p-3 border border-gray-200">Legitimate Interest</td></tr>
                 <tr className="bg-white"><td className="p-3 border border-gray-200">Improving our website and services</td><td className="p-3 border border-gray-200">Legitimate Interest</td></tr>
                 <tr className="bg-gray-50"><td className="p-3 border border-gray-200">Complying with legal obligations</td><td className="p-3 border border-gray-200">Legal Obligation</td></tr>
@@ -72,7 +72,7 @@ export default function PrivacyPolicyPage() {
 
         <section>
           <h2 className="text-xl font-semibold text-gray-900 mb-4">4. Health Data</h2>
-          <p>Dental records, X-rays, and treatment history constitute <strong>special category data</strong> under GDPR. We process this data only to facilitate your requested treatment consultation, to share with Dr. Mat Dental Clinic for clinical assessment, and with your explicit consent where required.</p>
+          <p>Dental records, X-rays, and treatment history constitute <strong>special category data</strong> under GDPR. We process this data only to facilitate your requested treatment consultation, to share with the treating clinic for clinical assessment, and with your explicit consent where required.</p>
           <p className="mt-3">By submitting health information through our consultation form, you consent to us processing it for the above purposes.</p>
         </section>
 
@@ -81,7 +81,7 @@ export default function PrivacyPolicyPage() {
           <p>We share your data only where necessary:</p>
           <div className="mt-4 space-y-4">
             <div className="p-4 border border-gray-200 rounded-lg">
-              <p className="font-semibold text-gray-900">Dr. Mat Dental Clinic (Istanbul, Turkey)</p>
+              <p className="font-semibold text-gray-900">Treating Clinic (Istanbul, Turkey)</p>
               <p className="text-sm mt-1">Your consultation details and health information are shared with the treating clinic to prepare your treatment plan. Turkey is not an EU/EEA country; data transfers are made under appropriate safeguards (Standard Contractual Clauses or equivalent).</p>
             </div>
             <div className="p-4 border border-gray-200 rounded-lg">
@@ -182,4 +182,4 @@ export default function PrivacyPolicyPage() {
       </div>
     </main>
   )
-}
+                  }
