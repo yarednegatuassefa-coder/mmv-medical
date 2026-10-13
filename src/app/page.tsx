@@ -39,7 +39,7 @@ const TESTIMONIALS = [
 const STEPS = [
   { n: '01', title: 'Free Consultation', desc: 'Share your dental history and X-rays. We prepare a personalised treatment plan with full transparent pricing — no hidden fees.' },
   { n: '02', title: 'Plan Your Trip', desc: 'We coordinate flights, hotel accommodation, and all clinic appointments. VIP airport transfers are included in your package.' },
-  { n: '03', title: 'Treatment', desc: 'Treated by specialist surgeons at Dr. Mat Dental Clinic — a MOH-licensed facility. Your coordinator is with you every appointment.' },
+  { n: '03', title: 'Treatment', desc: 'Treated by specialist surgeons at a MOH-licensed facility in Istanbul. Your coordinator is with you every appointment.' },
   { n: '04', title: 'Aftercare', desc: 'Full aftercare package and ongoing WhatsApp support after you return home. We remain your point of contact for any follow-up.' },
 ]
 
@@ -57,7 +57,7 @@ export default function HomePage() {
             World-Class Dental Care, <em className="text-gold not-italic">Honest Pricing</em>
           </h1>
           <p className="text-cream/60 text-lg font-light leading-relaxed max-w-xl mb-8">
-            MMV Medical connects European patients with Dr. Mat Dental Clinic in Istanbul — one of Turkey's most trusted specialist dental practices. Your dedicated coordinator handles everything from consultation to aftercare.
+            MMV Medical connects European patients with specialist dental clinics in Istanbul — among Turkey&apos;s most trusted practices. Your dedicated coordinator handles everything from consultation to aftercare.
           </p>
           <div className="flex flex-wrap gap-3 mb-8">
             <a href="#contact" className="bg-gold text-navy font-semibold text-sm tracking-wide uppercase px-7 py-3.5 rounded-sm hover:bg-gold-light transition-colors">
@@ -149,17 +149,15 @@ export default function HomePage() {
       </section>
 
       {/* RESULTS */}
-      {/* RESULTS — replace this entire section in page.tsx */}
       <section id="results" className="bg-navy py-20 px-6 md:px-[5%]">
         <div className="max-w-6xl mx-auto">
           <div className="text-gold/70 text-xs font-mono tracking-widest uppercase mb-3">Real Results</div>
           <h2 className="font-display text-4xl font-semibold text-cream mb-4">
-            Before & After <em className="not-italic text-gold">Dr. Mat Dental Clinic</em>
+            Before & After <em className="not-italic text-gold">Results</em>
           </h2>
-          {/* ✅ PHOTO CONSENT NOTE — added for GDPR/ASA compliance */}
           <p className="text-cream/40 text-xs mb-8">
-            Every result shown is a real patient treated at Dr. Mat Dental Clinic in Istanbul.
-            All images are published with the patient's written consent. No filters applied.
+            Every result shown is a real patient treated at our partner clinic in Istanbul.
+            All images are published with the patient&apos;s written consent. No filters applied.
           </p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {RESULTS.map((src, i) => (
@@ -175,6 +173,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
       {/* ABOUT */}
       <section id="about" className="bg-white py-20 px-6 md:px-[5%]">
         <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
@@ -184,11 +183,11 @@ export default function HomePage() {
               Specialist Care, <em className="not-italic text-gold">Personal Service</em>
             </h2>
             <p className="text-navy/60 leading-relaxed mb-8">
-              MMV Medical was founded to give European patients direct access to world-class dental care in Istanbul — with the same level of trust, transparency, and personalised attention they would expect at home, at a fraction of the price. We work exclusively with Dr. Mat Dental Clinic, a specialist practice with a dedicated international patient team.
+              MMV Medical was founded to give European patients direct access to world-class dental care in Istanbul — with the same level of trust, transparency, and personalised attention they would expect at home, at a fraction of the price. We work with specialist practices that have a dedicated international patient team.
             </p>
             <div className="flex flex-col gap-4">
               {[
-                { title: 'Dr. Mat Dental Clinic, Istanbul', desc: 'MOH-licensed specialist dental facility. Straumann & Nobel Biocare implant systems.' },
+                { title: 'Partner Clinic, Istanbul', desc: 'MOH-licensed specialist dental facility. Straumann & Nobel Biocare implant systems.' },
                 { title: 'Personal Coordinator Service', desc: 'English-speaking coordinator from first WhatsApp to post-treatment follow-up.' },
                 { title: 'Transparent Pricing', desc: 'Full treatment cost confirmed before you book — no surprises on arrival.' },
                 { title: 'European Patient Specialists', desc: 'Serving patients from UK, Ireland, Netherlands, Belgium, Germany, France and beyond.' },
@@ -203,7 +202,7 @@ export default function HomePage() {
           <div className="rounded overflow-hidden">
             <img
               src="https://tkywpdpduoucwmpgtkrd.supabase.co/storage/v1/object/public/images/WhatsApp%20Image%202026-04-08%20at%2014.27.44%20(6).jpeg"
-              alt="Dr. Mat Dental Clinic Istanbul"
+              alt="Dental clinic Istanbul"
               className="w-full h-full object-cover"
             />
           </div>
@@ -221,7 +220,7 @@ export default function HomePage() {
             {TESTIMONIALS.map(t => (
               <div key={t.name} className="bg-white rounded p-6 shadow-sm">
                 <div className="text-gold text-lg mb-3">★★★★★</div>
-                <p className="text-navy/70 text-sm leading-relaxed mb-4">"{t.quote}"</p>
+                <p className="text-navy/70 text-sm leading-relaxed mb-4">&quot;{t.quote}&quot;</p>
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-full bg-navy text-cream flex items-center justify-center font-bold text-sm">{t.initial}</div>
                   <div>
@@ -260,4 +259,4 @@ export default function HomePage() {
       <PublicFooter />
     </>
   )
-}
+                  }
