@@ -54,7 +54,7 @@ export default function HomePage() {
   return (
     <>
       <PublicNav />
-      <main className="overflow-hidden bg-[#f7f5f0] pt-16">
+      <main className="overflow-hidden bg-[#f7f5f0] pt-0">
         <section className="relative isolate">
           <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_75%_15%,rgba(200,164,90,0.16),transparent_42%),linear-gradient(135deg,#f7f5f0_0%,#f1eee7_100%)]" />
           <div className="mx-auto grid max-w-7xl items-center gap-12 px-5 pb-16 pt-14 sm:px-8 md:min-h-[680px] md:grid-cols-[1.02fr_0.98fr] md:gap-10 md:px-12 md:py-20">
@@ -91,6 +91,9 @@ export default function HomePage() {
                   src="https://tkywpdpduoucwmpgtkrd.supabase.co/storage/v1/object/public/images/WhatsApp%20Image%202026-04-08%20at%2014.27.44%20(6).jpeg"
                   alt="Dental care setting in Istanbul"
                   className="h-full w-full object-cover"
+                  loading="eager"
+                  fetchPriority="high"
+                  decoding="async"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0b1c2d]/70 via-transparent to-[#0b1c2d]/5" />
                 <div className="absolute inset-x-0 bottom-0 p-6 text-white sm:p-8">
