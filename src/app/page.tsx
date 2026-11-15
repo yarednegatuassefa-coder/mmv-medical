@@ -114,14 +114,13 @@ export default function HomePage() {
 
         <section id="approach" className="border-y border-[#12243a]/8 bg-white">
           <div className="mx-auto grid max-w-7xl gap-8 px-5 py-12 sm:px-8 md:grid-cols-3 md:gap-10 md:px-12 md:py-14">
-            {SUPPORT.map(({ icon: Icon, title, text }, index) => (
+            {SUPPORT.map(({ icon: Icon, title, text }) => (
               <div key={title} className="flex gap-4">
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#f3efe6] text-[#9c783c]"><Icon size={19} strokeWidth={1.7} /></div>
                 <div>
                   <p className="font-display text-xl font-semibold text-[#12243a]">{title}</p>
                   <p className="mt-2 max-w-sm text-sm leading-6 text-[#687582]">{text}</p>
                 </div>
-                {index < 2 && <span className="hidden" aria-hidden="true" />}
               </div>
             ))}
           </div>
