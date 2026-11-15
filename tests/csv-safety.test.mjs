@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import { csvCell, serializeCsv } from '../src/lib/csv-safety.js';
 
 test('neutralizes spreadsheet formula prefixes, including leading whitespace and controls', () => {
-  for (const value of ['=1+1', '+SUM(A1:A2)', '@SUM(A1)', '-1+1', ' \\t=cmd']) {
-    assert.equal(csvCell(value), `'${value}`);
+  for (const value of ['=1+1', '+SUM(A1:A2)', '@SUM(A1)', '-1+1', ' \t=cmd']) {
+    assert.equal(csvCell(value), \`'\${value}\`);
   }
 });
 
@@ -17,7 +17,7 @@ test('preserves ordinary text and numeric values', () => {
 
 test('quotes cells and escapes embedded quotes, commas, and newlines', () => {
   assert.equal(
-    serializeCsv([['Name', 'Notes'], ['A, B', 'Said "hello"\\nnext']]),
-    '"Name","Notes"\\n"A, B","Said ""hello""\\nnext"'
+    serializeCsv([['Name', 'Notes'], ['A, B', 'Said "hello"\nnext']]),
+    '"Name","Notes"\n"A, B","Said ""hello""\nnext"'
   );
 });
