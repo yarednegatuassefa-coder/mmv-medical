@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { STAGES } from '@/lib/constants'
 import type { Lead } from '@/types/database'
+import { serializeCsv } from '@/lib/csv-safety'
 
 const FLAGS: Record<string, string> = {
   UK: '🇬🇧', Ireland: '🇮🇪', Netherlands: '🇳🇱', Belgium: '🇧🇪', Romania: '🇷🇴',
@@ -34,12 +35,8 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
   function exportCSV() {
     const headers = ['Name','Email','WhatsApp','Country','Treatment','Stage','Value','Follow-up','Source','Added']
     const rows = filtered.map(l => [l.full_name, l.email, l.whatsapp, l.country, l.treatment_interest, l.stage, l.estimated_value ?? '', l.follow_up_date ?? '', l.source, l.created_at.slice(0,10)])
-    // Prefix spreadsheet formula-like values before CSV quoting. Database values remain unchanged.
-    const safeCell = (value: unknown) => {
-      const text = String(value ?? '')
-      return /^[\s\u0000-\u001F]*[-=+@]/.test(text) ? `'${text}` : text
-    }
-    const csv = [headers, ...rows].map(r => r.map(v => `"${safeCell(v).replace(/"/g,'""')}"`).join(',')).join('\n')
+    // Export-only sanitization; stored lead values remain unchanged.
+    const csv = serializeCsv([headers, ...rows])
     const a = document.createElement('a')
     a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }))
     a.download = `mmv-leads-${new Date().toISOString().slice(0,10)}.csv`
