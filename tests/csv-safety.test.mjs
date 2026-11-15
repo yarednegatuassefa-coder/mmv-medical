@@ -4,7 +4,7 @@ import { csvCell, serializeCsv } from '../src/lib/csv-safety.js';
 
 test('neutralizes spreadsheet formula prefixes, including leading whitespace and controls', () => {
   for (const value of ['=1+1', '+SUM(A1:A2)', '@SUM(A1)', '-1+1', ' \t=cmd']) {
-    assert.equal(csvCell(value), \`'\${value}\`);
+    assert.equal(csvCell(value), "'" + value);
   }
 });
 
