@@ -20,4 +20,3 @@ export default function TreatmentsPage(){return <><PublicNav/><main className="s
  <section className="site-section site-section--soft"><div className="site-shell grid gap-8 lg:grid-cols-[.7fr_1.3fr]"><div><p className="eyebrow eyebrow--dark">Before you decide</p><h2 className="section-heading">Questions worth asking every provider.</h2></div><div className="question-grid">{questions.map((q,i)=><div key={q}><span>0{i+1}</span><p>{q}</p></div>)}</div></div></section>
  <section className="site-cta"><div className="site-shell site-cta__inner"><div><p className="eyebrow">Not sure?</p><h2>You can begin without knowing the answer.</h2><p>Tell us what you are trying to understand. We can help organise the next conversation.</p></div><Link href="/#consultation" className="button button--gold">Start an enquiry <ArrowRight size={16}/></Link></div></section>
  </main><PublicFooter/></>}
-}
