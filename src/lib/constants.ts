@@ -1,5 +1,5 @@
 export const WA_NUMBER = process.env.NEXT_PUBLIC_WA_NUMBER ?? '905527827698'
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.mmvmedical.org'
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://mmvmedical.org'
 export const COUNTRIES = [
  {value:'UK',label:'🇬🇧 United Kingdom',currency:'GBP',symbol:'£'},
  {value:'Ireland',label:'🇮🇪 Ireland',currency:'EUR',symbol:'€'},
