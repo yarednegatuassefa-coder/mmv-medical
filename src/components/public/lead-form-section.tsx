@@ -97,7 +97,7 @@ export function LeadFormSection() {
           {/* Honeypot — hidden from real users */}
           <input type="text" name="website" className="hidden" tabIndex={-1} autoComplete="off" />
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-mono tracking-wider uppercase text-navy/50 mb-1">Full Name *</label>
               <input name="full_name" required className="w-full border border-cream-dark rounded px-3 py-2 text-sm text-navy outline-none focus:border-teal" placeholder="Your name" />
