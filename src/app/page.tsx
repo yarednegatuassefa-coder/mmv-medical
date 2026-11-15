@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { ArrowDown, ArrowRight, Check, Clock3, Globe2, HeartHandshake, MessageCircle, Plane, ShieldCheck, Sparkles, Stethoscope } from 'lucide-react'
+import { ArrowDown, ArrowRight, Clock3, Globe2, HeartHandshake, MessageCircle, Plane, ShieldCheck, Sparkles, Stethoscope } from 'lucide-react'
 import { PublicNav } from '@/components/layout/public-nav'
 import { PublicFooter } from '@/components/layout/public-footer'
 import { LeadFormSection } from '@/components/public/lead-form-section'
