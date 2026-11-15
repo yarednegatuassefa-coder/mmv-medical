@@ -2,7 +2,6 @@
 
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { STAGES } from '@/lib/constants'
 import type { Lead } from '@/types/database'
 
@@ -23,7 +22,6 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
   const [search, setSearch] = useState('')
   const [stageFilter, setStageFilter] = useState('')
   const [countryFilter, setCountryFilter] = useState('')
-  const router = useRouter()
 
   const filtered = useMemo(() => {
     let r = leads
@@ -36,7 +34,12 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
   function exportCSV() {
     const headers = ['Name','Email','WhatsApp','Country','Treatment','Stage','Value','Follow-up','Source','Added']
     const rows = filtered.map(l => [l.full_name, l.email, l.whatsapp, l.country, l.treatment_interest, l.stage, l.estimated_value ?? '', l.follow_up_date ?? '', l.source, l.created_at.slice(0,10)])
-    const csv = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n')
+    // Prefix spreadsheet formula-like values before CSV quoting. Database values remain unchanged.
+    const safeCell = (value: unknown) => {
+      const text = String(value ?? '')
+      return /^[\\s\\u0000-\\u001F]*[=+\\-@]/.test(text) ? `'${text}` : text
+    }
+    const csv = [headers, ...rows].map(r => r.map(v => `"${safeCell(v).replace(/"/g,'""')}"`).join(',')).join('\n')
     const a = document.createElement('a')
     a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }))
     a.download = `mmv-leads-${new Date().toISOString().slice(0,10)}.csv`
@@ -79,10 +82,9 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
             {filtered.length > 0 ? filtered.map(l => {
               const stage = STAGES.find(s => s.value === l.stage)
               return (
-                <tr key={l.id} onClick={() => router.push(`/app/leads/${l.id}`)}
-                  className="border-b border-white/[0.03] hover:bg-[#182118] cursor-pointer transition-colors">
+                <tr key={l.id} className="border-b border-white/[0.03] hover:bg-[#182118] transition-colors">
                   <td className="px-4 py-3">
-                    <div className="text-sm text-[#d4e4d4] font-medium">{l.full_name}</div>
+                    <Link href={`/app/leads/${l.id}`} className="text-sm text-[#d4e4d4] font-medium underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3dd68c]">{l.full_name}</Link>
                     <div className="text-xs text-[#6b8f6b] font-mono">{l.email}</div>
                   </td>
                   <td className="px-4 py-3 text-sm text-[#6b8f6b]">{FLAGS[l.country] ?? ''} {l.country}</td>
