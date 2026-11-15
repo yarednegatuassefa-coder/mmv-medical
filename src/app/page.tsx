@@ -88,8 +88,8 @@ export default function HomePage() {
               <div className="absolute -bottom-8 -left-8 h-52 w-52 rounded-full bg-[#c8a45a]/10 blur-2xl" />
               <div className="relative aspect-[4/5] overflow-hidden rounded-[2px] bg-[#d9d4c9] shadow-[0_30px_80px_rgba(18,36,58,0.18)] sm:aspect-[5/4] md:aspect-[4/5]">
                 <img
-                  src="https://tkywpdpduoucwmpgtkrd.supabase.co/storage/v1/object/public/images/WhatsApp%20Image%202026-04-08%20at%2014.27.44%20(6).jpeg"
-                  alt="Dental care setting in Istanbul"
+                  src="/images/istanbul-bosphorus-editorial.svg"
+                  alt="Original illustration of Istanbul across the Bosphorus at golden hour"
                   className="h-full w-full object-cover"
                   loading="eager"
                   fetchPriority="high"
