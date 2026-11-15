@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1100" role="img" aria-labelledby="title desc">
+<title id="title">Istanbul across the Bosphorus</title>
+<desc id="desc">An original editorial illustration of Istanbul's waterfront, domes, minarets, bridge and ferries at golden hour.</desc>
+<defs>
+ <linearGradient id="sky" x1="0" y1="0" x2="0.9" y2="1"><stop stop-color="#e9d9b7"/><stop offset=".52" stop-color="#c9b38c"/><stop offset="1" stop-color="#8b9b9a"/></linearGradient>
+ <linearGradient id="water" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#5f8586"/><stop offset="1" stop-color="#18384c"/></linearGradient>
+ <linearGradient id="sun" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff1cb"/><stop offset="1" stop-color="#d8b879"/></linearGradient>
+ <pattern id="grain" width="160" height="160" patternUnits="userSpaceOnUse"><circle cx="14" cy="22" r="1" fill="#fff" opacity=".16"/><circle cx="87" cy="69" r=".8" fill="#14283b" opacity=".12"/><circle cx="131" cy="119" r="1" fill="#fff" opacity=".12"/></pattern>
+</defs>
+<rect width="900" height="1100" fill="url(#sky)"/>
+<circle cx="660" cy="250" r="120" fill="url(#sun)" opacity=".9"/>
+<path d="M0 550 Q160 495 300 540 T600 525 T900 515 V1100 H0Z" fill="#a88e6d" opacity=".45"/>
+<!-- distant city -->
+<g fill="#536c70" opacity=".72">
+ <path d="M0 540V470h35v-35h23v44h26v-67h25v62h34v-40h26v47h32v-72h20v63h31v-36h28v45h26v-58h25v69h36v-35h25v48h34v-64h25v67h42v-40h26v42h31v-70h22v72h38v-45h25v48h35v-66h26v63h34v-40h22v46h35v-53h23v61h32v-36h24v41h37v-60h23v71H0Z"/>
+</g>
+<!-- domes and minarets -->
+<g fill="#344f5c">
+ <path d="M105 482 Q160 385 215 482Z"/><path d="M126 482V455h68v27Z"/>
+ <path d="M150 389V250h9v139l-4-22Z"/><path d="M147 252l7-23 7 23Z"/>
+ <path d="M275 510 Q345 360 415 510Z"/><path d="M293 510V470h104v40Z"/>
+ <path d="M340 365V180h10v185l-5-25Z"/><path d="M337 183l8-28 8 28Z"/>
+ <path d="M420 505 Q478 400 536 505Z"/><path d="M438 505V470h82v35Z"/>
+ <path d="M472 403V286h8v117l-4-18Z"/><path d="M469 289l7-24 7 24Z"/>
+ <path d="M600 510 Q672 380 744 510Z"/><path d="M620 510V468h104v42Z"/>
+ <path d="M665 385V220h9v165l-4-22Z"/><path d="M662 223l7-26 7 26Z"/>
+</g>
+<g fill="#c4a66f" opacity=".8">
+ <path d="M105 482 Q160 385 215 482Z"/><path d="M275 510 Q345 360 415 510Z"/><path d="M420 505 Q478 400 536 505Z"/><path d="M600 510 Q672 380 744 510Z"/>
+</g>
+<!-- Bosphorus -->
+<path d="M0 550 Q200 520 380 560 T900 545 V1100 H0Z" fill="url(#water)"/>
+<path d="M0 630 Q210 600 410 635 T900 618" fill="none" stroke="#d6c39e" stroke-width="3" opacity=".35"/>
+<path d="M0 730 Q210 700 410 735 T900 718" fill="none" stroke="#d6c39e" stroke-width="2" opacity=".2"/>
+<!-- bridge -->
+<g fill="none" stroke="#d7c5a0" opacity=".85">
+ <path d="M20 570 Q450 475 880 568" stroke-width="8"/>
+ <path d="M150 555V400 M170 552V400 M730 552V400 M750 555V400" stroke-width="5"/>
+ <path d="M150 400 Q450 480 750 400" stroke-width="3"/>
+ <path d="M150 400L20 570 M750 400L880 568" stroke-width="2"/>
+</g>
+<!-- ferry -->
+<g transform="translate(340 700)">
+ <path d="M-130 20H135L105 65H-95Z" fill="#142f43"/>
+ <path d="M-60 20V-35H62V20Z" fill="#e7e1d2"/>
+ <path d="M-42 -35V-62H36V-35Z" fill="#e7e1d2"/>
+ <path d="M-47 -26h20v14h-20zm33 0h20v14h-20zm33 0h20v14h-20z" fill="#69858a"/>
+ <path d="M-18 -62V-90h5v28Z" fill="#142f43"/>
+ <path d="M-160 75Q-50 90 65 75T180 75" fill="none" stroke="#e8d6b2" stroke-width="3" opacity=".55"/>
+</g>
+<!-- smaller ferry -->
+<g transform="translate(700 820) scale(.62)">
+ <path d="M-100 10H110L82 48H-75Z" fill="#142f43"/><path d="M-45 10V-34H55V10Z" fill="#e7e1d2"/><path d="M-30 -34h70v-22h-70Z" fill="#e7e1d2"/><path d="M-30 -25h18v12h-18zm29 0h18v12H-1z" fill="#69858a"/>
+</g>
+<!-- foreground shoreline -->
+<path d="M0 920Q180 865 360 910T720 890T900 920V1100H0Z" fill="#122b3e" opacity=".75"/>
+<path d="M0 975Q220 930 420 970T900 960" fill="none" stroke="#d4b878" stroke-width="2" opacity=".45"/>
+<rect width="900" height="1100" fill="url(#grain)"/>
+</svg>
