@@ -2,59 +2,60 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, ArrowUpRight } from 'lucide-react'
 
 const LINKS = [
   { href: '/treatments', label: 'Treatments' },
-  { href: '/calculator', label: 'Calculator' },
-  { href: '/about',      label: 'About' },
-  { href: '/contact',    label: 'Contact' },
+  { href: '/about', label: 'About' },
+  { href: '/contact', label: 'Contact' },
 ]
 
 export function PublicNav() {
   const [open, setOpen] = useState(false)
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-navy/95 backdrop-blur border-b border-gold/15">
-      <div className="max-w-6xl mx-auto px-6 md:px-[5%] h-16 flex items-center justify-between">
-        <Link href="/" className="font-display text-xl font-semibold text-cream">
-          MMV<span className="text-gold">Medical</span>
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#12243a]/95 text-white shadow-[0_8px_30px_rgba(10,25,40,0.08)] backdrop-blur-xl">
+      <nav aria-label="Main navigation" className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8 md:h-[76px] md:px-12">
+        <Link href="/" className="group inline-flex items-center gap-2.5" aria-label="MMV Medical home">
+          <span className="flex h-9 w-9 items-center justify-center border border-[#c8a45a]/60 font-display text-lg text-[#e3c98d]">M</span>
+          <span className="font-display text-[21px] font-semibold tracking-tight text-white">MMV<span className="text-[#d5b879]">Medical</span></span>
         </Link>
 
-        {/* Desktop */}
-        <div className="hidden md:flex items-center gap-8">
-          {LINKS.map(l => (
-            <Link key={l.href} href={l.href} className="text-cream/65 text-sm tracking-wide hover:text-gold transition-colors">
-              {l.label}
+        <div className="hidden items-center gap-9 md:flex">
+          {LINKS.map(link => (
+            <Link key={link.href} href={link.href} className="text-[13px] font-medium text-white/65 transition hover:text-[#e3c98d]">
+              {link.label}
             </Link>
           ))}
-          <Link
-            href="/#consultation"
-            className="bg-gold text-navy text-sm font-semibold tracking-wide uppercase px-5 py-2 rounded-sm hover:bg-gold-light transition-colors"
-          >
-            Free Consult
+          <Link href="/#consultation" className="group inline-flex items-center gap-2 bg-[#d5b879] px-5 py-3 text-[11px] font-bold uppercase tracking-[0.12em] text-[#12243a] transition hover:bg-[#e7d2a1]">
+            Speak with us <ArrowUpRight size={14} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </Link>
         </div>
 
-        {/* Mobile toggle */}
-        <button className="md:hidden text-cream/70 hover:text-cream" onClick={() => setOpen(!open)}>
-          {open ? <X size={22} /> : <Menu size={22} />}
+        <button
+          type="button"
+          className="inline-flex h-10 w-10 items-center justify-center border border-white/15 text-white transition hover:border-[#d5b879]/60 md:hidden"
+          onClick={() => setOpen(!open)}
+          aria-label={open ? 'Close navigation menu' : 'Open navigation menu'}
+          aria-expanded={open}
+          aria-controls="mobile-navigation"
+        >
+          {open ? <X size={20} /> : <Menu size={20} />}
         </button>
-      </div>
+      </nav>
 
-      {/* Mobile menu */}
       {open && (
-        <div className="md:hidden bg-navy border-t border-gold/10 px-6 py-4 flex flex-col gap-4">
-          {LINKS.map(l => (
-            <Link key={l.href} href={l.href} className="text-cream/70 text-sm" onClick={() => setOpen(false)}>
-              {l.label}
+        <div id="mobile-navigation" className="border-t border-white/10 bg-[#12243a] px-5 pb-6 pt-3 md:hidden">
+          {LINKS.map(link => (
+            <Link key={link.href} href={link.href} className="block border-b border-white/10 py-4 text-sm text-white/75" onClick={() => setOpen(false)}>
+              {link.label}
             </Link>
           ))}
-          <Link href="/#consultation" className="bg-gold text-navy text-sm font-semibold text-center py-2.5 rounded-sm" onClick={() => setOpen(false)}>
-            Free Consultation
+          <Link href="/#consultation" className="mt-5 flex items-center justify-center gap-2 bg-[#d5b879] py-3.5 text-xs font-bold uppercase tracking-widest text-[#12243a]" onClick={() => setOpen(false)}>
+            Start an enquiry <ArrowUpRight size={15} />
           </Link>
         </div>
       )}
-    </nav>
+    </header>
   )
 }
