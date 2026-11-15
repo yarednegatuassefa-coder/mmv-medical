@@ -9,26 +9,26 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://mmvmedical.health'),
+  metadataBase: new URL('https://mmvmedical.org'),
   title: {
-    default: 'MMV Medical — World-Class Dental Care in Istanbul',
+    default: 'MMV Medical — Dental Care Coordination in Istanbul',
     template: '%s | MMV Medical',
   },
-  description: 'Save up to 70% on dental implants, veneers, and full-arch restorations in Istanbul. Expert coordination for UK, Ireland, Netherlands, Belgium and Romania patients.',
-  keywords: ['dental implants Istanbul','Turkey dental tourism','veneers Istanbul','cheap dental implants','MMV Medical'],
+  description: 'Explore dental treatment options in Istanbul with personal coordination for international patients. Start with an informed, no-obligation conversation.',
+  keywords: ['dental care coordination Istanbul','dental tourism Türkiye','dental implants Istanbul','MMV Medical'],
   authors: [{ name: 'MMV Medical' }],
   creator: 'MMV Medical',
   openGraph: {
     type: 'website',
     locale: 'en_GB',
     siteName: 'MMV Medical',
-    title: 'MMV Medical — World-Class Dental Care in Istanbul',
-    description: 'Save up to 70% on dental treatment. Expert English-speaking coordination from your first enquiry to your final smile.',
+    title: 'MMV Medical — Dental Care Coordination in Istanbul',
+    description: 'Personal coordination for international patients exploring dental care in Istanbul.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'MMV Medical — Dental Tourism Istanbul',
-    description: 'Save up to 70% on dental implants & veneers in Istanbul. Trusted by UK, Irish & European patients.',
+    title: 'MMV Medical — Dental Care Coordination in Istanbul',
+    description: 'Dental care coordination in Istanbul for international patients.',
   },
   robots: { index: true, follow: true },
 }

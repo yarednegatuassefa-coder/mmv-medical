@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
+import Link from 'next/link'
 import { capturePublicLead } from '@/actions/leads'
 import { COUNTRIES, TREATMENTS, BUDGET_RANGES, TRAVEL_MONTHS, WA_NUMBER } from '@/lib/constants'
 
@@ -53,7 +54,7 @@ export function LeadFormSection() {
         <div className="w-14 h-14 bg-teal/10 rounded-full flex items-center justify-center text-2xl mx-auto mb-4">✓</div>
         <h3 className="font-display text-2xl font-semibold text-navy mb-2">Request Received</h3>
         <p className="text-navy/55 text-sm leading-relaxed mb-6">
-          Thank you. We'll send your personalised treatment plan within 24 hours via WhatsApp or email.
+          Thank you. A coordinator will review your enquiry and contact you using the details you provided. Clinical recommendations and final pricing must come from the treating provider.
         </p>
         <a
           href={waUrl}
@@ -73,10 +74,10 @@ export function LeadFormSection() {
       <div>
         <ul className="space-y-3">
           {[
-            'Response within 24 hours',
-            'Personalised treatment plan with exact pricing',
-            'No pushy sales — honest information only',
-            'English-speaking coordinator from day one',
+            'A coordinator reviews your enquiry',
+            'Help organising questions for the clinic',
+            'No obligation to continue',
+            'Clinical decisions stay with the treating provider',
             'WhatsApp or email — your choice',
           ].map(p => (
             <li key={p} className="flex items-center gap-3 text-navy/70 text-sm">
@@ -89,8 +90,8 @@ export function LeadFormSection() {
 
       {/* Right: form */}
       <div className="bg-white border border-cream-dark rounded-lg p-6 shadow-sm">
-        <h3 className="font-display text-xl font-semibold text-navy mb-1">Free Consultation Request</h3>
-        <p className="text-navy/45 text-xs mb-5">Takes 2 minutes. No commitment.</p>
+        <h3 className="font-display text-xl font-semibold text-navy mb-1">Send an Enquiry</h3>
+        <p className="text-navy/45 text-xs mb-5">A few details help us understand how to direct your question.</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Honeypot — hidden from real users */}
@@ -147,7 +148,7 @@ export function LeadFormSection() {
 
           <div>
             <label className="block text-xs font-mono tracking-wider uppercase text-navy/50 mb-1">Your Situation (optional)</label>
-            <textarea name="notes" rows={3} className="w-full border border-cream-dark rounded px-3 py-2 text-sm text-navy outline-none focus:border-teal resize-none" placeholder="E.g. I'm missing 2 back teeth, quoted £6,000 in the UK..." />
+            <textarea name="notes" rows={3} className="w-full border border-cream-dark rounded px-3 py-2 text-sm text-navy outline-none focus:border-teal resize-none" placeholder="What would you like help understanding? Please do not include medical records, diagnoses, passport details or other sensitive information." />
           </div>
 
           {state === 'error' && (
@@ -155,11 +156,11 @@ export function LeadFormSection() {
           )}
 
           <button type="submit" disabled={state === 'loading'} className="w-full bg-navy text-gold font-semibold text-sm tracking-wide uppercase py-3 rounded-sm hover:bg-navy-mid transition-colors disabled:opacity-50">
-            {state === 'loading' ? 'Sending...' : 'Send My Free Consultation Request →'}
+            {state === 'loading' ? 'Sending...' : 'Send Enquiry →'}
           </button>
 
-          <p className="text-navy/30 text-xs text-center leading-relaxed">
-            Your information is kept private by MMV Medical and never shared with third parties.
+          <p className="text-navy/45 text-xs text-center leading-relaxed">
+            Your details are used to respond to this enquiry. Read our <Link href="/privacy-policy" className="underline underline-offset-2 hover:text-navy">Privacy Policy</Link> for more information.
           </p>
         </form>
       </div>
