@@ -37,7 +37,7 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
     // Prefix spreadsheet formula-like values before CSV quoting. Database values remain unchanged.
     const safeCell = (value: unknown) => {
       const text = String(value ?? '')
-      return /^[\\s\\u0000-\\u001F]*[=+\\-@]/.test(text) ? `'${text}` : text
+      return /^[\s\u0000-\u001F]*[=+\\-@]/.test(text) ? `'${text}` : text
     }
     const csv = [headers, ...rows].map(r => r.map(v => `"${safeCell(v).replace(/"/g,'""')}"`).join(',')).join('\n')
     const a = document.createElement('a')
