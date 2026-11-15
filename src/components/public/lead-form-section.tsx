@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
+import Link from 'next/link'
 import { capturePublicLead } from '@/actions/leads'
 import { COUNTRIES, TREATMENTS, BUDGET_RANGES, TRAVEL_MONTHS, WA_NUMBER } from '@/lib/constants'
 
@@ -158,8 +159,8 @@ export function LeadFormSection() {
             {state === 'loading' ? 'Sending...' : 'Send Enquiry →'}
           </button>
 
-          <p className="text-navy/30 text-xs text-center leading-relaxed">
-            Your details are used to respond to this enquiry. Please read our Privacy Policy for more information.
+          <p className="text-navy/45 text-xs text-center leading-relaxed">
+            Your details are used to respond to this enquiry. Read our <Link href="/privacy-policy" className="underline underline-offset-2 hover:text-navy">Privacy Policy</Link> for more information.
           </p>
         </form>
       </div>
