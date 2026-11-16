@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "project": "mmv-medical",
+  "updated_at": "2026-11-16",
+  "features": [
+    {
+      "id": "HARN-001",
+      "title": "Patient safety and privacy instruction hierarchy",
+      "status": "implemented_unverified",
+      "priority": "critical",
+      "acceptance_criteria": [
+        "AGENTS.md and CLAUDE.md rules are loaded before relevant work",
+        "Clinical review, patient communication and CRM writes remain gated"
+      ],
+      "verification": [
+        "Review AGENTS.md",
+        "Review CLAUDE.md",
+        "Review harness/README.md"
+      ],
+      "risk": "high",
+      "owner_approval_required": true,
+      "evidence": [],
+      "notes": "Written safeguards exist; runtime enforcement and clinical governance audit remain unverified."
+    },
+    {
+      "id": "HARN-002",
+      "title": "Deterministic harness preflight",
+      "status": "planned",
+      "priority": "high",
+      "acceptance_criteria": [
+        "Preflight validates core instruction and skill files",
+        "Environment variables are checked by name only, never printed"
+      ],
+      "verification": [
+        "npm run harness:check"
+      ],
+      "risk": "low",
+      "owner_approval_required": false,
+      "evidence": [],
+      "notes": "Implementation in this PR."
+    },
+    {
+      "id": "HARN-003",
+      "title": "Automated tests, type-check and production build gate",
+      "status": "implemented_unverified",
+      "priority": "high",
+      "acceptance_criteria": [
+        "CI runs tests, type-check and Next.js build",
+        "No production patient data is required by CI"
+      ],
+      "verification": [
+        "GitHub Actions MMV CI run"
+      ],
+      "risk": "medium",
+      "owner_approval_required": false,
+      "evidence": [],
+      "notes": "Workflow exists; current PR run evidence is pending."
+    },
+    {
+      "id": "HARN-004",
+      "title": "Durable task state and handoff",
+      "status": "implemented_unverified",
+      "priority": "high",
+      "acceptance_criteria": [
+        "Feature ledger and append-only progress log exist",
+        "Patient-related task closure records approvals and unresolved risks"
+      ],
+      "verification": [
+        "Review harness/feature-list.json",
+        "Review harness/progress.md"
+      ],
+      "risk": "high",
+      "owner_approval_required": true,
+      "evidence": [],
+      "notes": "Initial state only; maintain it as real work progresses."
+    }
+  ]
+}
