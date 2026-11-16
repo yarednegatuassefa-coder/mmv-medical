@@ -30,20 +30,25 @@ export function LeadFormSection() {
       _ts:                    tsRef.current,
     }
 
-    const result = await capturePublicLead(data as any)
+    try {
+      const result = await capturePublicLead(data as any)
 
-    if (result.success) {
-      const msg = encodeURIComponent(
-        `Hi MMV Medical — I just submitted a consultation request.\n\n` +
-        `Name: ${data.full_name}\n` +
-        `Country: ${data.country}\n` +
-        `Treatment: ${data.treatment_interest}\n\n` +
-        `Looking forward to hearing from you!`
-      )
-      setWaUrl(`https://wa.me/${WA_NUMBER}?text=${msg}`)
-      setState('success')
-    } else {
-      setErrorMsg(result.error ?? 'Something went wrong')
+      if (result.success) {
+        const msg = encodeURIComponent(
+          `Hi MMV Medical — I just submitted a consultation request.\\n\\n` +
+          `Name: ${data.full_name}\\n` +
+          `Country: ${data.country}\\n` +
+          `Treatment: ${data.treatment_interest}\\n\\n` +
+          `Looking forward to hearing from you!`
+        )
+        setWaUrl(`https://wa.me/${WA_NUMBER}?text=${msg}`)
+        setState('success')
+      } else {
+        setErrorMsg(result.error ?? 'Something went wrong. Please try again.')
+        setState('error')
+      }
+    } catch {
+      setErrorMsg('We could not send your enquiry. Your details remain in the form; please try again.')
       setState('error')
     }
   }
@@ -152,7 +157,7 @@ export function LeadFormSection() {
           </div>
 
           {state === 'error' && (
-            <p className="text-red-500 text-xs bg-red-50 border border-red-200 px-3 py-2 rounded">{errorMsg}</p>
+            <p role="alert" aria-live="assertive" className="text-red-500 text-xs bg-red-50 border border-red-200 px-3 py-2 rounded">{errorMsg}</p>
           )}
 
           <button type="submit" disabled={state === 'loading'} className="w-full bg-navy text-gold font-semibold text-sm tracking-wide uppercase py-3 rounded-sm hover:bg-navy-mid transition-colors disabled:opacity-50">
