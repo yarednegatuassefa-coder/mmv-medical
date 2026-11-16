@@ -1,4 +1,4 @@
-name: CI
+name: MMV CI
 
 on:
   pull_request:
@@ -6,30 +6,42 @@ on:
   push:
     branches: [main, feat/mmv-complete-site-overhaul]
 
+permissions:
+  contents: read
+
 concurrency:
-  group: mmv-medical-ci-${{ github.ref }}
+  group: mmv-ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  validate:
+  verify:
+    name: Type-check and production build
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - name: Checkout
+      - name: Check out repository
         uses: actions/checkout@v4
-      - name: Set up Node
+
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-      # This repository currently has no committed package-lock.json.
-      # Do not enable setup-node's npm cache or use npm ci until a lockfile is added.
+
       - name: Install dependencies
         run: npm install --no-audit --no-fund
-      - name: Type check
+
+      - name: CSV safety unit tests
+        run: npm test
+
+      - name: Type-check
         run: npm run type-check
-      - name: Production build
+
+      - name: Build Next.js application
         run: npm run build
         env:
-          NEXT_PUBLIC_SITE_URL: https://mmvmedical.org
           NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-placeholder-anon-key
-          SUPABASE_SERVICE_ROLE_KEY: ci-placeholder-service-role-key
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-placeholder
+          SUPABASE_SERVICE_ROLE_KEY: ci-placeholder
+          ANTHROPIC_API_KEY: ci-placeholder
+          NEXT_PUBLIC_SITE_URL: https://example.invalid
+          NEXT_PUBLIC_WA_NUMBER: "000000000000"
