@@ -1,99 +1,24 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { ArrowRight, Compass, FileCheck2, MessageCircle, ShieldCheck } from 'lucide-react'
 import { PublicNav } from '@/components/layout/public-nav'
 import { PublicFooter } from '@/components/layout/public-footer'
 
-export const metadata: Metadata = {
-  title: 'About MMV Medical',
-  description: 'MMV Medical connects European patients with specialist dental surgeons in Istanbul — with transparent pricing, dedicated English-speaking coordination, and full aftercare support.',
-  alternates: { canonical: '/about' },
-}
+export const metadata: Metadata = { title: 'About MMV Medical', description: 'How MMV Medical helps international patients navigate enquiries, clinic communication and travel planning in Istanbul.', alternates: { canonical: '/about' } }
 
-const CREDENTIALS = [
-  { label: 'Issued by', value: 'Turkish Ministry of Health' },
-  { label: 'Verifiable at', value: 'turkiye.gov.tr' },
-]
-
-const VALUES = [
-  { icon: '◎', title: 'Transparency first', desc: 'Exact pricing before you commit. No hidden fees, no surprises on arrival. What we quote is what you pay.' },
-  { icon: '◈', title: 'Specialist-led care', desc: 'Your treatment is performed by dentists who specialise exclusively in implantology and aesthetic dentistry — not generalists.' },
-  { icon: '◆', title: 'One coordinator, whole journey', desc: 'From your first question to your final follow-up, one dedicated English-speaking coordinator manages every detail.' },
-  { icon: '◇', title: 'European market focus', desc: 'We work exclusively with patients from UK, Ireland, Netherlands, Belgium and Romania. We understand your expectations.' },
+const principles = [
+  { icon: ShieldCheck, title: 'Clear responsibilities', text: 'We coordinate communication and practical arrangements. Diagnosis, treatment recommendations, consent and clinical care belong to the treating healthcare provider.' },
+  { icon: MessageCircle, title: 'Human communication', text: 'A coordinator helps organise questions, understand the process and keep track of the next step.' },
+  { icon: FileCheck2, title: 'Informed decisions', text: 'You should have time to review the provider, ask questions and understand proposed costs before deciding whether to proceed.' },
+  { icon: Compass, title: 'Practical planning', text: 'When requested, we can help organise the non-clinical details around a visit to Istanbul.' },
 ]
 
 export default function AboutPage() {
-  return (
-    <>
-      <PublicNav />
-      <main className="min-h-screen bg-cream pt-24 pb-20">
-
-        {/* Hero */}
-        <section className="bg-navy py-16 px-6 md:px-[5%] mb-16">
-          <div className="max-w-3xl mx-auto">
-            <div className="text-gold text-xs font-mono tracking-widest uppercase mb-3">About</div>
-            <h1 className="font-display text-4xl md:text-5xl font-semibold text-cream leading-tight mb-5">
-              Built for European patients who deserve better
-            </h1>
-            <p className="text-cream/55 text-lg font-light leading-relaxed">
-              MMV Medical was created because too many European patients were navigating Istanbul's dental market alone — comparing clinics with no guidance, paying prices that didn't match expectations, and receiving zero aftercare once they flew home.
-            </p>
-          </div>
-        </section>
-
-        {/* Values */}
-        <section className="px-6 md:px-[5%] mb-16">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-teal text-xs font-mono tracking-widest uppercase mb-3">Our Approach</div>
-            <h2 className="font-display text-3xl font-semibold text-navy mb-8">What sets us apart</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {VALUES.map(v => (
-                <div key={v.title} className="bg-white border border-cream-dark rounded-lg p-6">
-                  <div className="text-gold text-xl mb-3">{v.icon}</div>
-                  <h3 className="font-semibold text-navy mb-2">{v.title}</h3>
-                  <p className="text-navy/55 text-sm leading-relaxed">{v.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Credentials — license numbers removed */}
-        <section className="bg-navy-mid/5 border-y border-navy/10 py-12 px-6 md:px-[5%] mb-16">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-teal text-xs font-mono tracking-widest uppercase mb-3">Credentials</div>
-            <h2 className="font-display text-3xl font-semibold text-navy mb-8">Licensed & Authorised</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {CREDENTIALS.map(c => (
-                <div key={c.label} className="bg-white border border-cream-dark rounded p-4">
-                  <div className="text-xs font-mono uppercase tracking-wider text-navy/40 mb-1">{c.label}</div>
-                  <div className="text-sm font-mono text-navy">{c.value}</div>
-                </div>
-              ))}
-            </div>
-            <p className="text-navy/40 text-xs mt-4">
-              International Health Tourism Authorization Certificate, verifiable at turkiye.gov.tr
-            </p>
-          </div>
-        </section>
-
-        {/* CTA */}
-        <section className="px-6 md:px-[5%] text-center">
-          <div className="max-w-xl mx-auto">
-            <h2 className="font-display text-3xl font-semibold text-navy mb-3">Ready to find out how much you'd save?</h2>
-            <p className="text-navy/55 mb-6 text-sm">Free consultation, exact pricing, no commitment.</p>
-            <div className="flex gap-3 justify-center flex-wrap">
-              <Link href="/#consultation" className="bg-navy text-gold font-semibold text-sm tracking-wide uppercase px-7 py-3 rounded-sm hover:bg-navy-mid transition-colors">
-                Free Consultation
-              </Link>
-              <Link href="/calculator" className="border border-navy/20 text-navy text-sm tracking-wide uppercase px-7 py-3 rounded-sm hover:border-navy/40 transition-colors">
-                Calculate Savings
-              </Link>
-            </div>
-          </div>
-        </section>
-
-      </main>
-      <PublicFooter />
-    </>
-  )
+ return <><PublicNav /><main className="site-main">
+  <section className="site-hero site-hero--compact"><div className="site-shell"><p className="eyebrow">About MMV Medical · Istanbul, Türkiye</p><h1 className="display-heading max-w-4xl">Healthcare travel should feel <em>understandable.</em></h1><p className="hero-copy max-w-2xl">A cross-border healthcare enquiry can involve unfamiliar providers, different processes and a long list of practical questions. MMV exists to make the coordination around that journey clearer.</p><div className="mt-8 flex flex-wrap gap-3"><Link href="/#consultation" className="button button--gold">Talk with a coordinator <ArrowRight size={16}/></Link><Link href="/treatments" className="button button--outline-light">Explore treatment areas</Link></div></div></section>
+  <section className="site-section"><div className="site-shell grid gap-12 lg:grid-cols-[.8fr_1.2fr]"><div><p className="eyebrow eyebrow--dark">Our role</p><h2 className="section-heading">A coordinator beside you — not between you and your clinician.</h2></div><div className="prose-column"><p>MMV Medical is a patient coordination and facilitation service. We help people make an initial enquiry, organise communication with a treating provider and understand practical arrangements around a possible visit to Istanbul.</p><p>We are not a hospital, dental clinic or medical practice. We do not diagnose, prescribe, determine clinical suitability or deliver treatment. The treating provider must assess your individual circumstances, explain available options and confirm any treatment plan and final price.</p><p>You remain free to ask questions, seek an independent second opinion, pause or decide not to travel. An enquiry is not a commitment.</p></div></div></section>
+  <section className="site-section site-section--soft"><div className="site-shell"><div className="section-intro"><p className="eyebrow eyebrow--dark">What guides our work</p><h2 className="section-heading">Useful support. Honest boundaries.</h2></div><div className="grid gap-4 sm:grid-cols-2">{principles.map(({icon:Icon,title,text},i)=><article key={title} className="principle-card"><div className="principle-card__top"><span>0{i+1}</span><Icon size={21}/></div><h3>{title}</h3><p>{text}</p></article>)}</div></div></section>
+  <section className="site-section"><div className="site-shell grid gap-10 lg:grid-cols-[.7fr_1.3fr]"><div><p className="eyebrow eyebrow--dark">How it works</p><h2 className="section-heading">A simple path, with no pressure to continue.</h2></div><ol className="process-list"><li><span>01</span><div><h3>Start a conversation</h3><p>Tell us what you want to understand and how to reach you. Do not send medical records or identity documents through the public form.</p></div></li><li><span>02</span><div><h3>Organise the right questions</h3><p>We help direct your enquiry to the appropriate provider contact where applicable. The provider handles clinical assessment.</p></div></li><li><span>03</span><div><h3>Review before deciding</h3><p>Consider the provider's explanation, scope, costs, risks, follow-up arrangements and travel requirements before making a decision.</p></div></li></ol></div></section>
+  <section className="site-cta"><div className="site-shell site-cta__inner"><div><p className="eyebrow">Your next step</p><h2>Begin with a question.</h2><p>There is no obligation to travel or proceed with treatment.</p></div><Link href="/#consultation" className="button button--gold">Contact MMV <ArrowRight size={16}/></Link></div></section>
+ </main><PublicFooter/></>
 }
