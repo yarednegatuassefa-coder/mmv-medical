@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" role="img" aria-labelledby="title desc">
+<title id="title">Dental implant illustration</title><desc id="desc">A clinical cutaway illustration of a dental crown attached to an implant fixture in a jawbone, with a digital scan on a monitor.</desc>
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#eef2f0"/><stop offset="1" stop-color="#dce6e3"/></linearGradient>
+ <linearGradient id="bone" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f6dfb8"/><stop offset="1" stop-color="#d8b88f"/></linearGradient>
+ <linearGradient id="tooth" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff"/><stop offset=".6" stop-color="#f5f1e8"/><stop offset="1" stop-color="#d8d7d0"/></linearGradient>
+ <linearGradient id="metal" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#78858a"/><stop offset=".45" stop-color="#e1e7e7"/><stop offset="1" stop-color="#77858a"/></linearGradient>
+ <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#263b45" flood-opacity=".14"/></filter>
+</defs>
+<rect width="960" height="640" fill="url(#bg)"/>
+<circle cx="810" cy="115" r="150" fill="#fff" opacity=".35"/>
+<rect x="54" y="62" width="852" height="516" rx="20" fill="#f9faf7" opacity=".72"/>
+<g filter="url(#shadow)">
+ <rect x="575" y="108" width="265" height="194" rx="12" fill="#203746"/>
+ <rect x="589" y="122" width="237" height="164" rx="5" fill="#d9e4e2"/>
+ <path d="M607 235 C638 193 673 180 705 198 S765 250 809 186" fill="none" stroke="#93aaa7" stroke-width="15" stroke-linecap="round"/>
+ <path d="M608 248 C653 214 679 221 708 239 S765 269 809 218" fill="none" stroke="#b8c9c2" stroke-width="9" stroke-linecap="round"/>
+ <path d="M704 143 C685 163 680 191 697 209 C712 226 738 220 750 202 C764 181 748 154 728 143Z" fill="#f5e5c9" stroke="#c9b99e" stroke-width="3"/>
+ <path d="M714 149 L714 206" stroke="#a8b7b3" stroke-width="4" stroke-dasharray="5 6"/>
+ <path d="M693 302 L724 302 L732 326 L685 326Z" fill="#8d9a9c"/>
+ <path d="M650 326 H767" stroke="#6d7c80" stroke-width="7" stroke-linecap="round"/>
+</g>
+<g filter="url(#shadow)">
+ <path d="M90 382 C162 333 252 326 335 345 C415 363 483 346 552 358 C614 368 660 404 676 457 C687 493 660 530 621 541 C530 567 425 546 337 554 C235 564 143 553 98 512 C62 479 58 414 90 382Z" fill="url(#bone)" stroke="#c9a77f" stroke-width="5"/>
+ <path d="M96 405 C183 370 258 368 333 382 C408 396 485 378 559 394 C603 403 631 424 646 452" fill="none" stroke="#fff1d7" stroke-width="10" opacity=".75"/>
+ <path d="M129 352 C158 325 190 315 217 323 C240 330 248 357 241 385 L226 425 C216 450 194 450 180 427 L151 391Z" fill="url(#tooth)" stroke="#d7d6cf" stroke-width="4"/>
+ <path d="M268 346 C290 324 322 321 346 335 C367 348 369 378 358 402 L340 440 C327 465 302 460 290 436 L270 393Z" fill="url(#tooth)" stroke="#d7d6cf" stroke-width="4"/>
+ <path d="M399 347 C425 326 456 329 478 348 C497 367 491 396 477 417 L454 448 C438 468 415 455 407 431 L394 391Z" fill="url(#tooth)" stroke="#d7d6cf" stroke-width="4"/>
+ <path d="M548 362 C572 345 600 352 618 374 C635 396 625 422 606 440 L579 464 C560 481 541 462 539 438 L536 398Z" fill="url(#tooth)" stroke="#d7d6cf" stroke-width="4"/>
+ <path d="M327 377 C324 405 327 430 342 449 L353 466 L366 447 C380 425 384 401 376 377Z" fill="#c28b64" opacity=".28"/>
+ <path d="M333 378 C326 411 334 441 356 462 C379 438 387 409 375 378Z" fill="url(#metal)" stroke="#718086" stroke-width="4"/>
+ <path d="M335 390 L375 390 M337 405 L374 405 M341 420 L370 420 M347 435 L365 435" stroke="#6f7c82" stroke-width="3"/>
+ <path d="M340 375 L338 355 C337 343 346 335 357 335 C368 335 377 343 376 355 L374 377Z" fill="url(#metal)" stroke="#718086" stroke-width="3"/>
+ <path d="M327 336 C318 319 322 298 338 285 C350 275 371 275 385 287 C399 300 399 319 388 336 C378 351 340 351 327 336Z" fill="url(#tooth)" stroke="#d1d1ca" stroke-width="4"/>
+ <path d="M339 292 C352 282 371 283 382 294" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity=".8"/>
+</g>
+<g fill="#203746" font-family="Arial,sans-serif">
+ <text x="92" y="125" font-size="17" letter-spacing="4" fill="#9a7a4c">RESTORATIVE DENTISTRY</text>
+ <text x="92" y="161" font-size="31" font-weight="700">Dental implant</text>
+ <text x="92" y="190" font-size="16" fill="#647681">Crown · abutment · implant fixture</text>
+</g>
+<g stroke="#a17d42" stroke-width="2" fill="none">
+ <path d="M395 291 L475 246 L535 246"/><circle cx="395" cy="291" r="5" fill="#a17d42"/>
+ <path d="M366 414 L466 483 L526 483"/><circle cx="366" cy="414" r="5" fill="#a17d42"/>
+</g>
+<g fill="#536773" font-family="Arial,sans-serif" font-size="15">
+ <text x="543" y="251">Crown</text><text x="534" y="488">Implant fixture</text>
+</g>
+<text x="92" y="590" font-family="Arial,sans-serif" font-size="12" letter-spacing="1.5" fill="#8b9898">ILLUSTRATIVE EDUCATIONAL GRAPHIC · NOT A PATIENT RESULT</text>
+</svg>
