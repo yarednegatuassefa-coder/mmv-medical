@@ -26,6 +26,9 @@ Run /compact before continuing.
 ## Failure log
 See failures.md — read it before starting any patient task.
 
+## Harness lifecycle
+Before substantial work, read `harness/README.md`, `harness/feature-list.json` and the latest `harness/progress.md` entry. For patient-related tasks, also read `CLAUDE.md` and `failures.md`. Run `npm run harness:check` before project tests. Record required clinical/privacy approvals and unresolved risks in the handoff.
+
 ## Shared skills and portfolio standards
 Home is the portfolio coordination repository, not a source-code monorepo. Its shared skills and standards are available at:
 - [Home repository guide](https://github.com/yarednegatuassefa-coder/home/blob/main/README.md)
