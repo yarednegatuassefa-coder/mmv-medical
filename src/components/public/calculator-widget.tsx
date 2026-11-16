@@ -1,108 +1,16 @@
 'use client'
-
-import { useState, useMemo } from 'react'
+import { useMemo, useState } from 'react'
+import { ArrowRight, Calculator, RotateCcw } from 'lucide-react'
 import Link from 'next/link'
-import { COUNTRIES, TREATMENTS, CALCULATOR_DATA } from '@/lib/constants'
-
-export function CalculatorWidget() {
-  const [country, setCountry] = useState('UK')
-  const [treatment, setTreatment] = useState('single_implant')
-  const [flights, setFlights] = useState(150)
-  const [nights, setNights] = useState(3)
-
-  const c = COUNTRIES.find(c => c.value === country) ?? COUNTRIES[0]
-  const sym = c.symbol
-
-  const result = useMemo(() => {
-    const countryData = CALCULATOR_DATA[country] ?? {}
-    const prices = (countryData[treatment] as { home: number; istanbul: number } | undefined) ?? { home: 2500, istanbul: 420 }
-    const travelCost = flights + nights * 80
-    const totalIstanbul = prices.istanbul + travelCost
-    const saving = prices.home - totalIstanbul
-    const pct = Math.round((saving / prices.home) * 100)
-    return { home: prices.home, istanbul: prices.istanbul, travelCost, totalIstanbul, saving, pct }
-  }, [country, treatment, flights, nights])
-
-  const sel = 'w-full bg-navy border border-gold/20 text-cream text-sm rounded px-3 py-2.5 outline-none focus:border-gold/50 cursor-pointer appearance-none'
-
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {/* Controls */}
-      <div className="space-y-5">
-        <div>
-          <label className="block text-xs font-mono tracking-widest uppercase text-cream/45 mb-2">Your Country</label>
-          <select className={sel} value={country} onChange={e => setCountry(e.target.value)}>
-            {COUNTRIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
-          </select>
-        </div>
-        <div>
-          <label className="block text-xs font-mono tracking-widest uppercase text-cream/45 mb-2">Treatment</label>
-          <select className={sel} value={treatment} onChange={e => setTreatment(e.target.value)}>
-            {TREATMENTS.filter(t => t.value !== 'not_sure').map(t => (
-              <option key={t.value} value={t.value}>{t.label}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block text-xs font-mono tracking-widest uppercase text-cream/45 mb-2">
-            Return flights estimate — <span className="text-gold">{sym}{flights}</span>
-          </label>
-          <input type="range" min={0} max={500} step={25} value={flights}
-            onChange={e => setFlights(Number(e.target.value))}
-            className="w-full accent-gold" />
-          <div className="flex justify-between text-xs text-cream/30 font-mono mt-1">
-            <span>Not included</span><span>{sym}500</span>
-          </div>
-        </div>
-        <div>
-          <label className="block text-xs font-mono tracking-widest uppercase text-cream/45 mb-2">
-            Hotel nights — <span className="text-gold">{nights} night{nights !== 1 ? 's' : ''}</span>
-          </label>
-          <input type="range" min={0} max={10} step={1} value={nights}
-            onChange={e => setNights(Number(e.target.value))}
-            className="w-full accent-gold" />
-          <div className="flex justify-between text-xs text-cream/30 font-mono mt-1">
-            <span>0</span><span>10 nights</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Results */}
-      <div className="bg-navy-mid border border-gold/15 rounded-lg p-6">
-        <div className="text-center pb-5 mb-5 border-b border-gold/10">
-          <div className="text-xs font-mono tracking-widest uppercase text-cream/40 mb-2">Your Net Saving</div>
-          <div className="font-display text-6xl font-bold text-teal-light">
-            {result.saving > 0 ? `${sym}${result.saving.toLocaleString()}` : `${sym}0`}
-          </div>
-          <div className="text-cream/40 text-sm mt-1">
-            {result.saving > 0 ? `Even after flights & hotel — you save ${result.pct}%` : 'Adjust travel costs to see your saving'}
-          </div>
-        </div>
-
-        <div className="space-y-3 mb-6">
-          {[
-            { label: 'Cost at home',        value: `${sym}${result.home.toLocaleString()}`,         style: 'line-through text-cream/35' },
-            { label: 'Istanbul treatment',  value: `${sym}${result.istanbul.toLocaleString()}`,      style: 'text-gold font-display text-lg' },
-            { label: 'Flights + hotel',     value: result.travelCost > 0 ? `${sym}${result.travelCost.toLocaleString()}` : 'Not included', style: 'text-cream/50' },
-          ].map(r => (
-            <div key={r.label} className="flex justify-between items-center">
-              <span className="text-sm text-cream/50">{r.label}</span>
-              <span className={`font-mono text-sm ${r.style}`}>{r.value}</span>
-            </div>
-          ))}
-          <div className="flex justify-between items-center pt-3 border-t border-gold/10">
-            <span className="text-sm text-teal-light font-medium">You save</span>
-            <span className="font-display text-2xl font-bold text-teal-light">
-              {result.saving > 0 ? `${sym}${result.saving.toLocaleString()}` : `${sym}0`}
-            </span>
-          </div>
-        </div>
-
-        <Link href="/#consultation"
-          className="block w-full text-center bg-gold text-navy font-semibold text-sm tracking-wide uppercase py-3 rounded-sm hover:bg-gold-light transition-colors">
-          Get My Free Treatment Plan →
-        </Link>
-      </div>
-    </div>
-  )
+const currencies=[{code:'GBP',symbol:'£',label:'GBP · British pound'},{code:'EUR',symbol:'€',label:'EUR · Euro'},{code:'USD',symbol:'$',label:'USD · US dollar'},{code:'TRY',symbol:'₺',label:'TRY · Turkish lira'}]
+const money=(value:number,symbol:string)=>symbol+Math.round(value).toLocaleString()
+export function CalculatorWidget(){
+ const [currency,setCurrency]=useState('GBP'),[localQuote,setLocalQuote]=useState(''),[istanbulQuote,setIstanbulQuote]=useState(''),[flights,setFlights]=useState(''),[hotel,setHotel]=useState(''),[transfers,setTransfers]=useState(''),[other,setOther]=useState('')
+ const symbol=currencies.find(x=>x.code===currency)?.symbol??'£'
+ const result=useMemo(()=>{const local=Number(localQuote),clinic=Number(istanbulQuote),trip=[flights,hotel,transfers,other].reduce((sum,v)=>sum+(Number(v)||0),0),complete=localQuote!==''&&istanbulQuote!==''&&Number.isFinite(local)&&Number.isFinite(clinic);const total=clinic+trip;return{complete,trip,total,difference:local-total}},[localQuote,istanbulQuote,flights,hotel,transfers,other])
+ const input=(label:string,value:string,setter:(v:string)=>void,hint?:string)=><label className="planner-field"><span>{label}</span><div className="planner-field__input"><b>{symbol}</b><input type="number" min="0" step="any" inputMode="decimal" value={value} onChange={e=>setter(e.target.value)} placeholder="0"/></div>{hint?<small>{hint}</small>:null}</label>
+ const reset=()=>{setLocalQuote('');setIstanbulQuote('');setFlights('');setHotel('');setTransfers('');setOther('')}
+ return <div className="planner"><div className="planner__intro"><div className="planner__icon"><Calculator size={22}/></div><p className="eyebrow eyebrow--dark">Your numbers only</p><h2>Build a realistic comparison.</h2><p>Use estimates supplied directly by the providers and travel suppliers you are considering. We do not pre-fill clinic prices.</p><label className="planner-currency"><span>Currency</span><select value={currency} onChange={e=>setCurrency(e.target.value)}>{currencies.map(x=><option key={x.code} value={x.code}>{x.label}</option>)}</select></label></div>
+ <div className="planner__inputs"><div className="planner-group"><h3>1. Written provider estimates</h3><p>Enter comparable scopes of care, in the same currency.</p>{input('Estimate from a provider near you',localQuote,setLocalQuote,'Use a current written estimate.')}{input('Estimate from the Istanbul provider',istanbulQuote,setIstanbulQuote,'Do not use an advertised starting price.')}</div><div className="planner-group"><h3>2. Travel and additional costs</h3><p>Include the costs you expect to pay for the trip.</p><div className="grid gap-3 sm:grid-cols-2">{input('Return flights',flights,setFlights)}{input('Accommodation',hotel,setHotel)}{input('Transfers / local transport',transfers,setTransfers)}{input('Other costs',other,setOther,'Food, companion, insurance or contingency.')}</div></div></div>
+ <div className="planner-result"><div className="planner-result__top"><div><p className="eyebrow">Your comparison</p><h3>{result.complete?(result.difference>=0?'Estimated difference':'Estimated additional cost'):'Your total journey cost'}</h3></div><button type="button" className="planner-reset" onClick={reset}><RotateCcw size={14}/> Reset</button></div><div className="planner-result__number">{money(result.total,symbol)}</div><p className="planner-result__caption">Istanbul provider estimate + the travel costs entered above</p><div className="planner-breakdown"><div><span>Travel and additional costs</span><strong>{money(result.trip,symbol)}</strong></div><div><span>Local provider estimate</span><strong>{localQuote===''?'Not entered':money(Number(localQuote),symbol)}</strong></div><div><span>Istanbul provider estimate</span><strong>{istanbulQuote===''?'Not entered':money(Number(istanbulQuote),symbol)}</strong></div></div>{result.complete?<div className={'planner-difference '+(result.difference>=0?'is-positive':'is-negative')}><span>{result.difference>=0?'Difference before unlisted costs':'Additional cost before unlisted costs'}</span><strong>{money(Math.abs(result.difference),symbol)}</strong></div>:<p className="planner-hint">Enter both provider estimates to calculate the difference. You can still use the planner to total travel costs.</p>}<Link href="/#consultation" className="button button--gold planner-cta">Discuss the coordination process <ArrowRight size={16}/></Link></div></div>
 }

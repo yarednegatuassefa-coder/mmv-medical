@@ -54,7 +54,7 @@ export default function HomePage() {
   return (
     <>
       <PublicNav />
-      <main className="overflow-hidden bg-[#f7f5f0] pt-16">
+      <main className="overflow-hidden bg-[#f7f5f0] pt-0">
         <section className="relative isolate">
           <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_75%_15%,rgba(200,164,90,0.16),transparent_42%),linear-gradient(135deg,#f7f5f0_0%,#f1eee7_100%)]" />
           <div className="mx-auto grid max-w-7xl items-center gap-12 px-5 pb-16 pt-14 sm:px-8 md:min-h-[680px] md:grid-cols-[1.02fr_0.98fr] md:gap-10 md:px-12 md:py-20">
@@ -88,9 +88,12 @@ export default function HomePage() {
               <div className="absolute -bottom-8 -left-8 h-52 w-52 rounded-full bg-[#c8a45a]/10 blur-2xl" />
               <div className="relative aspect-[4/5] overflow-hidden rounded-[2px] bg-[#d9d4c9] shadow-[0_30px_80px_rgba(18,36,58,0.18)] sm:aspect-[5/4] md:aspect-[4/5]">
                 <img
-                  src="https://tkywpdpduoucwmpgtkrd.supabase.co/storage/v1/object/public/images/WhatsApp%20Image%202026-04-08%20at%2014.27.44%20(6).jpeg"
-                  alt="Dental care setting in Istanbul"
+                  src="/images/istanbul-bosphorus-editorial.svg"
+                  alt="Original illustration of Istanbul across the Bosphorus at golden hour"
                   className="h-full w-full object-cover"
+                  loading="eager"
+                  fetchPriority="high"
+                  decoding="async"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0b1c2d]/70 via-transparent to-[#0b1c2d]/5" />
                 <div className="absolute inset-x-0 bottom-0 p-6 text-white sm:p-8">
