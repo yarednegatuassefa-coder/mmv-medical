@@ -35,10 +35,10 @@ export function LeadFormSection() {
 
       if (result.success) {
         const msg = encodeURIComponent(
-          `Hi MMV Medical — I just submitted a consultation request.\\n\\n` +
-          `Name: ${data.full_name}\\n` +
-          `Country: ${data.country}\\n` +
-          `Treatment: ${data.treatment_interest}\\n\\n` +
+          `Hi MMV Medical — I just submitted a consultation request.\n\n` +
+          `Name: ${data.full_name}\n` +
+          `Country: ${data.country}\n` +
+          `Treatment: ${data.treatment_interest}\n\n` +
           `Looking forward to hearing from you!`
         )
         setWaUrl(`https://wa.me/${WA_NUMBER}?text=${msg}`)
