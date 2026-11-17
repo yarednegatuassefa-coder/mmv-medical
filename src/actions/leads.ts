@@ -1,9 +1,10 @@
 'use server'
 
 import { createServiceClient } from '@/lib/supabase/server'
+import { getStaffUser } from '@/lib/staff-auth'
 import { leadFormSchema, leadUpdateSchema, noteSchema } from '@/lib/validations/schemas'
 import type { LeadFormData } from '@/lib/validations/schemas'
-import type { Lead, Profile } from '@/types/database'
+import type { Lead } from '@/types/database'
 
 // ── HUBSPOT SYNC ─────────────────────────────────────────────
 async function syncToHubSpot(data: {
@@ -33,7 +34,6 @@ async function syncToHubSpot(data: {
           phone: data.whatsapp,
           country: data.country,
           hs_lead_status: 'NEW',
-          // Map to HubSpot default "message" field for treatment info
           message: [
             `Treatment: ${data.treatment_interest}`,
             data.budget_range ? `Budget: ${data.budget_range}` : null,
@@ -41,10 +41,10 @@ async function syncToHubSpot(data: {
           ].filter(Boolean).join(' | '),
         },
       }),
+      signal: AbortSignal.timeout(5000),
     })
   } catch (e) {
-    // Never block the main flow if HubSpot fails
-    console.error('[syncToHubSpot]', e)
+    console.error('[syncToHubSpot]', e instanceof Error ? e.message : 'unknown')
   }
 }
 
@@ -77,60 +77,59 @@ export async function capturePublicLead(
 
   if (existing) return { success: true, duplicate: true }
 
- const { data: lead, error } = await supabase
+  const { data: lead, error } = await supabase
     .from('leads')
     .insert({
-      full_name:              parsed.data.full_name,
-      email:                  parsed.data.email,
-      whatsapp:               parsed.data.whatsapp,
-      country:                parsed.data.country,
-      treatment:              parsed.data.treatment_interest,
-      treatment_interest:     parsed.data.treatment_interest,
-      budget_range:           parsed.data.budget_range ?? null,
+      full_name: parsed.data.full_name,
+      email: parsed.data.email,
+      whatsapp: parsed.data.whatsapp,
+      country: parsed.data.country,
+      treatment: parsed.data.treatment_interest,
+      treatment_interest: parsed.data.treatment_interest,
+      budget_range: parsed.data.budget_range ?? null,
       preferred_travel_month: parsed.data.preferred_travel_month ?? null,
-      notes:                  parsed.data.notes ?? null,
-      source:                 'website',
-      stage:                  'new',
+      notes: parsed.data.notes ?? null,
+      source: 'website',
+      stage: 'new',
     })
     .select('id')
     .single()
 
   if (error || !lead) {
-    console.error('[capturePublicLead]', error)
+    console.error('[capturePublicLead]', error?.message ?? 'Lead insert returned no row')
     return { success: false, error: 'Failed to save — please contact us on WhatsApp' }
   }
 
   await supabase.from('lead_activities').insert({
-    lead_id:  (lead as Pick<Lead,'id'>).id,
-    type:     'lead_created',
-    title:    'Lead captured from MMV website',
+    lead_id: (lead as Pick<Lead, 'id'>).id,
+    type: 'lead_created',
+    title: 'Lead captured from MMV website',
     metadata: {
-      source:    'website',
-      country:   parsed.data.country,
+      source: 'website',
+      country: parsed.data.country,
       treatment: parsed.data.treatment_interest,
     },
   })
 
-  // Sync to HubSpot (non-blocking)
   await syncToHubSpot(parsed.data)
-
-  return { success: true, leadId: (lead as Pick<Lead,'id'>).id }
+  return { success: true, leadId: (lead as Pick<Lead, 'id'>).id }
 }
 
 // ── UPDATE STAGE ─────────────────────────────────────────────
 export async function updateLeadStage(leadId: string, newStage: string, oldStage: string) {
-  const supabase = await createServiceClient() as any
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { success: false, error: 'Unauthorized' }
+  const staff = await getStaffUser()
+  if (!staff) return { success: false, error: 'Unauthorized' }
 
+  const supabase = await createServiceClient() as any
   const { error } = await supabase.from('leads').update({ stage: newStage }).eq('id', leadId)
   if (error) return { success: false, error: error.message }
 
   await supabase.from('lead_activities').insert({
-    lead_id: leadId, type: 'stage_changed',
+    lead_id: leadId,
+    type: 'stage_changed',
     title: `Stage: ${oldStage} → ${newStage}`,
     metadata: { from: oldStage, to: newStage },
-    created_by: user.id,
+    created_by: staff.user.id,
   })
 
   return { success: true }
@@ -138,19 +137,22 @@ export async function updateLeadStage(leadId: string, newStage: string, oldStage
 
 // ── UPDATE LEAD DETAILS ───────────────────────────────────────
 export async function updateLead(input: unknown) {
+  const staff = await getStaffUser()
+  if (!staff) return { success: false, error: 'Unauthorized' }
+
   const parsed = leadUpdateSchema.safeParse(input)
   if (!parsed.success) return { success: false, error: 'Invalid data' }
 
   const supabase = await createServiceClient() as any
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { success: false, error: 'Unauthorized' }
-
   const { id, ...updates } = parsed.data
   const { error } = await supabase.from('leads').update(updates).eq('id', id)
   if (error) return { success: false, error: error.message }
 
   await supabase.from('lead_activities').insert({
-    lead_id: id, type: 'lead_updated', title: 'Lead details updated', created_by: user.id,
+    lead_id: id,
+    type: 'lead_updated',
+    title: 'Lead details updated',
+    created_by: staff.user.id,
   })
 
   return { success: true }
@@ -158,37 +160,39 @@ export async function updateLead(input: unknown) {
 
 // ── SOFT DELETE ───────────────────────────────────────────────
 export async function deleteLead(leadId: string) {
+  const staff = await getStaffUser()
+  if (!staff || staff.role !== 'admin') return { success: false, error: 'Admin only' }
+
   const supabase = await createServiceClient() as any
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { success: false, error: 'Unauthorized' }
-
-  const { data: profileData } = await supabase
-    .from('profiles').select('role').eq('id', user.id).single()
-  const profile = profileData as Pick<Profile,'role'> | null
-  if (profile?.role !== 'admin') return { success: false, error: 'Admin only' }
-
   const { error } = await supabase
-    .from('leads').update({ deleted_at: new Date().toISOString() }).eq('id', leadId)
+    .from('leads')
+    .update({ deleted_at: new Date().toISOString() })
+    .eq('id', leadId)
 
   return error ? { success: false, error: error.message } : { success: true }
 }
 
 // ── ADD NOTE ──────────────────────────────────────────────────
 export async function addNote(input: unknown) {
+  const staff = await getStaffUser()
+  if (!staff) return { success: false, error: 'Unauthorized' }
+
   const parsed = noteSchema.safeParse(input)
   if (!parsed.success) return { success: false, error: 'Invalid note' }
 
   const supabase = await createServiceClient() as any
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { success: false, error: 'Unauthorized' }
-
   const { error } = await supabase.from('lead_notes').insert({
-    lead_id: parsed.data.lead_id, content: parsed.data.content, created_by: user.id,
+    lead_id: parsed.data.lead_id,
+    content: parsed.data.content,
+    created_by: staff.user.id,
   })
   if (error) return { success: false, error: error.message }
 
   await supabase.from('lead_activities').insert({
-    lead_id: parsed.data.lead_id, type: 'note_added', title: 'Note added', created_by: user.id,
+    lead_id: parsed.data.lead_id,
+    type: 'note_added',
+    title: 'Note added',
+    created_by: staff.user.id,
   })
 
   return { success: true }
