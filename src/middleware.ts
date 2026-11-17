@@ -23,17 +23,25 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  const { data: { session } } = await supabase.auth.getSession();
+  // getUser verifies the access token with Supabase; getSession only reads local cookie data.
+  const { data: { user } } = await supabase.auth.getUser();
+  let approved = false;
 
-  // Protect the real app routes
-  if (request.nextUrl.pathname.startsWith('/app')) {
-    if (!session) {
-      return NextResponse.redirect(new URL('/login', request.url));
-    }
+  if (user) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('approved')
+      .eq('id', user.id)
+      .maybeSingle();
+    approved = profile?.approved === true;
   }
 
-  // Redirect logged-in users away from login page
-  if (request.nextUrl.pathname === '/login' && session) {
+  if (request.nextUrl.pathname.startsWith('/app')) {
+    if (!user) return NextResponse.redirect(new URL('/login', request.url));
+    if (!approved) return NextResponse.redirect(new URL('/login?pending=approval', request.url));
+  }
+
+  if (request.nextUrl.pathname === '/login' && user && approved) {
     return NextResponse.redirect(new URL('/app/dashboard', request.url));
   }
 

@@ -2,6 +2,7 @@
 
 import Anthropic from '@anthropic-ai/sdk'
 import { createServiceClient } from '@/lib/supabase/server'
+import { getStaffUser } from '@/lib/staff-auth'
 import { kbSourceSchema } from '@/lib/validations/schemas'
 import type { KbArticle } from '@/types/database'
 
@@ -24,17 +25,17 @@ function safeParseJSON(text: string) {
 
 // ── ADD SOURCE ────────────────────────────────────────────────
 export async function addKbSource(data: unknown) {
+  const staff = await getStaffUser()
+  if (!staff) return { success: false, error: 'Unauthorized' }
+
   const parsed = kbSourceSchema.safeParse(data)
   if (!parsed.success) return { success: false, error: parsed.error.errors[0]?.message ?? 'Invalid data' }
 
   const supabase = await createServiceClient() as any
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { success: false, error: 'Unauthorized' }
-
   const { error, data: source } = await supabase.from('kb_sources').insert({
     ...parsed.data,
     url: parsed.data.url || null,
-    created_by: user.id,
+    created_by: staff.user.id,
   }).select('id').single()
 
   if (error) return { success: false, error: error.message }
@@ -43,10 +44,10 @@ export async function addKbSource(data: unknown) {
 
 // ── COMPILE SOURCE → ARTICLE ──────────────────────────────────
 export async function compileKbSource(sourceId: string) {
-  const supabase = await createServiceClient() as any
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { success: false, error: 'Unauthorized' }
+  const staff = await getStaffUser()
+  if (!staff) return { success: false, error: 'Unauthorized' }
 
+  const supabase = await createServiceClient() as any
   const { data: src } = await supabase.from('kb_sources').select('*').eq('id', sourceId).single()
   if (!src) return { success: false, error: 'Source not found' }
 
@@ -70,22 +71,21 @@ export async function compileKbSource(sourceId: string) {
     const compiled = safeParseJSON(text)
 
     const { error: artError } = await supabase.from('kb_articles').insert({
-      source_id:     sourceId,
-      title:         compiled.title,
-      content:       compiled.content,
-      summary:       compiled.summary,
-      tags:          compiled.tags ?? [],
-      key_facts:     compiled.key_facts ?? [],
-      sentiment:     compiled.sentiment ?? 'neutral',
-      risks:         compiled.risks ?? [],
+      source_id: sourceId,
+      title: compiled.title,
+      content: compiled.content,
+      summary: compiled.summary,
+      tags: compiled.tags ?? [],
+      key_facts: compiled.key_facts ?? [],
+      sentiment: compiled.sentiment ?? 'neutral',
+      risks: compiled.risks ?? [],
       opportunities: compiled.opportunities ?? [],
-      created_by:    user.id,
+      created_by: staff.user.id,
     })
 
     if (artError) return { success: false, error: artError.message }
 
     await supabase.from('kb_sources').update({ compiled: true }).eq('id', sourceId)
-
     return { success: true, title: compiled.title as string }
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : 'Compilation failed'
@@ -95,13 +95,13 @@ export async function compileKbSource(sourceId: string) {
 
 // ── ASK (with autonomous web search) ─────────────────────────
 export async function askKnowledgeBase(question: string) {
-  if (!question.trim()) return { success: false, error: 'Empty question' }
+  const staff = await getStaffUser()
+  if (!staff) return { success: false, error: 'Unauthorized' }
+  if (typeof question !== 'string' || !question.trim() || question.length > 4000) {
+    return { success: false, error: 'Enter a question under 4,000 characters' }
+  }
 
   const supabase = await createServiceClient() as any
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { success: false, error: 'Unauthorized' }
-
-  // Load existing compiled articles as base context
   const { data: articles } = await supabase
     .from('kb_articles')
     .select('id,title,summary,content,tags')
@@ -109,7 +109,6 @@ export async function askKnowledgeBase(question: string) {
     .order('created_at', { ascending: false })
 
   const typedArticles = (articles ?? []) as Pick<KbArticle, 'id' | 'title' | 'summary' | 'content' | 'tags'>[]
-
   const context = typedArticles.length
     ? typedArticles.map((a, i) =>
         `[${i + 1}] ARTICLE: ${a.title}\nSUMMARY: ${a.summary ?? ''}\n${a.content.slice(0, 1800)}`
@@ -120,8 +119,6 @@ export async function askKnowledgeBase(question: string) {
 
   try {
     const client = getClient()
-
-    // Call with web search tool enabled
     const response = await client.messages.create({
       model: 'claude-sonnet-4-6',
       max_tokens: 2000,
@@ -129,32 +126,19 @@ export async function askKnowledgeBase(question: string) {
 
 You have access to a web search tool. Use it to find current, accurate information to answer the question.
 
-${context ? `You also have access to pre-compiled knowledge base articles below — use them alongside your web search results.\n\nKNOWLEDGE BASE:\n${context.slice(0, 8000)}` : 'No pre-compiled articles yet — rely entirely on web search.'}
+${context ? `You also have access to pre-compiled knowledge base articles below — use them alongside your web search results.\n\nKNOWLEDGE BASE:\n${context.slice(0, 8000)}` : 'No pre-compiled articles yet — rely entirely on your web search.'}
 
 Always provide a thorough, factual answer. Cite knowledge base articles as [N] and web sources as [Web].`,
-      tools: [
-        {
-          type: 'web_search_20250305',
-          name: 'web_search',
-        } as any
-      ],
-      messages: [{
-        role: 'user',
-        content: question,
-      }]
+      tools: [{ type: 'web_search_20250305', name: 'web_search' } as any],
+      messages: [{ role: 'user', content: question }],
     })
 
-    // Extract final text answer from response (may include tool_use blocks)
     let answer = ''
     for (const block of response.content) {
-      if (block.type === 'text') {
-        answer += block.text
-      }
+      if (block.type === 'text') answer += block.text
     }
-
     if (!answer) return { success: false, error: 'No answer generated' }
 
-    // Extract [N] citations from compiled articles
     const refs = Array.from(answer.matchAll(/\[(\d+)\]/g)).map(m => parseInt(m[1]) - 1)
     refs.forEach(i => {
       if (typedArticles[i] && !citations.find(c => c.index === i)) {
@@ -166,7 +150,7 @@ Always provide a thorough, factual answer. Cite knowledge base articles as [N] a
       question,
       answer,
       citations: JSON.stringify(citations),
-      created_by: user.id,
+      created_by: staff.user.id,
     })
 
     return { success: true, answer, citations }
@@ -178,17 +162,16 @@ Always provide a thorough, factual answer. Cite knowledge base articles as [N] a
 
 // ── HEALTH CHECK ──────────────────────────────────────────────
 export async function runKbHealthCheck() {
-  const supabase = await createServiceClient() as any
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { success: false, error: 'Unauthorized' }
+  const staff = await getStaffUser()
+  if (!staff) return { success: false, error: 'Unauthorized' }
 
+  const supabase = await createServiceClient() as any
   const { data: articles } = await supabase
     .from('kb_articles')
     .select('title,tags,summary,created_at')
     .is('deleted_at', null)
 
   const typedArticles = (articles ?? []) as Pick<KbArticle, 'title' | 'tags' | 'summary'>[]
-
   if (!typedArticles.length) return { success: false, error: 'No articles to analyse' }
 
   const summary = typedArticles.map(a =>

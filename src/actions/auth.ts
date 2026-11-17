@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { getStaffUser } from '@/lib/staff-auth'
 import { loginSchema } from '@/lib/validations/schemas'
 import { redirect } from 'next/navigation'
 
@@ -16,6 +17,13 @@ export async function login(formData: FormData) {
   })
 
   if (error) return { error: 'Invalid credentials' }
+
+  const staff = await getStaffUser()
+  if (!staff) {
+    await supabase.auth.signOut()
+    return { error: 'This account is not approved for staff access. Contact the site administrator.' }
+  }
+
   redirect('/app/dashboard')
 }
 

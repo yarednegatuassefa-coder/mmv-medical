@@ -1,9 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
-
-const client = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
+import { getStaffUser } from "@/lib/staff-auth";
 
 const LANGUAGES: Record<string, string> = {
   "Netherlands": "Dutch",
@@ -27,39 +24,53 @@ const CURRENCIES: Record<string, string> = {
 };
 
 const STAGE_DESCRIPTIONS: Record<string, string> = {
-  first_contact:
-    "First contact — asking for dental photos only. Do not ask for full medical history yet.",
-  photos_received:
-    "Photos have been received. Acknowledge them warmly and explain the next step (treatment plan coming).",
-  plan_sent:
-    "Treatment plan PDF has just been sent. Brief message to confirm receipt and invite questions.",
-  follow_up:
-    "Follow-up — patient has not replied in a few days. Gentle guidance, not pressure. Educate rather than sell.",
-  booking:
-    "Patient is ready to book. Guide them to confirm dates and pay the 60% deposit. Bank details will be sent by email separately — never share IBAN on WhatsApp.",
-  pre_arrival:
-    "Patient is arriving soon. Confirm logistics: hotel, airport transfer, what to bring, arrival day (Monday or Saturday only — clinic closed Sundays).",
-  post_treatment:
-    "Patient has completed treatment. Warm check-in, ask how they are feeling, remind them of follow-up visit timeline (3-6 months for crown fitting).",
+  first_contact: "First contact — asking for dental photos only. Do not ask for full medical history yet.",
+  photos_received: "Photos have been received. Acknowledge them warmly and explain the next step (treatment plan coming).",
+  plan_sent: "Treatment plan PDF has just been sent. Brief message to confirm receipt and invite questions.",
+  follow_up: "Follow-up — patient has not replied in a few days. Gentle guidance, not pressure. Educate rather than sell.",
+  booking: "Patient is ready to book. Guide them to confirm dates and pay the 60% deposit. Bank details will be sent by email separately — never share IBAN on WhatsApp.",
+  pre_arrival: "Patient is arriving soon. Confirm logistics: hotel, airport transfer, what to bring, arrival day (Monday or Saturday only — clinic closed Sundays).",
+  post_treatment: "Patient has completed treatment. Warm check-in, ask how they are feeling, remind them of follow-up visit timeline (3-6 months for crown fitting).",
 };
+
+const clip = (value: unknown, max: number) =>
+  typeof value === "string" ? value.trim().slice(0, max) : "";
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { name, country, treatment, price, stage, context } = body;
+    if (!(await getStaffUser())) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
-    if (!name || !country || !stage) {
+    const body = await req.json().catch(() => ({}));
+    if (!body || typeof body !== "object" || Array.isArray(body)) {
+      return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+    }
+
+    const name = clip(body.name, 80);
+    const country = clip(body.country, 60);
+    const treatment = clip(body.treatment, 100);
+    const price = clip(body.price, 40);
+    const stage = clip(body.stage, 40);
+    const context = clip(body.context, 1000);
+
+    if (!name || !country || !STAGE_DESCRIPTIONS[stage]) {
       return NextResponse.json(
-        { error: "name, country, and stage are required" },
+        { error: "name, country, and a valid stage are required" },
         { status: 400 }
       );
     }
 
+    const apiKey = process.env.ANTHROPIC_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json({ error: "Message generation is not configured" }, { status: 503 });
+    }
+
     const lang = LANGUAGES[country] || "English";
     const currency = CURRENCIES[country] || "EUR";
-    const stageDesc = STAGE_DESCRIPTIONS[stage] || stage;
+    const client = new Anthropic({ apiKey });
 
-    const systemPrompt = `You are Jared, Senior Manager of International Patient Services at MMV Medical — a dental tourism platform connecting European patients with top Istanbul clinics.
+    const systemPrompt = `You are Jared, Senior Manager of International Patient Services at MMV Medical — a dental tourism platform connecting European patients with Istanbul clinics.
 
 Your communication philosophy: guide first, sell second. Educate before pitching. Control next steps at every stage. Follow-up is guidance, not pressure.
 
@@ -76,7 +87,7 @@ Key rules:
     const userPrompt = `Write a WhatsApp message for:
 Patient name: ${name}
 Country: ${country}
-Stage: ${stageDesc}
+Stage: ${STAGE_DESCRIPTIONS[stage]}
 Treatment (if relevant): ${treatment || "not yet specified"}
 Price (if relevant): ${price || "not yet quoted"}
 Extra context: ${context || "none"}
@@ -90,15 +101,11 @@ Write the message now in ${lang}.`;
       messages: [{ role: "user", content: userPrompt }],
     });
 
-    const text =
-      message.content.find((b) => b.type === "text")?.text?.trim() || "";
-
-    return NextResponse.json({ message: text });
+    const generated = message.content.find((block) => block.type === "text")?.text?.trim() || "";
+    if (!generated) return NextResponse.json({ error: "No message was generated" }, { status: 502 });
+    return NextResponse.json({ message: generated });
   } catch (error) {
-    console.error("generate-message error:", error);
-    return NextResponse.json(
-      { error: "Failed to generate message" },
-      { status: 500 }
-    );
+    console.error("generate-message error:", error instanceof Error ? error.message : "unknown");
+    return NextResponse.json({ error: "Failed to generate message" }, { status: 500 });
   }
 }

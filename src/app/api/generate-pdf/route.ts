@@ -1,15 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
-import { createClient } from "@/lib/supabase/server";
+import { getStaffUser } from "@/lib/staff-auth";
 
 export async function POST(req: NextRequest) {
   try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const staff = await getStaffUser();
 
-    if (!user) {
+    if (!staff) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
