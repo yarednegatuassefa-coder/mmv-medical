@@ -137,7 +137,7 @@ export async function capturePublicLead(
 }
 
 // ── UPDATE STAGE ─────────────────────────────────────────────
-export async function updateLeadStage(leadId: string, newStage: string, oldStage: string) {
+export async function updateLeadStage(leadId: string, newStage: string, _oldStage: string) {
   const staff = await getStaffUser()
   if (!staff) return { success: false, error: 'Unauthorized' }
 
