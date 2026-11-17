@@ -66,16 +66,37 @@ export async function capturePublicLead(
 
   const supabase = await createServiceClient() as any
 
-  const { data: existing } = await supabase
-    .from('leads')
-    .select('id')
-    .or(`email.eq.${parsed.data.email},whatsapp.eq.${parsed.data.whatsapp}`)
-    .gte('created_at', new Date(Date.now() - 86400000).toISOString())
-    .is('deleted_at', null)
-    .limit(1)
-    .maybeSingle()
+  // Enforce server-side limits using database counts; do not trust the client timestamp.
+  const hourAgo = new Date(Date.now() - 60 * 60_000).toISOString()
+  const tenMinAgo = new Date(Date.now() - 10 * 60_000).toISOString()
+  const [perPhone, overall] = await Promise.all([
+    supabase.from('leads').select('id', { count: 'exact', head: true })
+      .eq('whatsapp', parsed.data.whatsapp).gte('created_at', hourAgo),
+    supabase.from('leads').select('id', { count: 'exact', head: true })
+      .eq('source', 'website').gte('created_at', tenMinAgo),
+  ])
 
-  if (existing) return { success: true, duplicate: true }
+  if (perPhone.error || overall.error) {
+    console.error('[capturePublicLead] Rate-limit query failed:', perPhone.error?.message || overall.error?.message)
+    return { success: false, error: 'Lead capture is temporarily unavailable' }
+  }
+  if ((perPhone.count ?? 0) >= 3 || (overall.count ?? 0) >= 50) {
+    return { success: false, error: 'Too many requests' }
+  }
+
+  const sinceYesterday = new Date(Date.now() - 86400000).toISOString()
+  const [emailMatch, whatsappMatch] = await Promise.all([
+    supabase.from('leads').select('id').eq('email', parsed.data.email)
+      .gte('created_at', sinceYesterday).is('deleted_at', null).limit(1).maybeSingle(),
+    supabase.from('leads').select('id').eq('whatsapp', parsed.data.whatsapp)
+      .gte('created_at', sinceYesterday).is('deleted_at', null).limit(1).maybeSingle(),
+  ])
+
+  if (emailMatch.error || whatsappMatch.error) {
+    console.error('[capturePublicLead] Duplicate check failed:', emailMatch.error?.message || whatsappMatch.error?.message)
+    return { success: false, error: 'Lead capture is temporarily unavailable' }
+  }
+  if (emailMatch.data || whatsappMatch.data) return { success: true, duplicate: true }
 
   const { data: lead, error } = await supabase
     .from('leads')
@@ -121,14 +142,20 @@ export async function updateLeadStage(leadId: string, newStage: string, oldStage
   if (!staff) return { success: false, error: 'Unauthorized' }
 
   const supabase = await createServiceClient() as any
+  const { data: currentLead, error: readError } = await supabase
+    .from('leads').select('stage').eq('id', leadId).maybeSingle()
+  if (readError) return { success: false, error: readError.message }
+  if (!currentLead) return { success: false, error: 'Lead not found' }
+
+  const actualOldStage = currentLead.stage
   const { error } = await supabase.from('leads').update({ stage: newStage }).eq('id', leadId)
   if (error) return { success: false, error: error.message }
 
   await supabase.from('lead_activities').insert({
     lead_id: leadId,
     type: 'stage_changed',
-    title: `Stage: ${oldStage} → ${newStage}`,
-    metadata: { from: oldStage, to: newStage },
+    title: `Stage: ${actualOldStage} → ${newStage}`,
+    metadata: { from: actualOldStage, to: newStage },
     created_by: staff.user.id,
   })
 
