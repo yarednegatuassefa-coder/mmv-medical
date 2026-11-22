@@ -1,10 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-  process.env.SUPABASE_SERVICE_ROLE_KEY || ''
-);
+export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
   try {
@@ -15,6 +12,13 @@ export async function GET(request: Request) {
     if (secretParam !== process.env.CRON_SECRET) {
       return NextResponse.json({ error: 'Unauthorized route access' }, { status: 401 });
     }
+
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!supabaseUrl || !serviceRoleKey) {
+      return NextResponse.json({ error: 'Cron integration is not configured' }, { status: 503 });
+    }
+    const supabase = createClient(supabaseUrl, serviceRoleKey);
 
     // 2. Grab the clinic queues needing updates
     const { data: clinics, error: clinicError } = await supabase

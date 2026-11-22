@@ -1,0 +1,25 @@
+{
+  "routes": [
+    { "path": "/", "title": "MMV Medical" },
+    { "path": "/treatments", "title": "Dental Treatment Areas" },
+    { "path": "/calculator", "title": "Treatment Travel Cost Planner" },
+    { "path": "/about", "title": "About MMV Medical" },
+    { "path": "/contact", "title": "Contact MMV Medical" },
+    { "path": "/privacy-policy", "title": "Privacy Policy" },
+    { "path": "/login", "title": "Login" },
+    { "path": "/comms", "title": "Communications" },
+    { "path": "/app/dashboard", "title": "Dashboard" },
+    { "path": "/app/analytics", "title": "Analytics" },
+    { "path": "/app/leads", "title": "Leads" },
+    { "path": "/app/leads/new", "title": "New Lead" },
+    { "path": "/app/leads/:id", "title": "Lead Detail" },
+    { "path": "/app/pipeline", "title": "Pipeline" },
+    { "path": "/app/kb", "title": "Knowledge Base" },
+    { "path": "/app/kb/articles", "title": "Knowledge Articles" },
+    { "path": "/app/kb/ask", "title": "Ask Knowledge Base" },
+    { "path": "/app/kb/health-check", "title": "Knowledge Base Health Check" },
+    { "path": "/app/kb/sources", "title": "Knowledge Sources" },
+    { "path": "/app/pdf", "title": "PDF Generator" },
+    { "path": "/app/settings", "title": "Settings" }
+  ]
+}

@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createBrowserClient } from '@supabase/ssr';
 
+export const dynamic = 'force-dynamic';
+
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -12,18 +14,17 @@ export default function LoginPage() {
   
   const router = useRouter();
 
-  // Initialize the native client browser using the existing verified packages
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
-
   const handleStaffLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsProcessing(true);
     setErrorMessage('');
 
     try {
+      // Initialize only when a user submits credentials, keeping static rendering credential-free.
+      const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      );
       // Execute security authorization verification against Supabase Auth records
       const { error } = await supabase.auth.signInWithPassword({
         email,

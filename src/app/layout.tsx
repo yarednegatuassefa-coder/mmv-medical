@@ -24,11 +24,13 @@ export const metadata: Metadata = {
     siteName: 'MMV Medical',
     title: 'MMV Medical — Dental Care Coordination in Istanbul',
     description: 'Personal coordination for international patients exploring dental care in Istanbul.',
+    images: [{ url: '/images/istanbul-bosphorus-hero.jpg', width: 1824, height: 2280, alt: 'Editorial view of Istanbul across the Bosphorus at golden hour' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'MMV Medical — Dental Care Coordination in Istanbul',
     description: 'Dental care coordination in Istanbul for international patients.',
+    images: ['/images/istanbul-bosphorus-hero.jpg'],
   },
   robots: { index: true, follow: true },
 }

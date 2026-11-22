@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowDown, ArrowRight, Clock3, Globe2, HeartHandshake, MessageCircle, Plane, ShieldCheck, Sparkles, Stethoscope } from 'lucide-react'
 import { PublicNav } from '@/components/layout/public-nav'
@@ -16,7 +17,7 @@ const TREATMENTS = [
     number: '01',
     title: 'Dental implants',
     description: 'Explore options for replacing one or more missing teeth, with clinical assessment by the treating dental team.',
-    image: 'https://tkywpdpduoucwmpgtkrd.supabase.co/storage/v1/object/public/images/WhatsApp%20Image%202026-04-08%20at%2014.27.44%20(3).jpeg',
+    image: '/images/dental-implants-editorial.jpg',
     alt: 'Dental implant treatment reference',
     tags: ['Single tooth', 'Multiple teeth'],
   },
@@ -24,7 +25,7 @@ const TREATMENTS = [
     number: '02',
     title: 'Veneers & smile design',
     description: 'Understand aesthetic options, materials and the questions to discuss with a qualified dental professional.',
-    image: 'https://tkywpdpduoucwmpgtkrd.supabase.co/storage/v1/object/public/images/WhatsApp%20Image%202026-04-08%20at%2014.27.39.jpeg',
+    image: '/images/veneers-editorial.jpg',
     alt: 'Dental veneer treatment reference',
     tags: ['Emax', 'Zirconia'],
   },
@@ -32,7 +33,7 @@ const TREATMENTS = [
     number: '03',
     title: 'Full-arch restoration',
     description: 'Learn about full-arch approaches such as All-on-4 and All-on-6, subject to individual clinical suitability.',
-    image: 'https://tkywpdpduoucwmpgtkrd.supabase.co/storage/v1/object/public/images/WhatsApp%20Image%202026-04-08%20at%2014.27.44%20(8).jpeg',
+    image: '/images/full-arch-editorial.jpg',
     alt: 'Full arch dental restoration reference',
     tags: ['All-on-4', 'All-on-6'],
   },
@@ -87,9 +88,11 @@ export default function HomePage() {
               <div className="absolute -right-8 -top-8 h-44 w-44 rounded-full border border-[#c8a45a]/30" />
               <div className="absolute -bottom-8 -left-8 h-52 w-52 rounded-full bg-[#c8a45a]/10 blur-2xl" />
               <div className="relative aspect-[4/5] overflow-hidden rounded-[2px] bg-[#d9d4c9] shadow-[0_30px_80px_rgba(18,36,58,0.18)] sm:aspect-[5/4] md:aspect-[4/5]">
-                <img
-                  src="/images/istanbul-bosphorus-editorial.svg"
-                  alt="Original illustration of Istanbul across the Bosphorus at golden hour"
+                <Image
+                  src="/images/istanbul-bosphorus-hero.jpg"
+                  alt="Editorial view of Istanbul across the Bosphorus at golden hour"
+                  width={1824}
+                  height={2280}
                   className="h-full w-full object-cover"
                   loading="eager"
                   fetchPriority="high"
@@ -141,7 +144,7 @@ export default function HomePage() {
             {TREATMENTS.map((t) => (
               <article key={t.number} className="group overflow-hidden border border-[#12243a]/10 bg-white transition duration-300 hover:-translate-y-1 hover:shadow-[0_22px_55px_rgba(18,36,58,0.11)]">
                 <div className="relative aspect-[5/4] overflow-hidden bg-[#e8e5dd]">
-                  <img src={t.image} alt={t.alt} className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]" loading="lazy" />
+                  <Image src={t.image} alt={t.alt} width={1140} height={912} className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]" sizes="(max-width: 768px) 100vw, 33vw" loading="lazy" />
                   <span className="absolute left-4 top-4 bg-white/90 px-3 py-1.5 text-[10px] font-semibold tracking-[0.16em] text-[#12243a]">{t.number} / MMV</span>
                 </div>
                 <div className="p-6 sm:p-7">
