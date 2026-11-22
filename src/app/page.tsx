@@ -5,12 +5,13 @@ import { ArrowDown, ArrowRight, Clock3, Globe2, HeartHandshake, MessageCircle, P
 import { PublicNav } from '@/components/layout/public-nav'
 import { PublicFooter } from '@/components/layout/public-footer'
 import { LeadFormSection } from '@/components/public/lead-form-section'
+import { pageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Dental Care Coordination in Istanbul',
   description: 'Explore dental treatment options in Istanbul with personal coordination for international patients. Start with a no-obligation conversation with MMV Medical.',
-  alternates: { canonical: '/' },
-}
+  path: '/',
+})
 
 const TREATMENTS = [
   {

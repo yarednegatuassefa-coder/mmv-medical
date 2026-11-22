@@ -2,6 +2,7 @@
   "routes": [
     { "path": "/", "title": "MMV Medical" },
     { "path": "/treatments", "title": "Dental Treatment Areas" },
+    { "path": "/dental-tourism-istanbul", "title": "Dental Tourism in Istanbul" },
     { "path": "/calculator", "title": "Treatment Travel Cost Planner" },
     { "path": "/about", "title": "About MMV Medical" },
     { "path": "/contact", "title": "Contact MMV Medical" },

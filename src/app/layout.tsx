@@ -3,6 +3,7 @@ import { Toaster } from '@/components/ui/toaster'
 import Script from 'next/script'
 import './globals.css'
 import FloatingWhatsApp from '@/components/FloatingWhatsApp'
+import { SiteStructuredData } from '@/components/seo/structured-data'
 
 export const viewport: Viewport = {
   themeColor: '#12243a',
@@ -71,6 +72,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="font-sans antialiased">
+        <SiteStructuredData />
         {children}
         <Toaster />
         <FloatingWhatsApp />

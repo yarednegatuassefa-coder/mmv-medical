@@ -4,8 +4,9 @@ import Link from 'next/link'
 import { ArrowRight, Compass, FileCheck2, MessageCircle, ShieldCheck } from 'lucide-react'
 import { PublicNav } from '@/components/layout/public-nav'
 import { PublicFooter } from '@/components/layout/public-footer'
+import { pageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = { title: 'About MMV Medical', description: 'How MMV Medical helps international patients navigate enquiries, clinic communication and travel planning in Istanbul.', alternates: { canonical: '/about' } }
+export const metadata: Metadata = pageMetadata({ title: 'About MMV Medical', description: 'How MMV Medical helps international patients navigate enquiries, clinic communication and travel planning in Istanbul.', path: '/about' })
 
 const principles = [
   { icon: ShieldCheck, title: 'Clear responsibilities', text: 'We coordinate communication and practical arrangements. Diagnosis, treatment recommendations, consent and clinical care belong to the treating healthcare provider.' },

@@ -4,8 +4,9 @@ import Link from 'next/link'
 import { ArrowRight, Activity, CircleHelp, ScanFace, ShieldCheck, Smile, Stethoscope } from 'lucide-react'
 import { PublicNav } from '@/components/layout/public-nav'
 import { PublicFooter } from '@/components/layout/public-footer'
+import { pageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = { title: 'Dental Treatment Areas', description: 'Explore common dental treatment areas patients ask about when considering care in Istanbul. Clinical suitability is determined by the treating dentist.', alternates: { canonical: '/treatments' } }
+export const metadata: Metadata = pageMetadata({ title: 'Dental Treatment Areas', description: 'Explore common dental treatment areas patients ask about when considering care in Istanbul. Clinical suitability is determined by the treating dentist.', path: '/treatments' })
 const treatments = [
  {icon:Activity,n:'01',title:'Dental implants',image:'/images/dental-implants-editorial.jpg',alt:'Illustrative dental implant, crown and jawbone editorial still life',intro:'Options for replacing one or more missing teeth.',detail:'Assessment may involve oral examination, imaging, bone and gum evaluation, medical history and discussion of alternatives.'},
  {icon:Smile,n:'02',title:'Crowns & bridges',image:'/images/crowns-bridges-editorial.jpg',alt:'Illustrative unbranded ceramic crown and bridge forms in an editorial still life',intro:'Restorative options for damaged or missing teeth.',detail:'Material choice, preparation, expected lifespan and maintenance should be discussed with the treating dentist.'},
