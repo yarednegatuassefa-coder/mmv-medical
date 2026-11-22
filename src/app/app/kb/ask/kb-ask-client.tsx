@@ -109,7 +109,7 @@ export function KbAskClient() {
       <div className="bg-[#111a14] border border-white/[0.06] rounded-lg px-4 py-3 flex gap-3 items-end mt-2">
         <textarea className={inp} rows={1} placeholder="Ask anything about your knowledge base…"
           value={input} onChange={e => setInput(e.target.value)}
-          onKeyDown={e => { if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); submit() } }}
+          onKeyDown={e => { if (e.key==='Enter' && !e.shiftKey && !e.nativeEvent.isComposing && e.keyCode !== 229) { e.preventDefault(); submit() } }}
           style={{ height: 'auto', maxHeight: '120px' }}
           onInput={e => { const t = e.currentTarget; t.style.height='auto'; t.style.height=Math.min(t.scrollHeight,120)+'px' }} />
         <button onClick={() => submit()} disabled={loading || !input.trim()}

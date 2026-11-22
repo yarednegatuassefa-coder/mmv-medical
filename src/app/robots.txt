@@ -3,4 +3,4 @@ Allow: /
 Disallow: /app/
 Disallow: /login
 
-Sitemap: https://mmvmedical.health/sitemap.xml
+Sitemap: https://mmvmedical.org/sitemap.xml
