@@ -43,5 +43,8 @@ Use only the skill or skills relevant to the requested deliverable; do not chain
 Skill availability does not authorize tool/dependency installation, paid API or model use, external account connections, production or patient-data access, migrations, deployment, publication, CRM writes, or patient-facing messages. Obtain separate explicit authorization and required human/clinical review before such actions. Never send patient identifiers, health details, private communications, or medical records to external tools or agents.
 
 
+## Workflow quality and evaluation
+Follow the portfolio [Workflow Quality and Evaluation Standard](https://github.com/yarednegatuassefa-coder/home/blob/main/standards/workflow-quality.md) and this repository's [workflow governance plan](docs/workflow-governance.md) for repeated or agent-assisted workflows. Evaluate both task outcome and process trajectory. Use synthetic patient scenarios, privacy-minimized evidence and qualified human review. No patient-facing messages, treatment plans/prices, CRM writes or clinical decisions bypass existing approval gates.
+
 ## Code-mode agent architecture
 For any AI/tool orchestration task, consult the portfolio [Code-Mode Agent Engineering Standard](https://github.com/yarednegatuassefa-coder/home/blob/main/standards/code-mode-agent-engineering.md), [Portfolio Code-Mode skill](https://github.com/yarednegatuassefa-coder/home/blob/main/skills/portfolio-code-mode/SKILL.md), and this repository's `docs/agent-code-mode.md`. This guidance does not grant production access, external model use, patient/customer data transfer, writes, deployment or other approvals. Project-specific safeguards above remain authoritative.
