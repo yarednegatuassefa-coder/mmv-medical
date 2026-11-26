@@ -165,14 +165,6 @@ body { background: #f7f5f0; color: #12243a; text-rendering: optimizeLegibility; 
 .site-nav__cta:active {
   transform: translateY(0) scale(.985);
 }
-@media (hover: hover) and (pointer: fine) {
-  .button:hover,
-  .site-nav__cta:hover,
-  .treatment-card:hover,
-  .text-link:hover {
-    /* Preserve the existing desktop hover treatment only on hover-capable hardware. */
-  }
-}
 @media (hover: none), (pointer: coarse) {
   .site-nav__cta:hover,
   .button:hover,
