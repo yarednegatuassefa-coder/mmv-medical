@@ -159,3 +159,22 @@ body { background: #f7f5f0; color: #12243a; text-rendering: optimizeLegibility; 
 
 .treatment-card__image { display:block; width:100%; height:auto; aspect-ratio:3/2; object-fit:cover; margin:0 0 1.15rem; border:1px solid rgba(20,40,59,.08); }
 .treatment-card:has(.treatment-card__image) h3 { margin-top:1.5rem; }
+
+/* Design-engineering hardening: touch, press and small-screen form ergonomics. */
+.button:active,
+.site-nav__cta:active {
+  transform: translateY(0) scale(.985);
+}
+@media (hover: none), (pointer: coarse) {
+  .site-nav__cta:hover,
+  .button:hover,
+  .treatment-card:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  .text-link:hover { gap: .5rem; }
+}
+@media (max-width: 680px) {
+  input, select, textarea { font-size: 16px; }
+  .site-nav__mobile { padding-bottom: env(safe-area-inset-bottom); }
+}
