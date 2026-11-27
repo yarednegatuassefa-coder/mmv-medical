@@ -98,7 +98,7 @@ export function LeadFormSection() {
         <h3 className="font-display text-xl font-semibold text-navy mb-1">Send an Enquiry</h3>
         <p className="text-navy/45 text-xs mb-5">A few details help us understand how to direct your question.</p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form {...({ toolname: "mmv-prepare-enquiry", tooldescription: "Help the user prepare a non-clinical enquiry to MMV Medical. Do not include medical records or sensitive health information. The user must review and submit the form." } as any)} onSubmit={handleSubmit} className="space-y-4">
           {/* Honeypot — hidden from real users */}
           <input type="text" name="website" className="hidden" tabIndex={-1} autoComplete="off" />
 
