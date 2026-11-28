@@ -1,0 +1,13 @@
+{
+  "clientRoots": [],
+  "serverRoots": [
+    "src/server",
+    "src/lib/server",
+    "src/app/api"
+  ],
+  "serverImportSpecifiers": [
+    "server-only",
+    "next/headers",
+    "next/server"
+  ]
+}
