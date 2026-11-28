@@ -18,28 +18,25 @@ export function LeadFormSection() {
 
     const fd = new FormData(e.currentTarget)
     const data = {
-      full_name:              fd.get('full_name') as string,
-      email:                  fd.get('email') as string,
-      whatsapp:               fd.get('whatsapp') as string,
-      country:                fd.get('country') as string,
-      treatment_interest:     fd.get('treatment_interest') as string,
-      budget_range:           fd.get('budget_range') as string || undefined,
+      full_name: fd.get('full_name') as string,
+      email: fd.get('email') as string,
+      whatsapp: fd.get('whatsapp') as string,
+      country: fd.get('country') as string,
+      treatment_interest: fd.get('treatment_interest') as string,
+      budget_range: fd.get('budget_range') as string || undefined,
       preferred_travel_month: fd.get('preferred_travel_month') as string || undefined,
-      notes:                  fd.get('notes') as string || undefined,
-      website:                fd.get('website') as string || undefined,
-      _ts:                    tsRef.current,
+      contact_consent: fd.get('contact_consent') === 'on',
+      crm_consent: fd.get('crm_consent') === 'on',
+      website: fd.get('website') as string || undefined,
+      _ts: tsRef.current,
     }
 
     try {
-      const result = await capturePublicLead(data as any)
+      const result = await capturePublicLead(data)
 
       if (result.success) {
         const msg = encodeURIComponent(
-          `Hi MMV Medical — I just submitted a consultation request.\n\n` +
-          `Name: ${data.full_name}\n` +
-          `Country: ${data.country}\n` +
-          `Treatment: ${data.treatment_interest}\n\n` +
-          `Looking forward to hearing from you!`
+          'Hello MMV Medical. I submitted an enquiry through your website and would like to discuss the coordination process.'
         )
         setWaUrl(`https://wa.me/${WA_NUMBER}?text=${msg}`)
         setState('success')
@@ -59,14 +56,10 @@ export function LeadFormSection() {
         <div className="w-14 h-14 bg-teal/10 rounded-full flex items-center justify-center text-2xl mx-auto mb-4">✓</div>
         <h3 className="font-display text-2xl font-semibold text-navy mb-2">Request Received</h3>
         <p className="text-navy/55 text-sm leading-relaxed mb-6">
-          Thank you. A coordinator will review your enquiry and contact you using the details you provided. Clinical recommendations and final pricing must come from the treating provider.
+          Thank you. Your enquiry has been recorded. A coordinator can review it and respond using the contact details you supplied. Clinical recommendations and final pricing must come from the treating provider.
         </p>
-        <a
-          href={waUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 bg-[#25d366] text-white font-semibold text-sm px-6 py-3 rounded-sm hover:bg-[#1db954] transition-colors"
-        >
+        <a href={waUrl} target="_blank" rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 bg-[#25d366] text-white font-semibold text-sm px-6 py-3 rounded-sm hover:bg-[#1db954] transition-colors">
           💬 Continue on WhatsApp
         </a>
       </div>
@@ -75,7 +68,6 @@ export function LeadFormSection() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-      {/* Left: promises */}
       <div>
         <ul className="space-y-3">
           {[
@@ -83,7 +75,7 @@ export function LeadFormSection() {
             'Help organising questions for the clinic',
             'No obligation to continue',
             'Clinical decisions stay with the treating provider',
-            'WhatsApp or email — your choice',
+            'No medical records needed for this first step',
           ].map(p => (
             <li key={p} className="flex items-center gap-3 text-navy/70 text-sm">
               <span className="w-5 h-5 rounded-full bg-teal flex items-center justify-center text-white text-xs flex-shrink-0">✓</span>
@@ -93,23 +85,21 @@ export function LeadFormSection() {
         </ul>
       </div>
 
-      {/* Right: form */}
       <div className="bg-white border border-cream-dark rounded-lg p-6 shadow-sm">
         <h3 className="font-display text-xl font-semibold text-navy mb-1">Send an Enquiry</h3>
-        <p className="text-navy/45 text-xs mb-5">A few details help us understand how to direct your question.</p>
+        <p className="text-navy/45 text-xs mb-5">Share only the contact and planning details needed for an initial response.</p>
 
-        <form {...({ toolname: "mmv-prepare-enquiry", tooldescription: "Help the user prepare a non-clinical enquiry to MMV Medical. Do not include medical records or sensitive health information. The user must review and submit the form." } as any)} onSubmit={handleSubmit} className="space-y-4">
-          {/* Honeypot — hidden from real users */}
+        <form onSubmit={handleSubmit} className="space-y-4">
           <input type="text" name="website" className="hidden" tabIndex={-1} autoComplete="off" />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-mono tracking-wider uppercase text-navy/50 mb-1">Full Name *</label>
-              <input name="full_name" required className="w-full border border-cream-dark rounded px-3 py-2 text-sm text-navy outline-none focus:border-teal" placeholder="Your name" />
+              <label htmlFor="mmv-full-name" className="block text-xs font-mono tracking-wider uppercase text-navy/50 mb-1">Full Name *</label>
+              <input id="mmv-full-name" name="full_name" required minLength={2} maxLength={100} autoComplete="name" className="w-full border border-cream-dark rounded px-3 py-2 text-sm text-navy outline-none focus:border-teal" placeholder="Your name" />
             </div>
             <div>
-              <label className="block text-xs font-mono tracking-wider uppercase text-navy/50 mb-1">Country *</label>
-              <select name="country" required defaultValue="" className="w-full border border-cream-dark rounded px-3 py-2 text-sm text-navy outline-none focus:border-teal bg-white">
+              <label htmlFor="mmv-country" className="block text-xs font-mono tracking-wider uppercase text-navy/50 mb-1">Country *</label>
+              <select id="mmv-country" name="country" required defaultValue="" autoComplete="country-name" className="w-full border border-cream-dark rounded px-3 py-2 text-sm text-navy outline-none focus:border-teal bg-white">
                 <option value="" disabled>Select</option>
                 {COUNTRIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
               </select>
@@ -117,44 +107,51 @@ export function LeadFormSection() {
           </div>
 
           <div>
-            <label className="block text-xs font-mono tracking-wider uppercase text-navy/50 mb-1">Email *</label>
-            <input name="email" type="email" required className="w-full border border-cream-dark rounded px-3 py-2 text-sm text-navy outline-none focus:border-teal" placeholder="your@email.com" />
+            <label htmlFor="mmv-email" className="block text-xs font-mono tracking-wider uppercase text-navy/50 mb-1">Email *</label>
+            <input id="mmv-email" name="email" type="email" required autoComplete="email" maxLength={254} className="w-full border border-cream-dark rounded px-3 py-2 text-sm text-navy outline-none focus:border-teal" placeholder="your@email.com" />
           </div>
 
           <div>
-            <label className="block text-xs font-mono tracking-wider uppercase text-navy/50 mb-1">WhatsApp *</label>
-            <input name="whatsapp" type="tel" required className="w-full border border-cream-dark rounded px-3 py-2 text-sm text-navy outline-none focus:border-teal" placeholder="+44 7700 000000" />
+            <label htmlFor="mmv-whatsapp" className="block text-xs font-mono tracking-wider uppercase text-navy/50 mb-1">WhatsApp *</label>
+            <input id="mmv-whatsapp" name="whatsapp" type="tel" required autoComplete="tel" minLength={7} maxLength={20} pattern="\\+?[0-9\\s()\\-]+" className="w-full border border-cream-dark rounded px-3 py-2 text-sm text-navy outline-none focus:border-teal" placeholder="+44 7700 000000" />
           </div>
 
           <div>
-            <label className="block text-xs font-mono tracking-wider uppercase text-navy/50 mb-1">Treatment Interest *</label>
-            <select name="treatment_interest" required defaultValue="" className="w-full border border-cream-dark rounded px-3 py-2 text-sm text-navy outline-none focus:border-teal bg-white">
-              <option value="" disabled>Select treatment</option>
+            <label htmlFor="mmv-treatment" className="block text-xs font-mono tracking-wider uppercase text-navy/50 mb-1">Treatment Interest *</label>
+            <select id="mmv-treatment" name="treatment_interest" required defaultValue="" className="w-full border border-cream-dark rounded px-3 py-2 text-sm text-navy outline-none focus:border-teal bg-white">
+              <option value="" disabled>Select treatment area</option>
               {TREATMENTS.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
             </select>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-mono tracking-wider uppercase text-navy/50 mb-1">Budget Range</label>
-              <select name="budget_range" defaultValue="" className="w-full border border-cream-dark rounded px-3 py-2 text-sm text-navy outline-none focus:border-teal bg-white">
-                <option value="">Not sure</option>
+              <label htmlFor="mmv-budget" className="block text-xs font-mono tracking-wider uppercase text-navy/50 mb-1">Budget Range (optional)</label>
+              <select id="mmv-budget" name="budget_range" defaultValue="" className="w-full border border-cream-dark rounded px-3 py-2 text-sm text-navy outline-none focus:border-teal bg-white">
+                <option value="">Prefer not to say</option>
                 {BUDGET_RANGES.map(b => <option key={b} value={b}>{b}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-xs font-mono tracking-wider uppercase text-navy/50 mb-1">Travel Month</label>
-              <select name="preferred_travel_month" defaultValue="" className="w-full border border-cream-dark rounded px-3 py-2 text-sm text-navy outline-none focus:border-teal bg-white">
+              <label htmlFor="mmv-travel-month" className="block text-xs font-mono tracking-wider uppercase text-navy/50 mb-1">Travel Month (optional)</label>
+              <select id="mmv-travel-month" name="preferred_travel_month" defaultValue="" className="w-full border border-cream-dark rounded px-3 py-2 text-sm text-navy outline-none focus:border-teal bg-white">
                 <option value="">Flexible</option>
                 {TRAVEL_MONTHS.map(m => <option key={m} value={m}>{m}</option>)}
               </select>
             </div>
           </div>
 
-          <div>
-            <label className="block text-xs font-mono tracking-wider uppercase text-navy/50 mb-1">Your Situation (optional)</label>
-            <textarea name="notes" rows={3} className="w-full border border-cream-dark rounded px-3 py-2 text-sm text-navy outline-none focus:border-teal resize-none" placeholder="What would you like help understanding? Please do not include medical records, diagnoses, passport details or other sensitive information." />
-          </div>
+          <fieldset className="space-y-3 border-t border-cream-dark pt-4">
+            <legend className="sr-only">Privacy and data choices</legend>
+            <label className="flex items-start gap-3 text-xs leading-5 text-navy/65">
+              <input name="contact_consent" type="checkbox" required className="mt-1 h-4 w-4 flex-shrink-0 accent-teal" />
+              <span>I agree that MMV Medical may use the details above to respond to this enquiry, as explained in the <Link href="/privacy-policy" className="underline underline-offset-2 hover:text-navy">Privacy Notice</Link>. *</span>
+            </label>
+            <label className="flex items-start gap-3 text-xs leading-5 text-navy/65">
+              <input name="crm_consent" type="checkbox" className="mt-1 h-4 w-4 flex-shrink-0 accent-teal" />
+              <span>Optional: I agree that my contact and enquiry details may also be transferred to MMV's HubSpot workspace for enquiry management. This choice is separate and does not affect my request.</span>
+            </label>
+          </fieldset>
 
           {state === 'error' && (
             <p role="alert" aria-live="assertive" className="text-red-500 text-xs bg-red-50 border border-red-200 px-3 py-2 rounded">{errorMsg}</p>
@@ -165,7 +162,7 @@ export function LeadFormSection() {
           </button>
 
           <p className="text-navy/45 text-xs text-center leading-relaxed">
-            Your details are used to respond to this enquiry. Read our <Link href="/privacy-policy" className="underline underline-offset-2 hover:text-navy">Privacy Policy</Link> for more information.
+            Do not submit medical records, diagnoses, X-rays, passport details or other sensitive information through this form.
           </p>
         </form>
       </div>
