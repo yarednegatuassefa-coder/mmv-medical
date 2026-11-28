@@ -7,10 +7,19 @@ export const leadFormSchema = z.object({
     .regex(/^\+?[0-9\s\-()]+$/, 'Invalid phone number'),
   country: z.enum(['UK', 'Ireland', 'Netherlands', 'Belgium', 'Romania', 'Other'],
     { errorMap: () => ({ message: 'Please select your country' }) }),
-  treatment_interest: z.string().min(1, 'Please select a treatment'),
-  budget_range: z.string().optional(),
-  preferred_travel_month: z.string().optional(),
-  notes: z.string().max(1000).optional(),
+  // Keep initial intake to non-clinical coordination topics. Do not collect diagnoses,
+  // treatment plans, symptoms, records or other health information in this public form.
+  treatment_interest: z.enum([
+    'understand_process',
+    'provider_information',
+    'travel_planning',
+    'coordination_support',
+    'not_sure',
+  ], { errorMap: () => ({ message: 'Please choose what you need help with' }) }),
+  response_consent: z.literal(true, {
+    errorMap: () => ({ message: 'Please confirm that MMV may use these details to respond to your enquiry' }),
+  }),
+  marketing_consent: z.boolean().default(false),
   // Honeypot — must be empty
   website: z.string().max(0, 'Bot detected').optional(),
 })
@@ -24,11 +33,17 @@ export const loginSchema = z.object({
 
 export const leadUpdateSchema = z.object({
   id: z.string().uuid(),
-  stage: z.enum(['new','contacted','plan_sent','deposit_paid','confirmed','completed','lost']).optional(),
-  estimated_value: z.number().min(0).optional(),
-  follow_up_date: z.string().optional().nullable(),
   notes: z.string().max(2000).optional(),
   assigned_to: z.string().uuid().optional().nullable(),
+})
+
+export const manualLeadSchema = z.object({
+  full_name: z.string().min(2).max(100),
+  email: z.string().email(),
+  whatsapp: z.string().min(7).max(20).regex(/^\\+?[0-9\\s\\-()]+$/),
+  country: z.enum(['UK', 'Ireland', 'Netherlands', 'Belgium', 'Romania', 'Other']),
+  treatment_interest: z.enum(['understand_process','provider_information','travel_planning','coordination_support','not_sure']),
+  response_consent: z.literal(true),
 })
 
 export const noteSchema = z.object({

@@ -20,11 +20,11 @@ const sections = [
   },
   {
     title: 'Why we use enquiry information',
-    body: `We use information submitted to respond to your enquiry, communicate with you about the coordination process and, where relevant, organise the next step you requested. The website's lead-capture flow stores enquiry records in the configured Supabase database and attempts to synchronise contact details and enquiry context to HubSpot CRM. The treating healthcare provider is responsible for clinical assessment and treatment decisions.`,
+    body: `We use information submitted to respond to your enquiry, communicate with you about the coordination process and, where relevant, organise the next step you requested. The website's lead-capture flow stores minimal enquiry records in the configured Supabase database. External CRM synchronisation is currently disabled. A separate optional marketing preference is recorded for review; it is not used to trigger automated campaigns. The treating healthcare provider is responsible for clinical assessment and treatment decisions.`,
   },
   {
     title: 'Service providers and channels',
-    body: `The website is deployed through Vercel. The lead-capture code uses Supabase for enquiry records and HubSpot for CRM synchronisation. The site also loads Cookiebot consent management, Google advertising measurement and HubSpot tracking scripts; whether optional tracking runs depends on the live consent configuration, which must be tested. If you choose WhatsApp or email, those providers process information under their own terms and privacy notices. MMV must confirm its legal entity, controller details, processor agreements, processing locations, retention periods, lawful bases and international-transfer safeguards before treating this notice as final.`,
+    body: `The website is deployed through Vercel and uses Supabase for enquiry records. HubSpot contact synchronisation and third-party advertising/visitor-tracking scripts have been disabled while MMV reviews its data flows and consent configuration. Cookiebot consent management remains installed; its live configuration and any future analytics integrations must be tested before activation. If you choose WhatsApp or email, those providers process information under their own terms and privacy notices. MMV must confirm its legal entity, controller details, processor agreements, processing locations, retention periods, lawful bases and international-transfer safeguards before treating this notice as final.`,
   },
   {
     title: 'Your choices and rights',
@@ -32,7 +32,7 @@ const sections = [
   },
   {
     title: 'Cookies and measurement',
-    body: `The application includes Cookiebot, Google Ads measurement and HubSpot tracking integrations. Their actual firing behaviour, cookie categories and consent signals must be checked against the live Cookiebot configuration before launch. You can use the website's consent controls to review optional cookie choices where those controls are presented.`,
+    body: `Cookiebot consent management is installed. Optional analytics and advertising tracking are currently disabled pending verification of consent signals and data minimisation. You can use the website's consent controls to review optional cookie choices where those controls are presented.`,
   },
   {
     title: 'Updates and contact',
