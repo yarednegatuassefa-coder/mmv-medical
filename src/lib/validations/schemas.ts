@@ -11,8 +11,8 @@ export const leadFormSchema = z.object({
   budget_range: z.string().optional(),
   preferred_travel_month: z.string().optional(),
   // A public enquiry must include affirmative consent to be contacted about this request.
-  contact_consent: z.literal(true, {
-    errorMap: () => ({ message: 'Please agree to the enquiry privacy notice before submitting.' }),
+  contact_consent: z.boolean().refine(value => value, {
+    message: 'Please agree to the enquiry privacy notice before submitting.',
   }),
   // CRM transfer is a separate, optional choice. It is disabled unless the server feature flag is enabled.
   crm_consent: z.boolean().default(false),
