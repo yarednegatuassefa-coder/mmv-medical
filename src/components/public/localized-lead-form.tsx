@@ -104,7 +104,7 @@ export function LocalizedLeadForm({ locale }: { locale: Locale }) {
     <label className="grid gap-1 text-xs font-semibold text-[#536170]">{t.phone}<input name="whatsapp" type="tel" required maxLength={20} autoComplete="tel" className="rounded border border-[#ddd7cb] px-3 py-3 text-sm text-[#12243a]" /></label>
     <label className="grid gap-1 text-xs font-semibold text-[#536170] sm:col-span-2">{t.topic}<select name="coordination_topic" required defaultValue="" className="rounded border border-[#ddd7cb] bg-white px-3 py-3 text-sm text-[#12243a]"><option value="" disabled>{t.choose}</option>{ENQUIRY_TOPICS.map(topic=><option key={topic.value} value={topic.value}>{topicLabels[locale][topic.value]}</option>)}</select></label>
     <div className="space-y-3 rounded bg-[#f7f5f0] p-4 text-xs leading-6 text-[#536170] sm:col-span-2">
-      <label className="flex items-start gap-2"><input type="checkbox" name="response_consent" required className="mt-1" /><span>{t.response} <Link href={\`/\${locale}/privacy\`} className="underline">{t.privacy}</Link></span></label>
+      <label className="flex items-start gap-2"><input type="checkbox" name="response_consent" required className="mt-1" /><span>{t.response} <Link href={'/' + locale + '/privacy'} className="underline">{t.privacy}</Link></span></label>
       <label className="flex items-start gap-2"><input type="checkbox" name="marketing_consent" className="mt-1" /><span>{t.marketing}</span></label>
     </div>
     {state==='error'&&<p role="alert" className="text-sm text-red-700 sm:col-span-2">{error}</p>}
