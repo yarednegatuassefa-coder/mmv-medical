@@ -33,11 +33,17 @@ export const loginSchema = z.object({
 
 export const leadUpdateSchema = z.object({
   id: z.string().uuid(),
-  stage: z.enum(['new','contacted','plan_sent','deposit_paid','confirmed','completed','lost']).optional(),
-  estimated_value: z.number().min(0).optional(),
-  follow_up_date: z.string().optional().nullable(),
   notes: z.string().max(2000).optional(),
   assigned_to: z.string().uuid().optional().nullable(),
+})
+
+export const manualLeadSchema = z.object({
+  full_name: z.string().min(2).max(100),
+  email: z.string().email(),
+  whatsapp: z.string().min(7).max(20).regex(/^\\+?[0-9\\s\\-()]+$/),
+  country: z.enum(['UK', 'Ireland', 'Netherlands', 'Belgium', 'Romania', 'Other']),
+  treatment_interest: z.enum(['understand_process','provider_information','travel_planning','coordination_support','not_sure']),
+  response_consent: z.literal(true),
 })
 
 export const noteSchema = z.object({
