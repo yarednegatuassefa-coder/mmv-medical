@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from 'next'
 import { Toaster } from '@/components/ui/toaster'
-import Script from 'next/script'
 import './globals.css'
 import FloatingWhatsApp from '@/components/FloatingWhatsApp'
 import { SiteStructuredData } from '@/components/seo/structured-data'
@@ -58,30 +57,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
 
-        {/* Google Ads / GTM — blocked by Cookiebot until user consents */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18093103815"></script>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'AW-18093103815');
-            `,
-          }}
-        />
       </head>
       <body className="font-sans antialiased">
         <SiteStructuredData />
         {children}
         <Toaster />
         <FloatingWhatsApp />
-        {/* HubSpot Tracking — EU1 — blocked by Cookiebot until user consents */}
-        <Script
-          id="hubspot-tracking"
-          src="//js-eu1.hs-scripts.com/147400010.js"
-          strategy="afterInteractive"
-        />
       </body>
     </html>
   )
