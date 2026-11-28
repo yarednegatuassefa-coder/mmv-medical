@@ -4,7 +4,7 @@ export const leadFormSchema = z.object({
   full_name: z.string().min(2, 'Name must be at least 2 characters').max(100),
   email: z.string().email('Invalid email address'),
   whatsapp: z.string().min(7, 'Enter a valid WhatsApp number').max(20)
-    .regex(/^\\+?[0-9\\s\\-()]+$/, 'Invalid phone number'),
+    .regex(/^\+?[0-9\s\-()]+$/, 'Invalid phone number'),
   country: z.enum(['UK', 'Ireland', 'Netherlands', 'Belgium', 'Romania', 'Other'],
     { errorMap: () => ({ message: 'Please select your country' }) }),
   treatment_interest: z.string().min(1, 'Please select a treatment'),
