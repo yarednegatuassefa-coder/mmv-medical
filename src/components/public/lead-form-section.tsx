@@ -113,7 +113,7 @@ export function LeadFormSection() {
 
           <div>
             <label htmlFor="mmv-whatsapp" className="block text-xs font-mono tracking-wider uppercase text-navy/50 mb-1">WhatsApp *</label>
-            <input id="mmv-whatsapp" name="whatsapp" type="tel" required autoComplete="tel" minLength={7} maxLength={20} pattern="\\+?[0-9\\s()\\-]+" className="w-full border border-cream-dark rounded px-3 py-2 text-sm text-navy outline-none focus:border-teal" placeholder="+44 7700 000000" />
+            <input id="mmv-whatsapp" name="whatsapp" type="tel" required autoComplete="tel" minLength={7} maxLength={20} pattern="\+?[0-9\s()-]+" className="w-full border border-cream-dark rounded px-3 py-2 text-sm text-navy outline-none focus:border-teal" placeholder="+44 7700 000000" />
           </div>
 
           <div>
