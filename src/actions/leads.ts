@@ -28,7 +28,7 @@ export async function capturePublicLead(
   const since = new Date(Date.now() - 86400000).toISOString()
   const [emailMatch, phoneMatch] = await Promise.all([
     supabase.from('leads').select('id').eq('email', parsed.data.email)
-      .gte('created_at', since).is('deleted_at', null).limit(1).maybeSingle(),
+      .gte('created_at', since).limit(1).maybeSingle(),
     supabase.from('leads').select('id').eq('whatsapp', parsed.data.whatsapp)
       .gte('created_at', since).is('deleted_at', null).limit(1).maybeSingle(),
   ])
@@ -61,6 +61,7 @@ export async function capturePublicLead(
     return { success: false, error: 'Failed to save — please contact us by email' }
   }
 
+  const followUpDueAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
   const { error: activityError } = await supabase.from('lead_activities').insert({
     lead_id: (lead as Pick<Lead, 'id'>).id,
     type: 'lead_created',
@@ -71,8 +72,9 @@ export async function capturePublicLead(
       response_consent: true,
       marketing_consent: parsed.data.marketing_consent,
       privacy_notice_version: PRIVACY_NOTICE_VERSION,
-      assigned: false,
+      assignment_status: 'unassigned_manual_queue',
       follow_up_status: 'awaiting_human_review',
+      follow_up_due_at: followUpDueAt,
     },
   })
 
