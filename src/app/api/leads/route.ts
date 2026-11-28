@@ -1,78 +1,68 @@
 import { NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/server'
+import { z } from 'zod'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
+const whatsappLeadSchema = z.object({
+  name: z.string().min(2).max(100),
+  phone: z.string().min(7).max(20).regex(/^\+?[0-9\s\-()]+$/),
+  source: z.enum(['whatsapp_button', 'website']).default('whatsapp_button'),
+  language: z.enum(['en', 'fr', 'ar']).default('en'),
+  // Deliberately do not accept/store free-text messages or health information here.
+})
+
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const { name, phone, source, language, message } = body
-
-    if (!name || !phone) {
-      return NextResponse.json(
-        { error: 'Name and phone are required' },
-        { status: 400 }
-      )
+    const parsed = whatsappLeadSchema.safeParse(body)
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Invalid submission' }, { status: 400 })
     }
 
     const supabase = await createServiceClient()
-
-    const { data, error } = await supabase
+    const { data: lead, error } = await supabase
       .from('leads')
-      .insert([
-        {
-          full_name: name,
-          whatsapp: phone,
-          source: source ?? 'whatsapp_button',
-          country: language === 'fr' ? 'France' :
-                   language === 'ar' ? 'Arabic' : 'UK',
-          stage: 'new',
-          notes: message ?? null,
-          updated_at: new Date().toISOString(),
-        },
-      ])
-      .select()
+      .insert({
+        full_name: parsed.data.name,
+        whatsapp: parsed.data.phone,
+        source: parsed.data.source,
+        country: 'Other',
+        stage: 'new',
+        treatment: null,
+        treatment_interest: 'whatsapp_intro',
+        notes: null,
+        updated_at: new Date().toISOString(),
+      })
+      .select('id')
       .single()
 
-    if (error) {
-      console.error('Supabase insert error:', error)
-      return NextResponse.json(
-        { error: 'Failed to save lead' },
-        { status: 500 }
-      )
+    if (error || !lead) {
+      console.error('[whatsapp lead] Supabase insert failed:', error?.code ?? 'unknown')
+      return NextResponse.json({ error: 'Failed to save lead' }, { status: 500 })
     }
 
-    // Sync to HubSpot
-    try {
-      const [firstname, ...rest] = name.trim().split(' ')
-      await fetch('https://api.hubapi.com/crm/v3/objects/contacts', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.HUBSPOT_PRIVATE_APP_TOKEN}`,
-        },
-        body: JSON.stringify({
-          properties: {
-            firstname,
-            lastname: rest.join(' ') || '',
-            phone,
-            hs_lead_status: 'NEW',
-            message: `WhatsApp button click — language: ${language ?? 'en'}`,
-          },
-        }),
-      })
-    } catch (e) {
-      console.error('HubSpot sync error:', e)
+    const { error: activityError } = await supabase.from('lead_activities').insert({
+      lead_id: lead.id,
+      type: 'lead_created',
+      title: 'Lead captured from WhatsApp entry point',
+      metadata: {
+        source: parsed.data.source,
+        language: parsed.data.language,
+        response_consent: false,
+        follow_up_status: 'consent_not_recorded_manual_review_required',
+      },
+    })
+    if (activityError) {
+      console.error('[whatsapp lead] Audit insert failed:', activityError.code ?? 'unknown')
     }
 
-    return NextResponse.json({ ok: true, lead: data }, { status: 201 })
-
-  } catch (e: any) {
-    console.error('Lead API error:', e)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    // No third-party CRM sync. WhatsApp itself is opened by the user; no automated
+    // outbound messages are sent from this endpoint.
+    return NextResponse.json({ ok: true, leadId: lead.id }, { status: 201 })
+  } catch {
+    console.error('[whatsapp lead] Request failed')
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
