@@ -22,7 +22,6 @@ export const STAGES = [
  {value:'deposit_paid',label:'Deposit Paid',color:'#1fb896'},
  {value:'confirmed',label:'Confirmed',color:'#c8a45a'},
  {value:'completed',label:'Completed',color:'#6bde9e'},
- {value:'lost',label:'Lost',color:'#e05252'},
 ] as const
 export type StageName = typeof STAGES[number]['value']
 export const SOURCE_TYPES = [
