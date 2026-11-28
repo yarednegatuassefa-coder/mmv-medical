@@ -25,16 +25,15 @@ export async function capturePublicLead(
 
   const supabase = await createServiceClient() as any
 
-  const { data: existing } = await supabase
-    .from('leads')
-    .select('id')
-    .or(`email.eq.${parsed.data.email},whatsapp.eq.${parsed.data.whatsapp}`)
-    .gte('created_at', new Date(Date.now() - 86400000).toISOString())
-    .is('deleted_at', null)
-    .limit(1)
-    .maybeSingle()
+  const since = new Date(Date.now() - 86400000).toISOString()
+  const [emailMatch, phoneMatch] = await Promise.all([
+    supabase.from('leads').select('id').eq('email', parsed.data.email)
+      .gte('created_at', since).is('deleted_at', null).limit(1).maybeSingle(),
+    supabase.from('leads').select('id').eq('whatsapp', parsed.data.whatsapp)
+      .gte('created_at', since).is('deleted_at', null).limit(1).maybeSingle(),
+  ])
 
-  if (existing) return { success: true, duplicate: true }
+  if (emailMatch.data || phoneMatch.data) return { success: true, duplicate: true }
 
   const { data: lead, error } = await supabase
     .from('leads')
