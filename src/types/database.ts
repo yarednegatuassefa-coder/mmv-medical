@@ -1,45 +1,60 @@
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
 
-export type LeadStage = 'new' | 'contacted' | 'plan_sent' | 'deposit_paid' | 'confirmed' | 'completed' | 'lost'
-export type UserRole = 'admin' | 'manager'
+export type LeadStage = 'new' | 'contacted' | 'plan_sent' | 'deposit_paid' | 'confirmed' | 'completed'
+export type UserRole = 'admin' | 'coordinator' | 'viewer'
 export type SourceType = 'article' | 'review' | 'report' | 'clinic_profile' | 'regulation' | 'price_data' | 'other'
 
 export interface Database {
   public: {
     Tables: {
       profiles: {
-        Row: { id: string; full_name: string; role: UserRole; avatar_url: string | null; created_at: string; updated_at: string }
-        Insert: { id: string; full_name?: string; role?: UserRole; avatar_url?: string | null }
-        Update: { full_name?: string; role?: UserRole; avatar_url?: string | null }
+        Row: { id: string; full_name: string | null; role: UserRole; created_at: string }
+        Insert: { id: string; full_name?: string | null; role?: UserRole }
+        Update: { full_name?: string | null; role?: UserRole }
       }
       leads: {
         Row: {
-          id: string; full_name: string; email: string; whatsapp: string
-          country: string; treatment_interest: string; budget_range: string | null
-          preferred_travel_month: string | null; notes: string | null
-          stage: LeadStage; source: string; estimated_value: number | null
-          follow_up_date: string | null; assigned_to: string | null
-          created_by: string | null; deleted_at: string | null
-          created_at: string; updated_at: string
+          id: string
+          full_name: string
+          email: string | null
+          whatsapp: string | null
+          country: string | null
+          treatment: string | null
+          stage: LeadStage
+          notes: string | null
+          assigned_to: string | null
+          source: string | null
+          created_at: string
+          updated_at: string
+          treatment_interest: string | null
+          budget_range: string | null
+          preferred_travel_month: string | null
         }
         Insert: {
-          full_name: string; email: string; whatsapp: string
-          country: string; treatment_interest: string; budget_range?: string | null
-          preferred_travel_month?: string | null; notes?: string | null
-          stage?: LeadStage; source?: string; estimated_value?: number | null
-          follow_up_date?: string | null; assigned_to?: string | null; created_by?: string | null
+          full_name: string
+          email?: string | null
+          whatsapp?: string | null
+          country?: string | null
+          treatment?: string | null
+          stage?: LeadStage
+          notes?: string | null
+          assigned_to?: string | null
+          source?: string | null
+          treatment_interest?: string | null
+          budget_range?: string | null
+          preferred_travel_month?: string | null
         }
-        Update: Partial<Database['public']['Tables']['leads']['Insert']> & { deleted_at?: string | null }
+        Update: Partial<Database['public']['Tables']['leads']['Insert']>
       }
       lead_activities: {
-        Row: { id: string; lead_id: string; type: string; title: string; metadata: Json; created_by: string | null; created_at: string }
-        Insert: { lead_id: string; type: string; title: string; metadata?: Json; created_by?: string | null }
+        Row: { id: string; lead_id: string | null; type: string | null; description: string | null; created_by: string | null; created_at: string }
+        Insert: { lead_id?: string | null; type?: string | null; description?: string | null; created_by?: string | null }
         Update: never
       }
       lead_notes: {
-        Row: { id: string; lead_id: string; content: string; created_by: string | null; deleted_at: string | null; created_at: string; updated_at: string }
-        Insert: { lead_id: string; content: string; created_by?: string | null }
-        Update: { content?: string; deleted_at?: string | null }
+        Row: { id: string; lead_id: string | null; note: string | null; created_by: string | null; created_at: string }
+        Insert: { lead_id?: string | null; note?: string | null; created_by?: string | null }
+        Update: never
       }
       kb_sources: {
         Row: { id: string; title: string; url: string | null; source_type: SourceType; language: string; tags: string[]; raw_content: string; word_count: number; compiled: boolean; created_by: string | null; deleted_at: string | null; created_at: string; updated_at: string }
@@ -65,11 +80,10 @@ export interface Database {
   }
 }
 
-// Convenience types
-export type Profile       = Database['public']['Tables']['profiles']['Row']
-export type Lead          = Database['public']['Tables']['leads']['Row']
-export type LeadActivity  = Database['public']['Tables']['lead_activities']['Row']
-export type LeadNote      = Database['public']['Tables']['lead_notes']['Row']
-export type KbSource      = Database['public']['Tables']['kb_sources']['Row']
-export type KbArticle     = Database['public']['Tables']['kb_articles']['Row']
-export type KbQuery       = Database['public']['Tables']['kb_queries']['Row']
+export type Profile = Database['public']['Tables']['profiles']['Row']
+export type Lead = Database['public']['Tables']['leads']['Row']
+export type LeadActivity = Database['public']['Tables']['lead_activities']['Row']
+export type LeadNote = Database['public']['Tables']['lead_notes']['Row']
+export type KbSource = Database['public']['Tables']['kb_sources']['Row']
+export type KbArticle = Database['public']['Tables']['kb_articles']['Row']
+export type KbQuery = Database['public']['Tables']['kb_queries']['Row']
