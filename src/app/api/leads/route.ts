@@ -10,6 +10,8 @@ const whatsappLeadSchema = z.object({
   phone: z.string().min(7).max(20).regex(/^\+?[0-9\s\-()]+$/),
   source: z.enum(['whatsapp_button', 'website']).default('whatsapp_button'),
   language: z.enum(['en', 'fr', 'ar']).default('en'),
+  response_consent: z.literal(true),
+  marketing_consent: z.boolean().default(false),
   // Deliberately do not accept/store free-text messages or health information here.
 })
 
@@ -50,8 +52,10 @@ export async function POST(req: Request) {
       metadata: {
         source: parsed.data.source,
         language: parsed.data.language,
-        response_consent: false,
-        follow_up_status: 'consent_not_recorded_manual_review_required',
+        response_consent: true,
+        marketing_consent: parsed.data.marketing_consent,
+        privacy_notice_version: '2026-11-28',
+        follow_up_status: 'awaiting_human_review',
       },
     })
     if (activityError) {
