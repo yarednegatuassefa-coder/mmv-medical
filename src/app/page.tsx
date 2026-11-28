@@ -41,14 +41,14 @@ const TREATMENTS = [
 ]
 
 const SUPPORT = [
-  { icon: MessageCircle, title: 'One point of contact', text: 'A coordinator helps organise questions, information and communication with the clinic.' },
+  { icon: MessageCircle, title: 'One point of contact', text: 'A coordinator helps organise questions and explain the practical steps involved in evaluating a provider.' },
   { icon: Stethoscope, title: 'Clinical review stays clinical', text: 'Treatment suitability and final recommendations are assessed by the treating healthcare professionals.' },
   { icon: Plane, title: 'Travel planning', text: 'Get help understanding the practical steps around appointments and a visit to Istanbul.' },
 ]
 
 const STEPS = [
   { n: '01', title: 'Tell us what you are looking for', text: 'Share your goals and the best way to contact you. You do not need to know the name of a procedure.' },
-  { n: '02', title: 'Discuss your options', text: 'We help organise the information needed for the partner clinic to review your enquiry.' },
+  { n: '02', title: 'Discuss your options', text: 'We help you organise questions and understand what to verify directly with a healthcare provider. MMV is still building its provider network and cannot arrange a clinic referral at this stage.' },
   { n: '03', title: 'Plan the next steps', text: 'If you decide to proceed, your coordinator can help organise communication and travel logistics.' },
 ]
 
@@ -63,13 +63,13 @@ export default function HomePage() {
             <div className="relative z-10 max-w-2xl">
               <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-[#12243a]/10 bg-white/70 px-3.5 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#526273] shadow-sm">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#1e8f7a]" />
-                International patient coordination · Istanbul
+                Independent coordination information · Istanbul
               </div>
               <h1 className="font-display text-[clamp(3.2rem,7vw,6.4rem)] font-medium leading-[0.94] tracking-[-0.045em] text-[#12243a]">
                 A more considered way to explore <span className="italic text-[#a47d37]">dental care</span> in Istanbul.
               </h1>
               <p className="mt-7 max-w-xl text-base leading-8 text-[#536170] sm:text-lg">
-                Clear information, a dedicated point of contact and practical coordination — from your first enquiry to planning a visit. Clinical decisions remain with qualified healthcare professionals.
+                Clear information, a dedicated point of contact and practical coordination — from your first enquiry to understanding the process. Clinical decisions remain with qualified healthcare professionals.
               </p>
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                 <a href="#consultation" className="group inline-flex min-h-14 items-center justify-center gap-3 rounded-sm bg-[#12243a] px-7 text-sm font-semibold tracking-wide text-white shadow-[0_12px_30px_rgba(18,36,58,0.16)] transition hover:-translate-y-0.5 hover:bg-[#1e3554]">
@@ -80,8 +80,8 @@ export default function HomePage() {
                 </Link>
               </div>
               <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-[#12243a]/10 pt-6 text-xs font-medium text-[#6b7783]">
-                <span className="inline-flex items-center gap-2"><Globe2 size={15} className="text-[#a47d37]" /> Support for international enquiries</span>
-                <span className="inline-flex items-center gap-2"><HeartHandshake size={15} className="text-[#a47d37]" /> Human-led coordination</span>
+                <span className="inline-flex items-center gap-2"><Globe2 size={15} className="text-[#a47d37]" /> International enquiries</span>
+                <span className="inline-flex items-center gap-2"><HeartHandshake size={15} className="text-[#a47d37]" /> Human-led information support</span>
               </div>
             </div>
 
@@ -191,14 +191,14 @@ export default function HomePage() {
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#9b783d]">The MMV difference</p>
             <h2 className="mt-4 font-display text-4xl font-medium leading-tight text-[#12243a] sm:text-5xl">Coordination without the <span className="italic text-[#a47d37]">pressure.</span></h2>
-            <p className="mt-6 max-w-md text-sm leading-7 text-[#687582]">We help international patients navigate the practical side of exploring care in Türkiye. Our role is to make communication and planning easier — not to replace independent clinical advice.</p>
+            <p className="mt-6 max-w-md text-sm leading-7 text-[#687582]">We help international patients understand the practical side of exploring care in Türkiye. MMV is currently developing its provider network; we do not claim to represent or refer patients to a clinic until a partnership is formally confirmed. Our role is to make the process clearer — not to replace independent clinical advice.</p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             {[
               { icon: ShieldCheck, title: 'Clear responsibilities', text: 'The treating clinic is responsible for diagnosis, clinical recommendations, consent and care.' },
               { icon: MessageCircle, title: 'Straight answers', text: 'Ask about process, timing, documents and the practical details before you decide.' },
               { icon: Clock3, title: 'Your pace', text: 'Take the time you need. An enquiry does not commit you to treatment or travel.' },
-              { icon: Sparkles, title: 'Personal coordination', text: 'A dedicated contact helps keep the moving parts of your enquiry organised.' },
+              { icon: Sparkles, title: 'Personal coordination', text: 'A human contact helps keep the non-clinical parts of your enquiry organised.' },
             ].map(({ icon: Icon, title, text }) => (
               <div key={title} className="border border-[#12243a]/10 bg-white p-6">
                 <Icon size={20} className="text-[#a47d37]" strokeWidth={1.6} />
