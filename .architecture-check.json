@@ -1,0 +1,11 @@
+{
+  "clientRoots": [],
+  "serverRoots": [
+    "src/server"
+  ],
+  "serverImportSpecifiers": [
+    "server-only",
+    "next/headers",
+    "next/server"
+  ]
+}
