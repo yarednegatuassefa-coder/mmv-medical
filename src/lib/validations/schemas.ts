@@ -10,7 +10,12 @@ export const leadFormSchema = z.object({
   treatment_interest: z.string().min(1, 'Please select a treatment'),
   budget_range: z.string().optional(),
   preferred_travel_month: z.string().optional(),
-  notes: z.string().max(1000).optional(),
+  // A public enquiry must include affirmative consent to be contacted about this request.
+  contact_consent: z.boolean().refine(value => value, {
+    message: 'Please agree to the enquiry privacy notice before submitting.',
+  }),
+  // CRM transfer is a separate, optional choice. It is disabled unless the server feature flag is enabled.
+  crm_consent: z.boolean().default(false),
   // Honeypot — must be empty
   website: z.string().max(0, 'Bot detected').optional(),
 })
