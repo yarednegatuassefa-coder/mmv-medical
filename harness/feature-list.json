@@ -1,8 +1,31 @@
 {
   "schema_version": 1,
   "project": "mmv-medical",
-  "updated_at": "2026-11-16",
+  "updated_at": "2026-11-28",
   "features": [
+    {
+      "id": "LETTER5-003",
+      "title": "Synthetic administrative coordination draft policy",
+      "status": "implemented_unverified",
+      "priority": "high",
+      "acceptance_criteria": [
+        "Only synthetic, privacy-minimized coordination inputs are accepted",
+        "Missing consent, opt-out, urgency, clinical content, conflicts and timeouts escalate",
+        "Accepted drafts are marked human-review-required and cannot claim clinical or pricing authority"
+      ],
+      "verification": [
+        "npm run harness:check",
+        "node --check src/lib/coordination-draft-policy.mjs",
+        "node --test tests/coordination-draft-policy.test.mjs"
+      ],
+      "risk": "high",
+      "owner_approval_required": true,
+      "evidence": [
+        "Harness preflight passed on 2026-11-28.",
+        "Synthetic targeted tests passed 4/4 on 2026-11-28."
+      ],
+      "notes": "No clinical decision, patient-facing send, CRM write or operational acceptance is claimed."
+    },
     {
       "id": "HARN-001",
       "title": "Patient safety and privacy instruction hierarchy",
