@@ -4,13 +4,18 @@ export const leadFormSchema = z.object({
   full_name: z.string().min(2, 'Name must be at least 2 characters').max(100),
   email: z.string().email('Invalid email address'),
   whatsapp: z.string().min(7, 'Enter a valid WhatsApp number').max(20)
-    .regex(/^\+?[0-9\s\-()]+$/, 'Invalid phone number'),
+    .regex(/^\\+?[0-9\\s\\-()]+$/, 'Invalid phone number'),
   country: z.enum(['UK', 'Ireland', 'Netherlands', 'Belgium', 'Romania', 'Other'],
     { errorMap: () => ({ message: 'Please select your country' }) }),
   treatment_interest: z.string().min(1, 'Please select a treatment'),
   budget_range: z.string().optional(),
   preferred_travel_month: z.string().optional(),
-  notes: z.string().max(1000).optional(),
+  // A public enquiry must include affirmative consent to be contacted about this request.
+  contact_consent: z.literal(true, {
+    errorMap: () => ({ message: 'Please agree to the enquiry privacy notice before submitting.' }),
+  }),
+  // CRM transfer is a separate, optional choice. It is disabled unless the server feature flag is enabled.
+  crm_consent: z.boolean().default(false),
   // Honeypot — must be empty
   website: z.string().max(0, 'Bot detected').optional(),
 })
