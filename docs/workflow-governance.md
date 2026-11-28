@@ -33,3 +33,7 @@ Track qualified leads, first-response time, booking conversion, appointment comp
 ## Current implementation status
 
 This is an operating and evaluation specification only. It does not assert that all instrumentation, integrations or evaluations are live. Record actual test and human-review evidence in the project harness.
+
+## Letter 5 implementation
+
+See the shared [Portfolio AI and Resilience Standard](https://github.com/yarednegatuassefa-coder/home/blob/main/standards/ai-resilience.md) and the MMV [AI/resilience rollout](ai-resilience-rollout.md). The first pilot is synthetic, administrative, draft-only coordination assistance; clinical and patient-facing authority remains human-controlled.
